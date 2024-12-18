@@ -18,7 +18,7 @@ import "../App.css";
 function Landing() {
   return (
     <>
-      <Navbar />
+      <Navbar modes="landing" />
       {/*  */}
       <Hero />
       <Sponsors />

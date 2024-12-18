@@ -174,11 +174,19 @@ export const Navbar = ({
   } else if (mode == "home") {
     return (
       <>
-        {/* Botão Accordion */}
+
+        {/* Botão Accordion 
         {isAccordion && (
           <button
             className="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md shadow-md"
-            onClick={() => setAccordionOpen(!accordionOpen)} // Alterna estado do Accordion
+            onClick={() => setAccordionOpen(!accordionOpen)} // Alterna estado do Accordion */}
+
+        {/* Accordion Button */}
+        {isAccordion && (
+          <button
+            className="fixed top-4 left-4 z-50 bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-white p-2 rounded-md shadow-md hover:opacity-90 transition-opacity"
+            onClick={() => setAccordionOpen(!accordionOpen)}
+
           >
             {accordionOpen ? (
               <X className="w-6 h-6" />
@@ -188,10 +196,15 @@ export const Navbar = ({
           </button>
         )}
 
-        {/* Navbar Vertical em Desktop */}
+        {/* Navbar Vertical em Desktop 
         {isVertical && (
           <aside
-            className={`hidden md:flex flex-col h-screen bg-gray-300 p-4 fixed top-0 shadow-lg transition-all duration-300 ${
+            className={`hidden md:flex flex-col h-screen bg-gray-300 p-4 fixed top-0 shadow-lg transition-all duration-300 ${*/}
+        {/* Vertical Navbar */}
+        {isVertical && (
+          <aside
+            className={`hidden md:flex flex-col h-screen bg-background border-r border-border p-4 fixed top-0 shadow-lg transition-all duration-300 ${
+
               accordionOpen ? "w-64 ml-18" : "w-18"
             }`}
           >
@@ -201,13 +214,17 @@ export const Navbar = ({
               }`}
             >
               {accordionOpen && (
-                <h1 className="ml-2 font-bold text-xl text-blue-600">
-                  LoneSoldier
+
+                <h1 className="ml-2 font-bold text-xl">
+                  <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
+                    LoneSoldier
+                  </span>
+
                 </h1>
               )}
             </div>
 
-            {/* Links de navegação */}
+
             <nav
               className={`flex flex-col gap-4 ${
                 accordionOpen ? "opacity-100" : "opacity-0"
@@ -217,7 +234,11 @@ export const Navbar = ({
                 <a
                   key={route.label}
                   href={route.href}
-                  className={`text-gray-700 hover:bg-gray-200 rounded p-2 ${
+
+                 /* className={`text-gray-700 hover:bg-gray-200 rounded p-2 ${*/
+
+                  className={`text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors ${
+
                     accordionOpen ? "block" : "hidden"
                   }`}
                 >
@@ -226,7 +247,7 @@ export const Navbar = ({
               ))}
             </nav>
 
-            {/* Alternar Tema */}
+
             <div
               className={`mt-auto ${
                 accordionOpen ? "opacity-100" : "opacity-0"
@@ -237,14 +258,24 @@ export const Navbar = ({
           </aside>
         )}
 
-        {/* Navbar Horizontal (Mobile e Outras páginas) */}
+
+        {/* Navbar Horizontal (Mobile e Outras páginas) 
         <header
           className={'w-full bg-white shadow-md p-4 fixed top-0 z-40 flex justify-between items-center md:hidden'}
         >
           <div className="flex items-center">
             <LogoIcon />
             <h1 className="ml-2 font-bold text-xl text-blue-600">
-              LoneSoldier
+              LoneSoldier*/}
+        {/* Mobile Header */}
+        <header className="w-full bg-background border-b border-border p-4 fixed top-0 z-40 flex justify-between items-center md:hidden">
+          <div className="flex items-center">
+            <LogoIcon />
+            <h1 className="ml-2 font-bold text-xl">
+              <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
+                LoneSoldier
+              </span>
+
             </h1>
           </div>
           <ModeToggle />
@@ -252,4 +283,6 @@ export const Navbar = ({
       </>
     );
   }
+
 };
+
