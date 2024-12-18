@@ -72,18 +72,18 @@ export const Navbar = ({ isVertical = false, isAccordion = false }: NavbarProps)
           </nav>
 
           {/* Alternar Tema */}
-          <div
-            className={`mt-auto ${accordionOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
-          >
-            <ModeToggle />
-          </div>
+          <div className={`mt-auto ${accordionOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}>
+  <ModeToggle />
+</div>
+
         </aside>
       )}
 
       {/* Navbar Horizontal (Mobile e Outras páginas) */}
       <header
-        className={`w-full bg-white shadow-md p-4 fixed top-0 z-40 flex justify-between items-center md:hidden`}
-      >
+  className="w-full bg-white shadow-md p-4 fixed top-0 z-40 flex justify-between items-center md:hidden"
+>
+
         <div className="flex items-center">
           <LogoIcon />
           <h1 className="ml-2 font-bold text-xl text-blue-600">LoneSoldier</h1>
