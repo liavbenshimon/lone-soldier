@@ -25,53 +25,53 @@ interface SociaNetworkslProps {
 const teamList: TeamProps[] = [
   {
     imageUrl: "https://avatars.githubusercontent.com/u/143484938?v=4",
-    name: "Nathan Kilinski",
+    name: "Nathan",
     position: "FullStack Developer",
     description:
       "Leading our efforts to build strong connections between donors and Lone Soldiers.",
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/nathan-kilinski-b4a933325/",
+        url: "#",
       },
-      // {
-      //   name: "Facebook",
-      //   url: "#",
-      // },
+      {
+        name: "Facebook",
+        url: "#",
+      },
     ],
   },
   {
     imageUrl: "https://avatars.githubusercontent.com/u/164013914?v=4",
-    name: "Liav Ben Shimon",
+    name: "Avi Cohen",
     position: "FullStack Developer",
     description:
       "Coordinating with Lone Soldiers to understand and address their needs effectively.",
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/liav-ben-shimon/",
+        url: "#",
       },
-      // {
-      //   name: "Instagram",
-      //   url: "#",
-      // },
+      {
+        name: "Instagram",
+        url: "#",
+      },
     ],
   },
   {
     imageUrl: "https://avatars.githubusercontent.com/u/60286095?v=4",
-    name: "Shalev Ben Moshe",
+    name: "Maya Levin",
     position: "FullStack Developer",
     description:
       "Ensuring smooth connections between donors and soldiers for maximum impact.",
     socialNetworks: [
       {
         name: "Linkedin",
-        url: "https://www.linkedin.com/in/shalev-ben-moshe-08a8a3176/",
+        url: "#",
       },
-      // {
-      //   name: "Github",
-      //   url: "https://github.com/shalev396",
-      // },
+      {
+        name: "Facebook",
+        url: "#",
+      },
     ],
   },
 ];

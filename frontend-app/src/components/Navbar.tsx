@@ -174,7 +174,7 @@ export const Navbar = ({ isVertical = false, isAccordion = false }: NavbarProps)
               }}
             >
               {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
-              SignUp
+              SingUp
             </Button>
 
 
