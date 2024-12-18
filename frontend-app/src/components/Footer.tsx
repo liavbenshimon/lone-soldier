@@ -1,4 +1,3 @@
-
 import { buttonVariants } from "@/components/ui/button";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -7,7 +6,7 @@ export const Footer = () => {
   const navigate = useNavigate();
 
   const legalLinks = [
-    { text: "Privacy Policy", path: "/privacy" },
+    { text: "Privacy Policy", path: "/termofservice" },
     { text: "Terms of Service", path: "/terms" },
     { text: "Contact Us", path: "/contact" },
   ];

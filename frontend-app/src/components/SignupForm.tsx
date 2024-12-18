@@ -1,4 +1,6 @@
+import { api } from "@/api";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 // הגדרת סוג נתונים של הטופס
 interface FormData {
@@ -16,6 +18,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const navigate = useNavigate();
   // הגדרת useState עם סוג נתונים
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -29,6 +32,8 @@ export function SignupForm({
   });
 
   // הגדרת פונקציה שתטפל בשינויי שדות
+  //shalev38@gmail.com
+  //12345678
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -40,10 +45,16 @@ export function SignupForm({
   };
 
   // הגדרת פונקציה לשליחת הטופס
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // כאן יש לשלוח את המידע לשרת או לבצע פעולה אחרת
-    console.log(formData);
+    try {
+      const res = await api.post("/users", formData);
+      console.log(res);
+      sessionStorage.setItem("token", res.data.token);
+      navigate("/Home");
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
