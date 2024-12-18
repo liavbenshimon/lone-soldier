@@ -1,4 +1,3 @@
-
 import HomePage from "./pages/HomePage";
 
 import Landing from "./pages/Landing";
@@ -15,13 +14,20 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
 
-
-          <Route path="/home" element={<HomePage />} />
+          <Route path="/home" element={<HomePage mode="Donations" />} />
+          <Route
+            path="/home/donations"
+            element={<HomePage mode="Donations" />}
+          />
+          <Route
+            path="/home/residences"
+            element={<HomePage mode="Residences" />}
+          />
+          <Route path="/home/eatup" element={<HomePage mode="EatUp" />} />
 
           <Route path="/Login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/termofservice" element={<Tos />} />
-
 
           <Route path="*" element={<h1>404</h1>} />
         </Routes>
