@@ -10,17 +10,22 @@ import {
   CardFooter,
 } from "@/components/ui/card";
 import { Check, Facebook, Linkedin } from "lucide-react";
-import { LightBulbIcon } from "./Icons";
+import { LightBulbIcon, GiftIcon } from "./Icons";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
+import { useNavigate } from "react-router";
 
 export const HeroCards = () => {
+  const navigate = useNavigate();
   return (
-    <div className="hidden lg:flex flex-row flex-wrap gap-8 relative w-[700px] h-[500px]">
+    <div className="hidden lg:flex flex-row flex-wrap gap-6 relative w-[600px] h-[450px]">
       {/* Testimonial */}
-      <Card className="absolute w-[340px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute w-[300px] -top-[15px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="flex flex-row items-center gap-4 pb-2">
           <Avatar>
-            <AvatarImage alt="" src="https://github.com/shadcn.png" />
+            <AvatarImage
+              alt=""
+              src="https://newprofilepic.photo-cdn.net//assets/images/article/profile.jpg?90af0c8"
+            />
             <AvatarFallback>SH</AvatarFallback>
           </Avatar>
 
@@ -35,10 +40,10 @@ export const HeroCards = () => {
       </Card>
 
       {/* Team */}
-      <Card className="absolute right-[20px] top-4 w-80 flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute right-[15px] top-4 w-[280px] flex flex-col justify-center items-center drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader className="mt-8 flex justify-center items-center pb-2">
           <img
-            src="https://i.pravatar.cc/150?img=58"
+            src="https://media.istockphoto.com/id/1154642632/photo/close-up-portrait-of-brunette-woman.jpg?s=612x612&w=0&k=20&c=d8W_C2D-2rXlnkyl8EirpHGf-GpM62gBjpDoNryy98U="
             alt="user avatar"
             className="absolute grayscale-[0%] -top-12 rounded-full w-24 h-24 aspect-square object-cover"
           />
@@ -48,44 +53,12 @@ export const HeroCards = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="text-center pb-2">
-          <p>
-            Dedicated to connecting donors with Lone Soldiers and making a
-            meaningful impact
-          </p>
+          <p>Connecting donors with Lone Soldiers to create lasting impact</p>
         </CardContent>
-
-        <CardFooter>
-          <div className="flex gap-4">
-            <a
-              href="https://www.facebook.com/lonesoldier"
-              target="_blank"
-              rel="noreferrer noopener"
-              className={buttonVariants({
-                variant: "ghost",
-                size: "sm",
-              })}
-            >
-              <span className="sr-only">Facebook</span>
-              <Facebook size="20" />
-            </a>
-            <a
-              href="https://www.linkedin.com/company/lonesoldier"
-              target="_blank"
-              rel="noreferrer noopener"
-              className={buttonVariants({
-                variant: "ghost",
-                size: "sm",
-              })}
-            >
-              <span className="sr-only">LinkedIn</span>
-              <Linkedin size="20" />
-            </a>
-          </div>
-        </CardFooter>
       </Card>
 
       {/* Pricing */}
-      <Card className="absolute top-[150px] left-[50px] w-72 drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute top-[150px] left-[40px] w-[260px] drop-shadow-xl shadow-black/10 dark:shadow-white/10">
         <CardHeader>
           <CardTitle className="flex item-center justify-between">
             Impact
@@ -99,7 +72,9 @@ export const HeroCards = () => {
         </CardHeader>
 
         <CardContent>
-          <Button className="w-full">Donate Now</Button>
+          <Button className="w-full" onClick={() => navigate("/signup")}>
+            Donate Now
+          </Button>
         </CardContent>
 
         <hr className="w-4/5 m-auto mb-4" />
@@ -119,16 +94,16 @@ export const HeroCards = () => {
       </Card>
 
       {/* Service */}
-      <Card className="absolute w-[350px] -right-[10px] bottom-[35px]  drop-shadow-xl shadow-black/10 dark:shadow-white/10">
+      <Card className="absolute w-[300px] -right-[10px] bottom-[35px] drop-shadow-xl shadow-black/10 dark:shadow-white/10 top-52">
         <CardHeader className="space-y-1 flex md:flex-row justify-start items-start gap-4">
           <div className="mt-1 bg-primary/20 p-1 rounded-2xl">
-            <LightBulbIcon />
+            <GiftIcon />
           </div>
           <div>
-            <CardTitle>Light & dark mode</CardTitle>
+            <CardTitle>Verified Support</CardTitle>
             <CardDescription className="text-md mt-2">
-              Lorem ipsum dolor sit amet consect adipisicing elit. Consectetur
-              natusm.
+              Every donation request is verified and tracked to ensure your
+              support reaches the Lone Soldiers who need it most.
             </CardDescription>
           </div>
         </CardHeader>

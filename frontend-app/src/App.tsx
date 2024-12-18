@@ -1,5 +1,7 @@
 import Landing from "./pages/Landing";
+
 import HomePage from "./pages/HomePage"; // Importa a HomePage
+
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import NewPost from "./pages/NewPost";
 
@@ -22,6 +24,11 @@ export default function App() {
 
           {/* Rota para 404 (página não encontrada) */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
+
+          <Route path="/Login" element={<Login />} />
+          <Route path="/singup" element={<SingUp />} />
+          {/* <Route path="/home" element={<HomePage />} />  */}
+
         </Routes>
       </BrowserRouter>
     </>
