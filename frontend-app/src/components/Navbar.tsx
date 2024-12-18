@@ -1,20 +1,5 @@
 import { useState } from "react";
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { Button, buttonVariants } from "./ui/button";
-import { Menu } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { LogoIcon } from "./Icons";
 import { useNavigate } from "react-router";
@@ -24,6 +9,18 @@ interface RouteProps {
 }
 
 const routeList: RouteProps[] = [
+
+/*   { href: "#features", label: "Features" },
+  { href: "#testimonials", label: "Testimonials" },
+  { href: "#pricing", label: "Pricing" },
+  { href: "#faq", label: "FAQ" },
+];
+
+interface NavbarProps {
+  isVertical?: boolean; // Prop para HomePage
+  isAccordion?: boolean; // Prop para funcionalidade de Accordion
+} */
+
   {
     href: "#about",
     label: "About us",
@@ -60,19 +57,39 @@ export const Navbar = () => {
             </a>
           </NavigationMenuItem>
 
-          {/* mobile */}
-          <span className="flex md:hidden">
-            <ModeToggle />
 
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger className="px-2">
-                <Menu
-                  className="flex md:hidden h-5 w-5"
-                  onClick={() => setIsOpen(true)}
-                >
-                  <span className="sr-only">Menu Icon</span>
-                </Menu>
-              </SheetTrigger>
+export const Navbar = ({ isVertical = false, isAccordion = false }: NavbarProps) => {
+  const [accordionOpen, setAccordionOpen] = useState<boolean>(false); // Accordion toggle
+
+  return (
+    <>
+      {/* Botão Accordion */}
+      {isAccordion && (
+        <button
+          className="fixed top-4 left-4 z-50 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-md shadow-md"
+          onClick={() => setAccordionOpen(!accordionOpen)} // Alterna estado do Accordion
+        >
+          {accordionOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      )}
+
+
+      {/* Navbar Vertical em Desktop 
+      {isVertical && (
+        <aside
+          className={`hidden md:flex flex-col h-screen bg-gray-300 p-4 fixed top-0 shadow-lg transition-all duration-300 ${
+            accordionOpen ? "w-64 ml-18" : "w-18"
+          }`}
+        >
+          <div
+            className={`flex items-center mb-6 transition-all duration-300 ${
+              accordionOpen ? "ml-10" : "ml-0"
+            }`}
+          >
+            {accordionOpen && (
+              <h1 className="ml-2 font-bold text-xl text-blue-600">LoneSoldier</h1>
+            )}
+          </div>*/}
 
               <SheetContent side={"left"}>
                 <SheetHeader>
@@ -116,21 +133,31 @@ export const Navbar = () => {
             </Sheet>
           </span>
 
-          {/* desktop */}
-          <nav className="hidden md:flex gap-2">
-            {routeList.map((route: RouteProps, i) => (
+
+          {/* Links de navegação */}
+          <nav
+            className={`flex flex-col gap-4 ${
+              accordionOpen ? "opacity-100" : "opacity-0"
+            } transition-opacity duration-300`}
+          >
+            {routeList.map((route) => (
               <a
-                rel="noreferrer noopener"
+                key={route.label}
                 href={route.href}
-                key={i}
-                className={`text-[17px] ${buttonVariants({
-                  variant: "ghost",
-                })}`}
+                className={`text-gray-700 hover:bg-gray-200 rounded p-2 ${
+                  accordionOpen ? "block" : "hidden"
+                }`}
               >
                 {route.label}
               </a>
             ))}
           </nav>
+
+
+          {/* Alternar Tema 
+          <div
+            className={`mt-auto ${accordionOpen ? "opacity-100" : "opacity-0"} transition-opacity duration-300`}
+          >*/}
 
           <div className="hidden md:flex gap-2">
             <Button
@@ -150,10 +177,22 @@ export const Navbar = () => {
               SignUp
             </Button>
 
+
             <ModeToggle />
           </div>
-        </NavigationMenuList>
-      </NavigationMenu>
-    </header>
+        </aside>
+      )}
+
+      {/* Navbar Horizontal (Mobile e Outras páginas) */}
+      <header
+        className={`w-full bg-white shadow-md p-4 fixed top-0 z-40 flex justify-between items-center md:hidden`}
+      >
+        <div className="flex items-center">
+          <LogoIcon />
+          <h1 className="ml-2 font-bold text-xl text-blue-600">LoneSoldier</h1>
+        </div>
+        <ModeToggle />
+      </header>
+    </>
   );
 };
