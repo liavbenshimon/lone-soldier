@@ -1,6 +1,8 @@
 import Landing from "./pages/Landing";
 import HomePage from "./pages/HomePage"; // Importa a HomePage
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import NewPost from "./pages/NewPost";
+
 
 export default function App() {
   return (
@@ -12,6 +14,7 @@ export default function App() {
 
           {/* Rota para a HomePage */}
           <Route path="/home" element={<HomePage />} />
+          <Route path="/new-post" element={<NewPost />} />
 
           {/* Outras rotas */}
           {/* <Route path="/login" element={<Login />} />
