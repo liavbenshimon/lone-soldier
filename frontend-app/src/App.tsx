@@ -1,9 +1,8 @@
-function App() {
+import Landing from "./pages/Landing";
+export default function App() {
   return (
     <>
-      <div className="bg-blue-500 text-blue p-4">Hello, Tailwind!</div>
+      <Landing />
     </>
   );
 }
-
-export default App;
