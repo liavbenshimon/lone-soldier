@@ -4,7 +4,7 @@ import { createEatUp, getAllEatUps, getEatUpById, updateEatUp, deleteEatUp } fro
 const router = express.Router();
 
 // Route to create a new EatUp entry
-router.post("/create", createEatUp);
+router.post("/", createEatUp);
 
 // Route to get all EatUp entries
 router.get("/", getAllEatUps);

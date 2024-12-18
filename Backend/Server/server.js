@@ -2,6 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import morgan from "morgan";
 
 dotenv.config(); // Load environment variables
 console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
@@ -9,11 +10,12 @@ console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 // Import route files
 import userRoutes from "./routes/userRoutes.js";
 import donationRoutes from "./routes/donationRoutes.js";
-import eatupRoutes from "./routes/donationRoutes.js";
+import eatupRoutes from "./routes/eatupRoute.js";
 
 const app = express();
 
 // Middleware Configuration
+app.use(morgan("dev"));
 app.use(express.json());
 app.use(
   cors({

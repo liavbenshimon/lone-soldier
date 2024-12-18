@@ -1,10 +1,14 @@
 import mongoose from "mongoose";
 
+const ZoneEnum = ["North", "South", "Center"]; // Define the possible values for zone
+
+
 const eatupSchema = new mongoose.Schema({
-  zone: {
-    type: String,
-    required: true,
-  },
+    zone: {
+        type: String,
+        enum: ZoneEnum,
+        required: true,
+      },
   title: {
     type: String,
     required: true,
