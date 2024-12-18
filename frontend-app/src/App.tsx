@@ -1,9 +1,8 @@
+// src/App.tsx
+import HomePage from "./pages/HomePage";
+
 function App() {
-  return (
-    <>
-      <div className="bg-blue-500 text-blue p-4">Hello, Tailwind!</div>
-    </>
-  );
+  return <HomePage />;
 }
 
 export default App;
