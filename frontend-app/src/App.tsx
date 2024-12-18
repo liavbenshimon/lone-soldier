@@ -1,7 +1,7 @@
-
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
-import SingUp from "./pages/Signup";
+import SignUp from "./pages/Signup";
+import Tos from "./pages/Tos";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 export default function App() {
@@ -11,12 +11,12 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/Login" element={<Login />} />
-          <Route path="/singup" element={<SingUp />} />
+          <Route path="/signUp" element={<SignUp />} />
+          <Route path="/termofservice" element={<Tos />} />
           {/* <Route path="/home" element={<HomePage />} />  */}
           <Route path="*" element={<h1>404</h1>} />
         </Routes>
       </BrowserRouter>
     </>
   );
-
 }
