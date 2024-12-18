@@ -1,5 +1,3 @@
-# lone-soldier
-
 # Lone Soldier App
 
 ## Overview
