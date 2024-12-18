@@ -11,6 +11,7 @@ console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 import userRoutes from "./routes/userRoutes.js";
 import donationRoutes from "./routes/donationRoutes.js";
 import eatupRoutes from "./routes/eatupRoute.js";
+import residenceRoutes from "./routes/residenceRoutes.js";
 
 const app = express();
 
@@ -38,6 +39,7 @@ mongoose
 app.use("/users", userRoutes);
 app.use('/donation', donationRoutes)
 app.use("/eatups", eatupRoutes);
+app.use("/residences", residenceRoutes);
 
 // Start server
 app.listen(5000, () => {

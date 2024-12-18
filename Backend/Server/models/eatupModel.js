@@ -35,11 +35,11 @@ const eatupSchema = new mongoose.Schema({
   },
   hosting: {
     type: String,
-    required: true,
+    required: false,
   },
   religios: {
     type: Boolean,
-    required: true,
+    required: false,
   }
 });
 
