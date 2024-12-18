@@ -16,42 +16,48 @@ interface TestimonialProps {
 
 const testimonials: TestimonialProps[] = [
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5m509gsAe8RQHmuoRkes24WuNX09QQP2bLA&s",
     name: "Sarah Cohen",
     userName: "@sarah_c",
     comment:
       "Being able to directly help Lone Soldiers through this platform has been incredibly rewarding. The process is seamless and transparent.",
   },
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSksG4mm4xFN-Ufeaf1ZZ8ixWe2k4aZknK1MQ&s",
     name: "David Levy",
     userName: "@david_l",
     comment:
       "As a former Lone Soldier, I know how meaningful these donations are. This platform makes it easy for the community to support current soldiers.",
   },
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwdYb63lfA2fF1ACfL6qoNfU56KjOjQdAPTQ&s",
     name: "Rachel Berg",
     userName: "@rachel_b",
     comment:
       "The ability to see specific needs and donate exactly what soldiers require is fantastic. It creates a real connection between donors and recipients.",
   },
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQF2yaox2cALIq_yyd-9qEyovEsficJr7X9QQ&s",
     name: "Michael Stern",
     userName: "@michael_s",
     comment:
       "I appreciate how the platform connects us directly with Lone Soldiers. It's gratifying to know exactly how our donations are helping.",
   },
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR_1bpO0XDD8fbmRvnbnkCoQNFFoH3AqofVTg&s",
     name: "Hannah Gold",
     userName: "@hannah_g",
     comment:
       "The community aspect of this platform is amazing. It's not just about donations - it's about creating a support network for our Lone Soldiers.",
   },
   {
-    image: "https://github.com/shadcn.png",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDpWYsLSeY1sLvwgFNwBeJGjszUfEofDpwJw&s",
     name: "Daniel Roth",
     userName: "@daniel_r",
     comment:

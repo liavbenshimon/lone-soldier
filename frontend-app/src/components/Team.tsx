@@ -24,9 +24,9 @@ interface SociaNetworkslProps {
 
 const teamList: TeamProps[] = [
   {
-    imageUrl: "https://i.pravatar.cc/150?img=35",
-    name: "Yael Shapiro",
-    position: "Community Director",
+    imageUrl: "https://avatars.githubusercontent.com/u/143484938?v=4",
+    name: "Nathan",
+    position: "FullStack Developer",
     description:
       "Leading our efforts to build strong connections between donors and Lone Soldiers.",
     socialNetworks: [
@@ -41,9 +41,9 @@ const teamList: TeamProps[] = [
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=60",
+    imageUrl: "https://avatars.githubusercontent.com/u/164013914?v=4",
     name: "Avi Cohen",
-    position: "Soldier Relations",
+    position: "FullStack Developer",
     description:
       "Coordinating with Lone Soldiers to understand and address their needs effectively.",
     socialNetworks: [
@@ -58,9 +58,9 @@ const teamList: TeamProps[] = [
     ],
   },
   {
-    imageUrl: "https://i.pravatar.cc/150?img=36",
+    imageUrl: "https://avatars.githubusercontent.com/u/60286095?v=4",
     name: "Maya Levin",
-    position: "Donor Coordinator",
+    position: "FullStack Developer",
     description:
       "Ensuring smooth connections between donors and soldiers for maximum impact.",
     socialNetworks: [
@@ -70,23 +70,6 @@ const teamList: TeamProps[] = [
       },
       {
         name: "Facebook",
-        url: "#",
-      },
-    ],
-  },
-  {
-    imageUrl: "https://i.pravatar.cc/150?img=17",
-    name: "Ron Tal",
-    position: "Operations Manager",
-    description:
-      "Managing logistics and ensuring efficient delivery of donations to Lone Soldiers.",
-    socialNetworks: [
-      {
-        name: "Linkedin",
-        url: "#",
-      },
-      {
-        name: "Instagram",
         url: "#",
       },
     ],
@@ -121,7 +104,7 @@ export const Team = () => {
         make a difference
       </p>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 gap-y-10">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-10">
         {teamList.map(
           ({
             imageUrl,

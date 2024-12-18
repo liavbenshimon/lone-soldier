@@ -1,3 +1,4 @@
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import SingUp from "./pages/Signup";
@@ -17,4 +18,5 @@ export default function App() {
       </BrowserRouter>
     </>
   );
+
 }

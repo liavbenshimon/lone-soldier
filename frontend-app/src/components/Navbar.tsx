@@ -17,7 +17,7 @@ import { Button, buttonVariants } from "./ui/button";
 import { Menu } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { LogoIcon } from "./Icons";
-
+import { useNavigate } from "react-router";
 interface RouteProps {
   href: string;
   label: string;
@@ -25,16 +25,16 @@ interface RouteProps {
 
 const routeList: RouteProps[] = [
   {
-    href: "#features",
-    label: "Features",
+    href: "#about",
+    label: "About us",
   },
   {
-    href: "#testimonials",
-    label: "Testimonials",
+    href: "#howItWorks",
+    label: "How It Works",
   },
   {
-    href: "#pricing",
-    label: "Pricing",
+    href: "#services",
+    label: "Services",
   },
   {
     href: "#faq",
@@ -43,6 +43,7 @@ const routeList: RouteProps[] = [
 ];
 
 export const Navbar = () => {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState<boolean>(false);
   return (
     <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
@@ -91,17 +92,25 @@ export const Navbar = () => {
                       {label}
                     </a>
                   ))}
-                  <a
-                    rel="noreferrer noopener"
-                    href="https://github.com/leoMirandaa/shadcn-landing-page.git"
-                    target="_blank"
-                    className={`w-[110px] border ${buttonVariants({
-                      variant: "secondary",
-                    })}`}
+
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      navigate("/login");
+                    }}
                   >
-                    <GitHubLogoIcon className="mr-2 w-5 h-5" />
-                    Github
-                  </a>
+                    {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
+                    Login
+                  </Button>
+                  <Button
+                    className="w-full"
+                    onClick={() => {
+                      navigate("/signup");
+                    }}
+                  >
+                    {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
+                    SignUp
+                  </Button>
                 </nav>
               </SheetContent>
             </Sheet>
@@ -124,9 +133,21 @@ export const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex gap-2">
-            <Button>
+            <Button
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
               {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
               Login
+            </Button>
+            <Button
+              onClick={() => {
+                navigate("/signup");
+              }}
+            >
+              {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
+              SingUp
             </Button>
 
             <ModeToggle />
