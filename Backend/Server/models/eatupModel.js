@@ -39,7 +39,7 @@ const eatupSchema = new mongoose.Schema({
   }
 });
 
-// יצירת הדגם מהסכמה
+
 const EatUp = mongoose.model("EatUp", eatupSchema);
 
 export default EatUp;
