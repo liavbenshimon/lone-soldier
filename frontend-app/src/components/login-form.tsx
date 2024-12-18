@@ -59,7 +59,7 @@ export function LoginForm({
             <div className="mt-4 text-center text-sm">
               Don&apos;t have an account?{" "}
               <button
-                onClick={() => navigate("/singup")}
+                onClick={() => navigate("/signup")}
                 className="underline underline-offset-4"
               >
                 Sign up
