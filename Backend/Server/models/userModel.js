@@ -39,6 +39,11 @@ const userSchema = new mongoose.Schema({
     type: [String], // An array of URLs
     default: [],
   },
+  type: {
+    type: String,
+    required: true,
+    enum: ['Contributer', 'Soldier'], // Add the two personas here
+  },
 });
 
 const User = mongoose.model('User', userSchema);
