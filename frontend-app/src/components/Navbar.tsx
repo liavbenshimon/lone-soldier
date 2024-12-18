@@ -147,7 +147,7 @@ export const Navbar = () => {
               }}
             >
               {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
-              SingUp
+              SignUp
             </Button>
 
             <ModeToggle />
