@@ -59,7 +59,7 @@ export const Features = () => {
         </span>
       </h2>
 
-      <div className="flex flex-wrap md:justify-center gap-4">
+      {/* <div className="flex flex-wrap md:justify-center gap-4">
         {featureList.map((feature: string) => (
           <div key={feature}>
             <Badge variant="secondary" className="text-sm">
@@ -67,7 +67,7 @@ export const Features = () => {
             </Badge>
           </div>
         ))}
-      </div>
+      </div> */}
 
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map(({ title, description, image }: FeatureProps) => (
