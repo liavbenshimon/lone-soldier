@@ -8,8 +8,6 @@ console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 
 // Import route files
 import userRoutes from "./routes/userRoutes.js";
-import postRoutes from "./routes/postRoutes.js";
-import commentRoutes from "./routes/commentRoutes.js";
 
 const app = express();
 
@@ -34,8 +32,6 @@ mongoose
 
 // Routes setup
 app.use("/users", userRoutes);
-app.use("/posts", postRoutes);
-app.use("/comments", commentRoutes);
 
 // Start server
 app.listen(5000, () => {
