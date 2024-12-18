@@ -1,5 +1,4 @@
 
-// import ImageUpload from "./components/UploadPhoto";
 import HomePage from "./pages/HomePage";
 
 import Landing from "./pages/Landing";
@@ -20,16 +19,26 @@ export default function App() {
           <Route path="/" element={<Landing />} />
 
 
-          <Route path="/home" element={<HomePage />} />
           <Route path="/new-post" element={<NewPost />} />
           {/* <Route path="/test" element={<ImageUpload />} /> */}
           <Route path="/rights" element={<YourRights />} />
 
 
+          <Route path="/home" element={<HomePage mode="Donations" />} />
+          <Route
+            path="/home/donations"
+            element={<HomePage mode="Donations" />}
+          />
+          <Route
+            path="/home/residences"
+            element={<HomePage mode="Residences" />}
+          />
+          <Route path="/home/eatup" element={<HomePage mode="EatUp" />} />
+
+
           <Route path="/Login" element={<Login />} />
           <Route path="/signUp" element={<SignUp />} />
           <Route path="/termofservice" element={<Tos />} />
-
 
 
           <Route path="*" element={<h1>404</h1>} />
