@@ -1,7 +1,30 @@
 import { buttonVariants } from "@/components/ui/button";
 import { Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export const Footer = () => {
+  const navigate = useNavigate();
+
+  const donorLinks = [
+    { text: "How to Donate", path: "/how-to-donate" },
+    { text: "Browse Needs", path: "/browse-needs" },
+    { text: "Impact Stories", path: "/impact-stories" },
+    { text: "Donation Guidelines", path: "/guidelines" },
+  ];
+
+  const soldierLinks = [
+    { text: "Request Support", path: "/request-support" },
+    { text: "Resources", path: "/resources" },
+    { text: "Community", path: "/community" },
+    { text: "Emergency Help", path: "/emergency" },
+  ];
+
+  const legalLinks = [
+    { text: "Privacy Policy", path: "/privacy" },
+    { text: "Terms of Service", path: "/terms" },
+    { text: "Contact Us", path: "/contact" },
+  ];
+
   return (
     <footer className="border-t">
       <div className="container py-12 md:py-24 flex flex-col lg:flex-row gap-8">
@@ -43,51 +66,48 @@ export const Footer = () => {
           <div>
             <h3 className="font-bold mb-4">For Donors</h3>
             <ul className="space-y-3 text-muted-foreground">
-              <li>
-                <a href="#">How to Donate</a>
-              </li>
-              <li>
-                <a href="#">Browse Needs</a>
-              </li>
-              <li>
-                <a href="#">Impact Stories</a>
-              </li>
-              <li>
-                <a href="#">Donation Guidelines</a>
-              </li>
+              {donorLinks.map((link) => (
+                <li key={link.path}>
+                  <a
+                    onClick={() => navigate(link.path)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h3 className="font-bold mb-4">For Soldiers</h3>
             <ul className="space-y-3 text-muted-foreground">
-              <li>
-                <a href="#">Request Support</a>
-              </li>
-              <li>
-                <a href="#">Resources</a>
-              </li>
-              <li>
-                <a href="#">Community</a>
-              </li>
-              <li>
-                <a href="#">Emergency Help</a>
-              </li>
+              {soldierLinks.map((link) => (
+                <li key={link.path}>
+                  <a
+                    onClick={() => navigate(link.path)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           <div>
             <h3 className="font-bold mb-4">Legal</h3>
             <ul className="space-y-3 text-muted-foreground">
-              <li>
-                <a href="#">Privacy Policy</a>
-              </li>
-              <li>
-                <a href="#">Terms of Service</a>
-              </li>
-              <li>
-                <a href="#">Contact Us</a>
-              </li>
+              {legalLinks.map((link) => (
+                <li key={link.path}>
+                  <a
+                    onClick={() => navigate(link.path)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {link.text}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
         </div>
