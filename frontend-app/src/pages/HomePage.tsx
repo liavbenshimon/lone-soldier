@@ -5,7 +5,7 @@ export default function HomePage() {
   return (
     <div className="flex">
       {/* Navbar Vertical com Accordion na HomePage */}
-      <Navbar isVertical={true} isAccordion={true} />
+      <Navbar modes= 'home' isVertical={true} isAccordion={true} />
 
       {/* Feed */}
         <Feed />

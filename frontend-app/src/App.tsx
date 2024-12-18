@@ -25,9 +25,9 @@ export default function App() {
           {/* Rota para 404 (página não encontrada) */}
           <Route path="*" element={<h1>404 - Page Not Found</h1>} />
 
-          <Route path="/Login" element={<Login />} />
+          {/* <Route path="/Login" element={<Login />} />
           <Route path="/singup" element={<SingUp />} />
-          {/* <Route path="/home" element={<HomePage />} />  */}
+          <Route path="/home" element={<HomePage />} />  */}
 
         </Routes>
       </BrowserRouter>
