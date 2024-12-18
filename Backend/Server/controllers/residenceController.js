@@ -67,29 +67,3 @@ export const deleteResidence = async (req, res) => {
   }
 };
 
-// Search residences by location
-export const searchResidenceByLocation = async (req, res) => {
-  try {
-    const { location } = req.query; // Example: ?location=Tel Aviv
-    const residences = await Residence.find({ location });
-    if (residences.length === 0) {
-      return res.status(404).json({ message: "No residences found for this location" });
-    }
-    res.status(200).json(residences);
-  } catch (error) {
-    res.status(500).json({ message: "Error searching residences", error });
-  }
-};
-
-// Get residences by price range
-export const getResidencesByPriceRange = async (req, res) => {
-  try {
-    const { min, max } = req.query; // Example: ?min=2000&max=4000
-    const residences = await Residence.find({
-      price: { $gte: Number(min), $lte: Number(max) },
-    });
-    res.status(200).json(residences);
-  } catch (error) {
-    res.status(500).json({ message: "Error fetching residences by price range", error });
-  }
-};
