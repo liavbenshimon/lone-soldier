@@ -1,10 +1,14 @@
 
+// import ImageUpload from "./components/UploadPhoto";
 import HomePage from "./pages/HomePage";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import NewPost from "./pages/NewPost";
 import SignUp from "./pages/Signup";
 import Tos from "./pages/Tos";
+import YourRights from "./pages/YourRights";
+
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -17,6 +21,9 @@ export default function App() {
 
 
           <Route path="/home" element={<HomePage />} />
+          <Route path="/new-post" element={<NewPost />} />
+          {/* <Route path="/test" element={<ImageUpload />} /> */}
+          <Route path="/rights" element={<YourRights />} />
 
 
           <Route path="/Login" element={<Login />} />
