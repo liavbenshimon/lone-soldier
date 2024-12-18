@@ -23,30 +23,8 @@ interface RouteProps {
 
   label: string;
 }
-const routeListHome: RouteProps[] = [
-  {
-    href: "/Home/donations",
-    label: "Donations",
-  },
-  {
-    href: "/Home/residences",
-    label: "Residences",
-  },
-  {
-    href: "/Home/eatup",
-    label: "EatUps",
-  },
-  {
-    href: "/Home/social",
-    label: "Social",
-  },
-  {
-    href: "/rights",
-    label: "Your Rights",
-  },
-];
 
-const routeListLanding: RouteProps[] = [
+const routeList: RouteProps[] = [
   {
     href: "#about",
     label: "About us",
@@ -75,17 +53,17 @@ export const Navbar = ({
   isAccordion = false,
   modes,
 }: NavbarProps) => {
+  // const isVertical = false;
+  // const isAccordion = false;
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false); // Accordion
-  const navigate = useNavigate();
   const [mode, setmode] = useState(modes);
   if (mode == "landing") {
-    const routeList = routeListLanding;
-
+    const navigate = useNavigate();
     const [isOpen, setIsOpen] = useState<boolean>(false);
     return (
       <header className="sticky border-b-[1px] top-0 z-40 w-full bg-white dark:border-b-slate-700 dark:bg-background">
         <NavigationMenu className="mx-auto">
-          <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
+          <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between items-center">
             <NavigationMenuItem className="font-bold flex">
               <a
                 rel="noreferrer noopener"
@@ -113,7 +91,7 @@ export const Navbar = ({
 
                 <SheetContent side={"left"}>
                   <SheetHeader>
-                    <SheetTitle className="font-bold text-xl ">
+                    <SheetTitle className="font-bold text-xl">
                       LoneSoldier
                     </SheetTitle>
                   </SheetHeader>
@@ -131,7 +109,7 @@ export const Navbar = ({
                     ))}
 
                     <Button
-                      className="w-full"
+                      className="w-full "
                       onClick={() => {
                         navigate("/login");
                       }}
@@ -194,15 +172,13 @@ export const Navbar = ({
       </header>
     );
   } else if (mode == "home") {
-    const routeList = routeListHome;
     return (
       <>
-
+        {/* Accordion Button */}
         {isAccordion && (
           <button
             className="fixed top-4 left-4 z-50 bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-white p-2 rounded-md shadow-md hover:opacity-90 transition-opacity"
             onClick={() => setAccordionOpen(!accordionOpen)}
-
           >
             {accordionOpen ? (
               <X className="w-6 h-6" />
@@ -212,16 +188,10 @@ export const Navbar = ({
           </button>
         )}
 
-
-        {/* Navbar Vertical em Desktop 
-        {isVertical && (
-          <aside
-            className={`hidden md:flex flex-col h-screen bg-gray-300 p-4 fixed top-0 shadow-lg transition-all duration-300 ${*/}
-        {/* Vertical Navbar 
+        {/* Vertical Navbar */}
         {isVertical && (
           <aside
             className={`hidden md:flex flex-col h-screen bg-background border-r border-border p-4 fixed top-0 shadow-lg transition-all duration-300 ${
-
               accordionOpen ? "w-64 ml-18" : "w-18"
             }`}
           >
@@ -231,111 +201,55 @@ export const Navbar = ({
               }`}
             >
               {accordionOpen && (
-
                 <h1 className="ml-2 font-bold text-xl">
                   <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
                     LoneSoldier
                   </span>
-
                 </h1>
               )}
             </div>
-
 
             <nav
               className={`flex flex-col gap-4 ${
                 accordionOpen ? "opacity-100" : "opacity-0"
               } transition-opacity duration-300`}
-            >*/}
-
-        {/* Vertical Navbar - Desktop and Mobile */}
-        {isVertical && (
-          <aside
-            className={`flex flex-col h-screen bg-background border-r border-border p-4 fixed top-0 z-40 shadow-lg transition-all duration-300 ${
-              accordionOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full"
-            }`}
-          >
-            <div className="flex items-center mb-6">
-              <h1 className="ml-2 font-bold text-xl">
-                <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text ml-10">
-                  LoneSoldier
-                </span>
-              </h1>
-            </div>
-
-            <nav className="flex flex-col gap-4">
-
+            >
               {routeList.map((route) => (
                 <a
                   key={route.label}
                   href={route.href}
-
-
-                 /* className={`text-gray-700 hover:bg-gray-200 rounded p-2 ${*/
-
-                /*  className={`text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors ${
-
+                  className={`text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors ${
                     accordionOpen ? "block" : "hidden"
-                  }`}*/
-
-                  className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors"
-
+                  }`}
                 >
                   {route.label}
                 </a>
               ))}
             </nav>
 
-
-
-            {/*            <div
+            <div
               className={`mt-auto ${
                 accordionOpen ? "opacity-100" : "opacity-0"
               } transition-opacity duration-300`}
-            >*/}
-
-            <div className="mt-auto">
-
+            >
               <ModeToggle />
             </div>
           </aside>
         )}
 
-
-
-        {/* Navbar Horizontal (Mobile e Outras páginas) 
-        <header
-          className={'w-full bg-white shadow-md p-4 fixed top-0 z-40 flex justify-between items-center md:hidden'}
-        >
-          <div className="flex items-center">
-            <LogoIcon />
-            <h1 className="ml-2 font-bold text-xl text-blue-600">
-              LoneSoldier*/}
         {/* Mobile Header */}
-       /* <header className="w-full bg-background border-b border-border p-4 fixed top-0 z-40 flex justify-between items-center md:hidden">
+        <header className="w-full bg-background border-b border-border p-4 fixed top-0 z-40 flex justify-between items-center md:hidden">
           <div className="flex items-center">
             <LogoIcon />
             <h1 className="ml-2 font-bold text-xl">
               <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
                 LoneSoldier
               </span>
-
             </h1>
           </div>
           <ModeToggle />
-        </header>*/
-
-        {/* Overlay when mobile menu is open */}
-        {accordionOpen && (
-          <div
-            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30"
-            onClick={() => setAccordionOpen(false)}
-          />
-        )}
-
+        </header>
       </>
     );
   }
-
 };
-
