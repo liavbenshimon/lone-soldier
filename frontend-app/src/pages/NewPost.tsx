@@ -187,13 +187,18 @@ const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
 
             {/* Botão Create Post e Back */}
             <div className="flex flex-col space-y-4 mt-6">
-              <Button className="w-full font-bold">Create Post</Button>
-              <Button
+            <Button
                 variant="outline"
                 className="w-full text-gray-800 hover:bg-gray-100"
                 onClick={() => setStep(1)}
               >
-                Back
+                CREATE POST
+              </Button><Button
+                variant="outline"
+                className="w-full text-gray-800 hover:bg-gray-100"
+                onClick={() => setStep(1)}
+              >
+                BACK
               </Button>
             </div>
           </>
