@@ -2,12 +2,14 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
+import Middleware from "./middleware/authMiddleware.js"
 
 dotenv.config(); // Load environment variables
 console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 
 // Import route files
 import userRoutes from "./routes/userRoutes.js";
+import donationRoutes from "./routes/donationRoutes.js";
 
 const app = express();
 
@@ -16,7 +18,7 @@ app.use(express.json());
 app.use(
   cors({
     origin: "http://localhost:5173", // Frontend URL
-    credentials: true, // Enable credentials
+    // credentials: true, // Enable credentials
   })
 );
 
@@ -32,6 +34,8 @@ mongoose
 
 // Routes setup
 app.use("/users", userRoutes);
+app.use(Middleware)
+app.use('/donation', donationRoutes)
 
 // Start server
 app.listen(5000, () => {
