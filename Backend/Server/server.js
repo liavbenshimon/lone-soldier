@@ -34,8 +34,8 @@ mongoose
 
 // Routes setup
 app.use("/users", userRoutes);
-app.use(Middleware)
 app.use('/donation', donationRoutes)
+app.use('/eatup', donationRoutes)
 
 // Start server
 app.listen(5000, () => {
