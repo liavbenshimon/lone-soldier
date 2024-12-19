@@ -1,48 +1,61 @@
 import EatUp from "../models/eatupModel.js";
 
-// Function to create a new EatUp entry
+// יצירת רשומת EatUp חדשה
 export const createEatUp = async (req, res) => {
   try {
-    const { zone, title, owner, date, kosher, description, language, hosting, religios } = req.body;
-
-    // Create a new instance of the EatUp model
-    const newEatUp = new EatUp({
+    const {
       zone,
       title,
+      media,
       owner,
       date,
       kosher,
       description,
       language,
       hosting,
-      religios
+      religios,
+      authorId,
+    } = req.body;
+
+    // יצירת אובייקט חדש של הסכמה
+    const newEatUp = new EatUp({
+      zone,
+      title,
+      media: media || [], // הגדרת ברירת מחדל במקרה שלא נשלחה מדיה
+      owner,
+      date,
+      kosher,
+      description,
+      language,
+      hosting,
+      religios,
+      authorId,
     });
 
-    // Save the new EatUp instance to the database
+    // שמירת הרשומה במסד הנתונים
     await newEatUp.save();
 
-    // Return a success response
     res.status(201).json({ message: "EatUp entry created successfully", data: newEatUp });
   } catch (error) {
     res.status(500).json({ message: "Error creating EatUp entry", error: error.message });
   }
 };
 
-// Function to get all EatUp entries
+// קבלת כל רשומות ה-EatUp
 export const getAllEatUps = async (req, res) => {
   try {
-    const eatups = await EatUp.find();
+    const eatups = await EatUp.find().populate("authorId", "name email"); // תצוגת שדות נבחרים של authorId
     res.status(200).json({ message: "EatUp entries retrieved successfully", data: eatups });
   } catch (error) {
     res.status(500).json({ message: "Error retrieving EatUp entries", error: error.message });
   }
 };
 
-// Function to get a specific EatUp entry by ID
+// קבלת רשומת EatUp ספציפית לפי ID
 export const getEatUpById = async (req, res) => {
   const { id } = req.params;
   try {
-    const eatup = await EatUp.findById(id);
+    const eatup = await EatUp.findById(id).populate("authorId", "name email");
 
     if (!eatup) {
       return res.status(404).json({ message: "EatUp entry not found" });
@@ -54,13 +67,13 @@ export const getEatUpById = async (req, res) => {
   }
 };
 
-// Function to update an existing EatUp entry by ID
+// עדכון רשומת EatUp לפי ID
 export const updateEatUp = async (req, res) => {
   const { id } = req.params;
   const updatedData = req.body;
 
   try {
-    const updatedEatUp = await EatUp.findByIdAndUpdate(id, updatedData, { new: true });
+    const updatedEatUp = await EatUp.findByIdAndUpdate(id, updatedData, { new: true }).populate("authorId", "name email");
 
     if (!updatedEatUp) {
       return res.status(404).json({ message: "EatUp entry not found" });
@@ -72,7 +85,7 @@ export const updateEatUp = async (req, res) => {
   }
 };
 
-// Function to delete an EatUp entry by ID
+// מחיקת רשומת EatUp לפי ID
 export const deleteEatUp = async (req, res) => {
   const { id } = req.params;
 

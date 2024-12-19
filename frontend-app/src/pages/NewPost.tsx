@@ -213,10 +213,12 @@ export default function NewPost() {
           </span>
         </h2>
 
+
         {step === 1 && (
           <div className="space-y-4">
             <h3 className="text-xl font-semibold mb-4">Select Post Type</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
               <Button
                 variant={selectedOption === "donation" ? "default" : "outline"}
                 onClick={() => {

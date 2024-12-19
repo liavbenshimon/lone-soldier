@@ -17,12 +17,12 @@ const YourRights: React.FC = () => {
   };
 
   return (
-    <div className="p-6 min-h-screen bg-gray-50">
-      <h1 className="text-3xl font-bold mb-4 text-gray-800">Your Rights</h1>
+    <div className="p-20 min-h-screen bg-20 14.3% 4.1%">
+      <h1 className="text-3xl font-bold mb-4  text-gray-100">Your Rights</h1>
       <RightsFilter onApplyFilters={handleApplyFilters} />
-      <div className="mt-6">
-        {filteredRights.length === 0 ? (
-          <p className="text-gray-500">No rights to display. Please apply filters.</p>
+      <div className="rounded-lg border bg-card text-card-foreground shadow-sm space-y-6 p-4 shadow-black/10 dark:shadow-white/10 w-full max-w-[90%] md:max-w-[60%] mx-auto">
+      {filteredRights.length === 0 ? (
+          <p className="text-gray-500 ">No rights to display. Please apply filters.</p>
         ) : (
           <RightsList rights={filteredRights} />
         )}

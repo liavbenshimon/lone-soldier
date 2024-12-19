@@ -32,13 +32,14 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
   };
 
   return (
-    <div className="space-y-4 p-4 bg-gray-600 rounded-md">
+<div className="rounded-lg border bg-card text-card-foreground shadow-sm space-y-6 p-6 shadow-black/10 dark:shadow-white/10 w-full mx-auto">
+{/* space-y-4 p-4 bg-gray-800 rounded-md */}
       {/* Lone Soldier */}
       <select
         onChange={(e) =>
           updateFilter("loneSoldier", e.target.value === "true" ? true : e.target.value === "false" ? false : null)
         }
-        className="w-full p-2 rounded-md bg-gray-400"
+        className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800"
       >
         <option value="">Lone Soldier?</option>
         <option value="true">Yes</option>
@@ -46,7 +47,8 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
       </select>
 
       {/* New Immigrant Duration */}
-      <select onChange={(e) => updateFilter("newImmigrant", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+      <select onChange={(e) => updateFilter("newImmigrant", e.target.value)} 
+      className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800">
         <option value="">New Immigrant Duration</option>
         <option value="LessThan1Year">Less than 1 year</option>
         <option value="1to5Years">1 to 5 years</option>
@@ -54,7 +56,8 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
       </select>
 
       {/* Parental Contact Status */}
-      <select onChange={(e) => updateFilter("parentalStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+      <select onChange={(e) => updateFilter("parentalStatus", e.target.value)} 
+      className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800">
         <option value="">Parental Contact Status</option>
         <option value="NoContact">No Contact</option>
         <option value="ParentsAbroad">Parents Living Abroad</option>
@@ -62,7 +65,8 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
       </select>
 
       {/* Housing Status */}
-      <select onChange={(e) => updateFilter("housingStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+      <select onChange={(e) => updateFilter("housingStatus", e.target.value)} 
+      className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800">
         <option value="">Housing Status</option>
         <option value="OnBase">On Base</option>
         <option value="Rental">Rental Housing</option>
@@ -74,7 +78,7 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
         onChange={(e) =>
           updateFilter("financialNeed", e.target.value === "true" ? true : e.target.value === "false" ? false : null)
         }
-        className="w-full p-2 rounded-md bg-gray-400"
+        className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800"
       >
         <option value="">Financial Need?</option>
         <option value="true">Yes</option>
@@ -82,14 +86,16 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
       </select>
 
       {/* Education Status */}
-      <select onChange={(e) => updateFilter("educationStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+      <select onChange={(e) => updateFilter("educationStatus", e.target.value)} 
+      className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800">
         <option value="">Education Status</option>
         <option value="Student">Student</option>
         <option value="NonStudent">Non-Student</option>
       </select>
 
       {/* Military Status */}
-      <select onChange={(e) => updateFilter("militaryStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+      <select onChange={(e) => updateFilter("militaryStatus", e.target.value)} 
+      className="w-full p-2 rounded-md bg-black text-white rounded-md hover:bg-gray-800">
         <option value="">Military Status</option>
         <option value="Combatant">Combatant</option>
         <option value="NonCombatant">Non-Combatant</option>
@@ -98,7 +104,8 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
       {/* Apply Filters Button */}
       <button
         onClick={handleApply}
-        className="w-full p-2 bg-black text-white rounded-md hover:bg-gray-800"
+        className="w-full p-2 rounded-md bg-primary text-primary-foreground hover:bg-primary/90 px-4 py-2 rounded-md"
+        // className="\w-full p-2 bg-black text-white rounded-md hover:bg-gray-800"
       >
         Apply Filters
       </button>
