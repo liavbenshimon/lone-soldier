@@ -1,9 +1,9 @@
 import User from '../models/userModel.js';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import dotenv from 'dotenv'
+import dotenv from 'dotenv';
 
-dotenv.config()
+dotenv.config();
 
 // התחברות למשתמש
 export const loginUser = async (req, res) => {
@@ -169,5 +169,21 @@ export const editUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error updating user' });
+  }
+};
+
+// קבלת משתמש לפי מספר זיהוי אישי (personalIdentificationNumber)
+export const getUserByPIN = async (req, res) => {
+  try {
+    const { personalIdentificationNumber } = req.params;
+
+    const user = await User.findOne({ personalIdentificationNumber });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error fetching user by PIN' });
   }
 };
