@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { uploadImage } from "@/components/UploadPhoto"; // Caminho do seu arquivo
+import { api } from "@/api"; // Use o api.ts já configurado
 
 import {
   Select,
@@ -13,21 +14,52 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+
 interface Errors {
-    location?: boolean;
-    zone?: boolean;
-    category?: boolean;
-    date?: boolean;
-    isKosher?: boolean;
-    rooms?: boolean;
-    price?: boolean;
-    type?: boolean;
-    floor?: boolean;
-    image?: boolean;
-  }
+  location?: boolean;
+  zone?: boolean;
+  category?: boolean;
+  date?: boolean;
+  isKosher?: boolean;
+  rooms?: boolean;
+  price?: boolean;
+  type?: boolean;
+  floor?: boolean;
+  image?: boolean;
+}
   
 
 export default function NewPost() {
+  const handleCreatePost = async () => {
+    if (!validateFields()) return;
+
+    const residenceData = {
+      location,
+      zone,
+      rooms: parseInt(rooms),
+      price: parseFloat(price),
+      type,
+      floor: parseInt(floor),
+      roommates: parseInt(roommates),
+      size: parseFloat(size),
+      furniture: furniture === "yes",
+      storage: storage === "yes",
+      balcony: balcony === "yes",
+      shelter: shelter === "yes",
+      description,
+      media: [image], // Inclua a URL da imagem
+    };
+  
+    try {
+      const response = await api.post("/residences", residenceData); // Usando diretamente o 'api' configurado
+      console.log("Residence created successfully:", response.data);
+      alert("Residence created successfully!");
+    } catch (error) {
+      console.error("Error creating residence:", error);
+      alert("Error creating residence.");
+    }
+  };
+  
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [step, setStep] = useState<number>(1);
 
@@ -36,26 +68,18 @@ export default function NewPost() {
   const [zone, setZone] = useState<string>("");
   const [category, setCategory] = useState<string>("");
 
-  // Campos específicos do HOST EAT UP!
-  const [date, setDate] = useState<string>("");
-  const [isKosher, setIsKosher] = useState<string>("");
-    // Campos específicos do RESIDENCE
-    const [rooms, setRooms] = useState<string>("");
-    const [price, setPrice] = useState<string>("");
-    const [type, setType] = useState<string>("");
-    const [floor, setFloor] = useState<string>("");
-    const [roommates, setRoommates] = useState<string>("0");
-    const [size, setSize] = useState<string>("");
-    const [furniture, setFurniture] = useState<string>("");
-    const [storage, setStorage] = useState<string>("");
-    const [balcony, setBalcony] = useState<string>("");
-    const [shelter, setShelter] = useState<string>("");
-  
+  // Campos específicos do RESIDENCE
+  const [rooms, setRooms] = useState<string>("");
+  const [price, setPrice] = useState<string>("");
+  const [type, setType] = useState<string>("");
+  const [floor, setFloor] = useState<string>("");
+  const [roommates, setRoommates] = useState<string>("0");
+  const [size, setSize] = useState<string>("");
+  const [furniture, setFurniture] = useState<string>("");
+  const [storage, setStorage] = useState<string>("");
+  const [balcony, setBalcony] = useState<string>("");
+  const [shelter, setShelter] = useState<string>("");
 
-  // Campos opcionais
-  const [numGuests, setNumGuests] = useState<string>("");
-  const [religiousEnv, setReligiousEnv] = useState<string>("");
-  const [language, setLanguage] = useState<string>("");
 
   const [description, setDescription] = useState<string>(""); // Texto grande
   const [image, setImage] = useState<string>(""); // Altere para armazenar a URL
@@ -69,15 +93,12 @@ export default function NewPost() {
     if (!location) newErrors.location = true;
     if (!zone) newErrors.zone = true;
 
-    if (selectedOption === "donation" && !category) newErrors.category = true;
-    if (selectedOption === "host" && !date) newErrors.date = true;
-    if (selectedOption === "host" && !isKosher) newErrors.isKosher = true;
     if (selectedOption === "residence") {
-        if (!rooms) newErrors.rooms = true;
-        if (!price) newErrors.price = true;
-        if (!type) newErrors.type = true;
-        if (!floor) newErrors.floor = true;
-      }
+      if (!rooms) newErrors.rooms = true;
+      if (!price) newErrors.price = true;
+      if (!type) newErrors.type = true;
+      if (!floor) newErrors.floor = true;
+    }
 
     setErrors(newErrors);
 
@@ -119,14 +140,13 @@ export default function NewPost() {
         setErrors((prev) => ({ ...prev, image: true }));
         e.dataTransfer.clearData();
     }
-  };
-
-  return (
-    <div className="flex items-center justify-center h-screen bg-black">
-      <Card className="w-full max-w-md p-8 rounded-lg shadow-lg">
-        <h2 className="text-center text-2xl font-extrabold text-gray-800 mb-6">
-          {step === 1 ? "NEW POST" : "POST DETAILS"}
-        </h2>
+    
+    return (
+      <div className="flex items-center justify-center h-screen bg-black">
+        <Card className="w-full max-w-md p-8 rounded-lg shadow-lg">
+          <h2 className="text-center text-2xl font-extrabold text-gray-800 mb-6">
+            {step === 1 ? "NEW POST" : "POST DETAILS"}
+          </h2>
 
         {showAlert && (
           <Alert variant="destructive" className="mb-4">
@@ -148,7 +168,7 @@ export default function NewPost() {
                 variant="outline"
                 onClick={() => setSelectedOption("donation")}
                 className="w-full"
-              >
+                >
                 DONATION
               </Button>
               <Button
@@ -162,7 +182,7 @@ export default function NewPost() {
                 variant="outline"
                 onClick={() => setSelectedOption("residence")}
                 className="w-full"
-              >
+                >
                 RESIDENCE
               </Button>
             </div>
@@ -199,7 +219,7 @@ export default function NewPost() {
       <Select onValueChange={setCategory}>
         <SelectTrigger
           className={`${errors.category ? "border-red-500" : ""} mb-4`}
-        >
+          >
           <SelectValue placeholder="Select Category" />
         </SelectTrigger>
         <SelectContent>
@@ -217,7 +237,7 @@ export default function NewPost() {
           value={rooms}
           onChange={(e) => setRooms(e.target.value)}
           className={`${errors.rooms ? "border-red-500" : ""} mb-4`}
-        />
+          />
         <Input
           placeholder="Price (₪)"
           value={price}
@@ -238,19 +258,19 @@ export default function NewPost() {
           value={floor}
           onChange={(e) => setFloor(e.target.value)}
           className={`${errors.floor ? "border-red-500" : ""} mb-4`}
-        />
+          />
         <Input
           placeholder="Roommates (default 0)"
           value={roommates}
           onChange={(e) => setRoommates(e.target.value)}
           className="mb-4"
-        />
+          />
         <Input
           placeholder="Size (m²)"
           value={size}
           onChange={(e) => setSize(e.target.value)}
           className="mb-4"
-        />
+          />
         <Select onValueChange={setFurniture}>
           <SelectTrigger className="mb-4">
             <SelectValue placeholder="Furniture?" />
@@ -296,11 +316,11 @@ export default function NewPost() {
           value={date}
           onChange={(e) => setDate(e.target.value)}
           className={`${errors.date ? "border-red-500" : ""} mb-4`}
-        />
+          />
         <Select onValueChange={setIsKosher}>
           <SelectTrigger
             className={`${errors.isKosher ? "border-red-500" : ""} mb-4`}
-          >
+            >
             <SelectValue placeholder="Is Kosher?" />
           </SelectTrigger>
           <SelectContent>
@@ -324,7 +344,7 @@ export default function NewPost() {
               variant="outline"
               onClick={() => setSelectedOption(null)}
               className="w-full"
-            >
+              >
               BACK
             </Button>
           </>
@@ -354,13 +374,10 @@ export default function NewPost() {
                 Upload or Drag Image
               </label>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => setSelectedOption(null)}
-              className="w-full"
-            >
+            <Button onClick={()=>handleCreatePost} className="w-full mt-4">
               CREATE POST
             </Button>
+
             <Button
                 variant="outline"
                 onClick={() => setStep(1)} // Atualiza para o passo anterior
@@ -373,4 +390,5 @@ export default function NewPost() {
       </Card>
     </div>
   );
-}
+};
+};
