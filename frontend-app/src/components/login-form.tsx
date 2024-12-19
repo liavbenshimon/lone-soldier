@@ -30,7 +30,11 @@ export function LoginForm({
       console.log(res);
       sessionStorage.setItem("token", res.data.token);
       sessionStorage.setItem("id", res.data.user._id);
-      // navigate("/Home");
+      if (res.data.user.type === "Contributer") {
+        navigate("/contribute");
+      } else {
+        navigate("/Home");
+      }
     } catch (error) {
       console.error(error);
     }

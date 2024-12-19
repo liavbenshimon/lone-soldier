@@ -55,7 +55,11 @@ const routeListContribute: RouteProps[] = [
     label: "contribute",
   },
   {
-    href: "/contribute",
+    href: "/new-post",
+    label: "Donate",
+  },
+  {
+    href: "/social",
     label: "Social",
   },
   {
