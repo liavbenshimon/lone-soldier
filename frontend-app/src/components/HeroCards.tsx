@@ -72,18 +72,18 @@ export const HeroCards = () => {
           </CardDescription>
         </CardHeader>
 
-        <div className="space-y-4 md:space-y-0 md:space-x-">
+        <div className="space-y-4 md:space-y-0 w-50 mx-auto md:space-x-">
           {/* Botão para abrir o modal */}
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
-                className="w-30 ml-5 mx-auto"
+                className="w-full ml-100"
                 onClick={() => {
                   setShowMessage(false); // Resetar o conteúdo do modal
                   setOpen(true);
                 }}
               >
-                Start Donating
+              Donate
               </Button>
             </DialogTrigger>
 
