@@ -7,15 +7,15 @@ interface SponsorProps {
 
 const sponsors: SponsorProps[] = [
   {
-    title: "iitc logo",
+    title: "iitc",
     url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiYPc56Gm6ejEvQnSqa18FftiUjtVLSdgDLw&s",
   },
   {
-    title: "cyber-pro logo",
+    title: "cyber-pro",
     url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsTTJSme7yuPkb3djw-M8yJTJqmskZV2k4-A&s",
   },
   {
-    title: "habibi logo",
+    title: "habibi",
     url: "https://chabibi-yavne.org.il/wp-content/uploads/2021/02/%D7%9C%D7%95%D7%92%D7%95-%D7%A2%D7%9E%D7%95%D7%AA%D7%94-%D7%97%D7%93%D7%A9.jpg",
   },
   {
@@ -48,7 +48,7 @@ export const Sponsors = () => {
             <img
               src={url}
               alt={title}
-              className="max-w-10 max-h-10 rounded-md"
+              className="max-w-10 max-h-10 rounded-full mx-4"
             />
             {/* <span>{url}</span> */}
             <h3 className="text-xl  font-bold">{title}</h3>
