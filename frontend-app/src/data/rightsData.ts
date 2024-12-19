@@ -2,20 +2,21 @@ export interface Right {
   id: number;
   title: string;
   description: string;
-  organization: string; // Organização responsável
-  contact: string; // Número de contato
+  organization: string;
+  contact: string;
   filters: {
-    loneSoldier: boolean; // Sim / Não
-    newImmigrant: string | null; // "LessThan1Year", "1to5Years", "MoreThan5Years" ou null
-    parentalStatus: string | null; // "NoContact", "ParentsAbroad", "NoSupport" ou null
-    housingStatus: string | null; // "OnBase", "Rental", "Kibbutz" ou null
-    financialNeed: boolean | null; // Precisa de ajuda financeira urgente
-    educationStatus: string | null; // "Student" ou "NonStudent"
-    militaryStatus: string | null; // "Combatant", "NonCombatant" ou null
+    loneSoldier: boolean;
+    newImmigrant: string | null;
+    parentalStatus: string | null;
+    housingStatus: string | null;
+    financialNeed: boolean | null;
+    educationStatus: string | null;
+    militaryStatus: string | null;
   };
 }
 
 export const rightsData: Right[] = [
+
   {
     id: 1,
     title: "Salary Increase (100% Bonus)",

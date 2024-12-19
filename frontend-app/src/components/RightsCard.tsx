@@ -10,14 +10,14 @@ interface RightsCardProps {
 
 const RightsCard: React.FC<RightsCardProps> = ({ title, description, contact }) => {
   return (
-    <Card className="p-4 shadow-md bg-gray-900 text-black">
+    <Card className="p-4 shadow-md bg-gray-900 text-white">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
-            <h2 className="text-lg font-semibold text-black hover:text-gray-300">{title}</h2>
+            <h2 className="text-lg font-semibold">{title}</h2>
           </AccordionTrigger>
           <AccordionContent>
-            <p className="mb-2 text-gray-300">{description}</p>
+            <p className="mb-2">{description}</p>
             <p className="text-sm text-gray-400">Contact: {contact}</p>
           </AccordionContent>
         </AccordionItem>
