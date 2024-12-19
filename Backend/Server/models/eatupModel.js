@@ -13,6 +13,10 @@ const eatupSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  phone: {
+    type: String,
+    required: true,
+  },
   media: {
     type: [String], // An array of URLs
     default: []
