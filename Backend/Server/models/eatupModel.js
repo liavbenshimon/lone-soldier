@@ -13,6 +13,10 @@ const eatupSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  media: {
+    type: [String], // An array of URLs
+    default: []
+  },
   owner: {
     type: String,
     required: true,
@@ -40,7 +44,12 @@ const eatupSchema = new mongoose.Schema({
   religios: {
     type: Boolean,
     required: false,
-  }
+  },
+  authorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      }
 });
 
 

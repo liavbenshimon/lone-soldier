@@ -84,7 +84,7 @@ const residenceSchema = new mongoose.Schema({
   },
   media: {
     type: [String],
-    required: false, // Link or description for media (e.g., photos, videos)
+    default: [], // Link or description for media (e.g., photos, videos)
   },
   storage: {
     type: Boolean,
@@ -98,6 +98,11 @@ const residenceSchema = new mongoose.Schema({
     type: Number,
     required: true, // Duration of the contract in months
   },
+  authorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      }
 });
 
 const Residence = mongoose.model("Residence", residenceSchema);
