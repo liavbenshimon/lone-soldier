@@ -3,6 +3,7 @@ export interface Residence {
   balcony: boolean;
   contractDuration: number; // Duration in months (assumption)
   description: string;
+  authorId: string;
   enterDate: string; // ISO date string
   floor: number;
   location: string;

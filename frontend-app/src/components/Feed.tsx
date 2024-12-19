@@ -16,6 +16,7 @@ import { DatePickerWithRange } from "./DatePickerWithRange";
 import { api } from "../api.ts";
 import { Donation } from "@/types/Donation";
 import { Residence } from "@/types/Residence";
+import { EatUp } from "@/types/EatUps.tsx";
 
 const zones = ["North", "Center", "South", "all"];
 //donations
@@ -51,6 +52,7 @@ export function Feed({ mode }: { mode: string }) {
       20
     ),
   });
+  const [eatups, setEatUps] = useState<EatUp[]>([]);
   useEffect(() => {
     const fetchDonation = async () => {
       try {
@@ -69,11 +71,22 @@ export function Feed({ mode }: { mode: string }) {
         console.error(error);
       }
     };
+    const fetchEatUps = async () => {
+      try {
+        const res = await api.get("/eatups");
+        setEatUps(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
     if (mode === "Donations") {
       fetchDonation();
     }
     if (mode === "Residences") {
       fetchResidences();
+    }
+    if (mode === "EatUp") {
+      fetchEatUps();
     }
   }, []);
   console.log(mode);
@@ -104,13 +117,15 @@ export function Feed({ mode }: { mode: string }) {
     });
   };
 
-  const filterEatUps = (eatups: any[]) => {
+  const filterEatUps = (eatups: EatUp[]) => {
+    if (!Array.isArray(eatups)) return [];
+
     return eatups.filter((eatup) => {
       const matchesSearch = eatup.description
-        .toLowerCase()
-        .includes(search.toLowerCase());
+        ? eatup.description.toLowerCase().includes(search.toLowerCase())
+        : true;
       const matchesZone = zone === "all" || eatup.zone === zone;
-      const matchesKosher = kosher === "all" || eatup.kosher === kosher;
+      const matchesKosher = kosher === "all" || String(eatup.kosher) === kosher;
       const matchesHosting = hosting === "all" || eatup.hosting === hosting;
       const matchesDate =
         !date?.from ||
@@ -226,7 +241,11 @@ export function Feed({ mode }: { mode: string }) {
                   </SelectTrigger>
                   <SelectContent>
                     {EatUpsKosher.map((kosher) => (
-                      <SelectItem key={kosher} value={kosher}>
+                      <SelectItem
+                        key={kosher}
+                        value={kosher}
+                        onClick={() => setKosher(kosher)}
+                      >
                         {kosher}
                       </SelectItem>
                     ))}
@@ -238,7 +257,11 @@ export function Feed({ mode }: { mode: string }) {
                   </SelectTrigger>
                   <SelectContent>
                     {EatUpsHosting.map((hosting) => (
-                      <SelectItem key={hosting} value={hosting}>
+                      <SelectItem
+                        key={hosting}
+                        value={hosting}
+                        onClick={() => setHosting(hosting)}
+                      >
                         {hosting}
                       </SelectItem>
                     ))}
@@ -267,10 +290,16 @@ export function Feed({ mode }: { mode: string }) {
               type={mode}
             />
           ))}
-        {/* {mode === "EatUp" &&
-          filterDonations(donations).map((donation: Donation) => (
-            <PostCard key={donation._id} donation={donation} type={mode} />
-          ))} */}
+        {mode === "EatUp" &&
+          filterEatUps(eatups).map((eatup: EatUp) => (
+            <PostCard
+              key={eatup._id}
+              residences={null}
+              donation={null}
+              eatup={eatup}
+              type={mode}
+            />
+          ))}
       </div>
     </div>
   );
