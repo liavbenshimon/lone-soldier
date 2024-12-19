@@ -51,7 +51,12 @@ export function SignupForm({
       const res = await api.post("/users", formData);
       console.log(res);
       sessionStorage.setItem("token", res.data.token);
-      navigate("/Home");
+      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      if (formData.type === "Contributer") {
+        navigate("/contribute");
+      } else {
+        navigate("/Home");
+      }
     } catch (error) {
       console.error(error);
     }
