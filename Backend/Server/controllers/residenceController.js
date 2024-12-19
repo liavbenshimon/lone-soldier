@@ -1,6 +1,6 @@
 import Residence from "../models/residenceModel.js";
 
-// Get all residences
+// קבלת כל הדירות
 export const getAllResidences = async (req, res) => {
   try {
     const residences = await Residence.find();
@@ -10,7 +10,7 @@ export const getAllResidences = async (req, res) => {
   }
 };
 
-// Get a residence by ID
+// קבלת דירה לפי מזהה
 export const getResidenceById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -24,19 +24,47 @@ export const getResidenceById = async (req, res) => {
   }
 };
 
-// Create a new residence
+// יצירת דירה חדשה
 export const createResidence = async (req, res) => {
   try {
     const residenceData = req.body;
+
+    // ווידוא שכל השדות הדרושים קיימים
+    const requiredFields = [
+      "enterDate",
+      "location",
+      "meter",
+      "rooms",
+      "zone",
+      "price",
+      "floor",
+      "type",
+      "owner",
+      "phone",
+      "propertyTax",
+      "shalter",
+      "storage",
+      "balcony",
+      "contractDuration",
+      "authorId",
+    ];
+    for (const field of requiredFields) {
+      if (residenceData[field] === undefined || residenceData[field] === null) {
+        return res.status(400).json({ message: `Missing required field: ${field}` });
+      }
+    }
+
+    // יצירת דירה חדשה והכנסתה למסד הנתונים
     const newResidence = new Residence(residenceData);
     await newResidence.save();
+
     res.status(201).json(newResidence);
   } catch (error) {
     res.status(400).json({ message: "Error creating residence", error });
   }
 };
 
-// Update a residence by ID
+// עדכון דירה לפי מזהה
 export const updateResidence = async (req, res) => {
   try {
     const { id } = req.params;
@@ -53,7 +81,7 @@ export const updateResidence = async (req, res) => {
   }
 };
 
-// Delete a residence by ID
+// מחיקת דירה לפי מזהה
 export const deleteResidence = async (req, res) => {
   try {
     const { id } = req.params;
@@ -66,4 +94,3 @@ export const deleteResidence = async (req, res) => {
     res.status(500).json({ message: "Error deleting residence", error });
   }
 };
-
