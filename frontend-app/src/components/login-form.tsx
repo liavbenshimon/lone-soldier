@@ -29,7 +29,8 @@ export function LoginForm({
       });
       console.log(res);
       sessionStorage.setItem("token", res.data.token);
-      navigate("/Home");
+      sessionStorage.setItem("id", res.data.user._id);
+      // navigate("/Home");
     } catch (error) {
       console.error(error);
     }

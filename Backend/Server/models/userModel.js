@@ -44,6 +44,11 @@ const userSchema = new mongoose.Schema({
     required: true,
     enum: ['Contributer', 'Soldier'], // Add the two personas here
   },
+  authorId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      }
 });
 
 const User = mongoose.model('User', userSchema);
