@@ -1,6 +1,6 @@
 import Donation from '../models/donationModel.js';
 
-
+// Function to create a new donation
 export const createDonation = async (req, res) => {
   try {
     const { location, zone, category, ownerPhone, description, media, authorId } = req.body;
@@ -34,7 +34,7 @@ export const createDonation = async (req, res) => {
 // Get all donations
 export const getAllDonations = async (req, res) => {
   try {
-    const donations = await Donation.find();
+    const donations = await Donation.find().populate("authorId");  // Populating the authorId reference
     return res.status(200).json(donations);
   } catch (error) {
     return res.status(500).json({
@@ -49,7 +49,7 @@ export const getDonationById = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const donation = await Donation.findById(id);
+    const donation = await Donation.findById(id).populate("authorId");  // Populating the authorId reference
 
     if (!donation) {
       return res.status(404).json({ message: 'Donation not found' });

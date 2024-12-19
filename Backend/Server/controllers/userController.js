@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 
 dotenv.config()
 
+// התחברות למשתמש
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -28,7 +29,7 @@ export const loginUser = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, { expiresIn: '23h' });
 
     // שלח את התגובה עם הטוקן
-     res.status(200).json({
+    res.status(200).json({
       message: 'Login successful',
       token: token,
       user: {
@@ -41,18 +42,24 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-     res.status(500).json({ message: 'Error logging in', error: error.message });
+    res.status(500).json({ message: 'Error logging in', error: error.message });
   }
 };
 
-// Create a new user
+// יצירת משתמש חדש
 export const createUser = async (req, res) => {
   try {
-    const { firstName, lastName, passport, email, password, phone, personalIdentificationNumber, media, type } = req.body;
+    const { firstName, lastName, passport, email, password, phone, personalIdentificationNumber, media, type, authorId } = req.body;
 
     // Hash password before saving
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // ודא שהשדה type הוא אחד משני הערכים המוגדרים
+    if (!['Contributer', 'Soldier'].includes(type)) {
+      return res.status(400).json({ message: 'Invalid type. Type must be "Contributer" or "Soldier".' });
+    }
+
+    // יצירת משתמש חדש
     const newUser = new User({
       firstName,
       lastName,
@@ -63,13 +70,18 @@ export const createUser = async (req, res) => {
       personalIdentificationNumber,
       media,
       type,
-    }); 
+      authorId,  // מזהה של המשתמש היוצר
+    });
 
     const temp = await newUser.save();
+
+    // יצירת טוקן JWT
     const token = jwt.sign({ id: temp._id }, process.env.JWT_SECRET_KEY, { expiresIn: '23h' });
+
+    // שלח את התגובה עם המידע על המשתמש ועם הטוקן
     res.status(201).json({
       message: 'User created successfully',
-      token:token,
+      token: token,
       user: newUser,
     });
   } catch (error) {
@@ -78,8 +90,7 @@ export const createUser = async (req, res) => {
   }
 };
 
-
-// Get user by full name (firstName and lastName)
+// קבלת משתמש לפי שם מלא (firstName, lastName)
 export const getUserByFullName = async (req, res) => {
   try {
     const { firstName, lastName } = req.params;
@@ -95,13 +106,11 @@ export const getUserByFullName = async (req, res) => {
   }
 };
 
-// Get all users
+// קבלת כל המשתמשים
 export const getAllUsers = async (req, res) => {
   try {
     const users = await User.find();
     res.status(200).json(users); // שולח תשובה אחת בלבד
-    console.log("sent 1");
-    
   } catch (error) {
     console.error(error);
     if (!res.headersSent) { // בודק אם כבר נשלחה תגובה
@@ -110,7 +119,7 @@ export const getAllUsers = async (req, res) => {
   }
 };
 
-// Delete a user by passport (or any unique identifier)
+// מחיקת משתמש לפי דרכון (passport)
 export const deleteUser = async (req, res) => {
   try {
     const { passport } = req.params;
@@ -127,18 +136,18 @@ export const deleteUser = async (req, res) => {
   }
 };
 
-// Edit user details by passport (or any unique identifier)
+// עדכון פרטי משתמש לפי דרכון (passport)
 export const editUser = async (req, res) => {
   try {
     const { passport } = req.params;
-    const { firstName, lastName, email, phone, personalIdentificationNumber, media } = req.body;
+    const { firstName, lastName, email, phone, personalIdentificationNumber, media, type, authorId } = req.body;
 
     const user = await User.findOne({ passport });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Update user fields
+    // עדכון שדות המשתמש
     user.firstName = firstName || user.firstName;
     user.lastName = lastName || user.lastName;
     user.email = email || user.email;
@@ -146,8 +155,13 @@ export const editUser = async (req, res) => {
     user.personalIdentificationNumber = personalIdentificationNumber || user.personalIdentificationNumber;
     user.media = media || user.media;
 
-    // Save the updated user
+    // עדכון שדות חדשים
+    if (type) user.type = type;
+    if (authorId) user.authorId = authorId;
+
+    // שמור את המשתמש המעודכן
     await user.save();
+
     res.status(200).json({
       message: 'User updated successfully',
       user: user,
