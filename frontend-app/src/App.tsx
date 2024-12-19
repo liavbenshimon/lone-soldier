@@ -3,6 +3,7 @@ import HomePage from "./pages/HomePage";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
+import Logout from "./pages/Logout";
 import NewPost from "./pages/NewPost";
 import SignUp from "./pages/Signup";
 import Tos from "./pages/Tos";
@@ -17,7 +18,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/contribute" element={<ContributePage />} />
-
+          <Route path="/logout" element={<Logout />} />
           <Route path="/new-post" element={<NewPost />} />
           {/* <Route path="/test" element={<ImageUpload />} /> */}
           <Route path="/rights" element={<YourRights />} />

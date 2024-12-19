@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Donation } from "@/types/Donation";
-import { EatUp } from "@/types/EatUp";
+import { EatUp } from "@/types/EatUps";
 
 export function PostCard({
   donation,
@@ -46,14 +46,12 @@ export function PostCard({
           <div>
             {type === "EatUp" && (
               <>
-                <h3 className="font-bold text-lg md:text-xl">
-                  {eatup?.description}
-                </h3>
+                <h3 className="font-bold text-lg md:text-xl">{eatup?.title}</h3>
                 <p className="text-muted-foreground text-sm md:text-base">
                   {new Date(eatup?.date).toLocaleDateString()}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  Kosher: {eatup?.kosher}
+                  Kosher: {eatup?.kosher ? "Yes" : "No"}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   Hosting: {eatup?.hosting}

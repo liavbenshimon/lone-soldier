@@ -44,6 +44,10 @@ const routeListHome: RouteProps[] = [
     href: "/rights",
     label: "Your Rights",
   },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
 ];
 const routeListContribute: RouteProps[] = [
   {
@@ -53,6 +57,10 @@ const routeListContribute: RouteProps[] = [
   {
     href: "/contribute",
     label: "Social",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
   },
 ];
 
@@ -72,6 +80,10 @@ const routeListLanding: RouteProps[] = [
   {
     href: "#faq",
     label: "FAQ",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
   },
 ];
 interface NavbarProps {

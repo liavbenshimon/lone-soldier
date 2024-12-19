@@ -39,44 +39,60 @@ export function Feed({ mode }: { mode: string }) {
   //eatup
   const [kosher, setKosher] = useState("all");
   const [hosting, setHosting] = useState("all");
-  const [donations, setDonations] = useState([]);
-  const [residences, setResidences] = useState([]);
+  const [donations, setDonations] = useState<Donation[]>([]);
+  const [residences, setResidences] = useState<Residence[]>([]);
   const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(),
-    to: addDays(
-      new Date(
-        new Date().getFullYear(),
-        new Date().getMonth() + 1,
-        new Date().getDate()
-      ),
-      20
-    ),
+    from: addDays(new Date(), -365),
+    to: addDays(new Date(), 365),
   });
   const [eatups, setEatUps] = useState<EatUp[]>([]);
+
   useEffect(() => {
     const fetchDonation = async () => {
       try {
         const res = await api.get("/donation");
-        setDonations(res.data);
+        console.log("Raw donations response:", res.data);
+        if (Array.isArray(res.data)) {
+          setDonations(res.data);
+          console.log("Processed donations:", res.data);
+        } else if (res.data && Array.isArray(res.data.data)) {
+          setDonations(res.data.data);
+          console.log("Processed donations:", res.data.data);
+        } else {
+          console.error("Invalid donations response structure:", res.data);
+          setDonations([]);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching donations:", error);
+        setDonations([]);
       }
     };
     const fetchResidences = async () => {
       try {
         const res = await api.get("/residences");
-        setResidences(res.data);
-        console.log(res.data);
+        console.log("Raw residences response:", res.data);
+        if (Array.isArray(res.data)) {
+          setResidences(res.data);
+          console.log("Processed residences:", res.data);
+        } else if (res.data && Array.isArray(res.data.data)) {
+          setResidences(res.data.data);
+          console.log("Processed residences:", res.data.data);
+        } else {
+          console.error("Invalid residences response structure:", res.data);
+          setResidences([]);
+        }
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching residences:", error);
+        setResidences([]);
       }
     };
     const fetchEatUps = async () => {
       try {
         const res = await api.get("/eatups");
-        setEatUps(res.data);
+        console.log("EatUps response:", res.data);
+        setEatUps(res.data.data);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching EatUps:", error);
       }
     };
     if (mode === "Donations") {
@@ -88,14 +104,18 @@ export function Feed({ mode }: { mode: string }) {
     if (mode === "EatUp") {
       fetchEatUps();
     }
-  }, []);
+  }, [mode]);
   console.log(mode);
 
   const filterDonations = (donations: Donation[]) => {
+    if (!donations) return [];
+
     return donations.filter((donation) => {
+      if (!donation) return false;
+
       const matchesSearch = donation.description
-        .toLowerCase()
-        .includes(search.toLowerCase());
+        ? donation.description.toLowerCase().includes(search.toLowerCase())
+        : true;
       const matchesZone = zone === "all" || donation.zone === zone;
       const matchesCategory =
         category === "all" || donation.category === category;
@@ -104,11 +124,15 @@ export function Feed({ mode }: { mode: string }) {
     });
   };
 
-  const filterResidences = (residences: any[]) => {
+  const filterResidences = (residences: Residence[]) => {
+    if (!residences) return [];
+
     return residences.filter((residence) => {
+      if (!residence) return false;
+
       const matchesSearch = residence.description
-        .toLowerCase()
-        .includes(search.toLowerCase());
+        ? residence.description.toLowerCase().includes(search.toLowerCase())
+        : true;
       const matchesZone = zone === "all" || residence.zone === zone;
       const matchesType = type === "all" || residence.type === type;
       const matchesShelter = shelter === "all" || residence.shelter === shelter;
@@ -118,27 +142,43 @@ export function Feed({ mode }: { mode: string }) {
   };
 
   const filterEatUps = (eatups: EatUp[]) => {
-    if (!Array.isArray(eatups)) return [];
-
+    console.log("Filtering eatups:", eatups);
     return eatups.filter((eatup) => {
-      const matchesSearch = eatup.description
-        ? eatup.description.toLowerCase().includes(search.toLowerCase())
+      console.log("Processing eatup:", eatup);
+      const matchesSearch = eatup.title
+        ? eatup.title.toLowerCase().includes(search.toLowerCase())
         : true;
       const matchesZone = zone === "all" || eatup.zone === zone;
-      const matchesKosher = kosher === "all" || String(eatup.kosher) === kosher;
+      const matchesKosher =
+        kosher === "all" ||
+        (kosher === "Kosher" ? eatup.kosher : !eatup.kosher);
       const matchesHosting = hosting === "all" || eatup.hosting === hosting;
+
+      const eatupDate = new Date(eatup.date);
       const matchesDate =
         !date?.from ||
-        (new Date(eatup.date) >= date.from &&
-          new Date(eatup.date) <= (date.to || date.from));
+        !date?.to ||
+        (eatupDate.getTime() >= date.from.getTime() &&
+          eatupDate.getTime() <= date.to.getTime());
 
-      return (
+      const result =
         matchesSearch &&
         matchesZone &&
         matchesKosher &&
         matchesHosting &&
-        matchesDate
-      );
+        matchesDate;
+
+      console.log("Filter result:", {
+        matchesSearch,
+        matchesZone,
+        matchesKosher,
+        matchesHosting,
+        matchesDate,
+        eatupDate,
+        fromDate: date?.from,
+        toDate: date?.to,
+      });
+      return result;
     });
   };
 
@@ -179,18 +219,13 @@ export function Feed({ mode }: { mode: string }) {
               </SelectContent>
             </Select>
             {mode === "Donations" && (
-              <Select>
+              <Select onValueChange={setCategory}>
                 <SelectTrigger className="w-full md:w-[180px] bg-background">
                   <SelectValue placeholder="Category" />
                 </SelectTrigger>
-
                 <SelectContent>
                   {DonationsCategories.map((category) => (
-                    <SelectItem
-                      key={category}
-                      value={category}
-                      onClick={() => setCategory(category)}
-                    >
+                    <SelectItem key={category} value={category}>
                       {category}
                     </SelectItem>
                   ))}
@@ -199,33 +234,25 @@ export function Feed({ mode }: { mode: string }) {
             )}
             {mode === "Residences" && (
               <>
-                <Select>
+                <Select onValueChange={setType}>
                   <SelectTrigger className="w-full md:w-[180px] bg-background">
                     <SelectValue placeholder="Type" />
                   </SelectTrigger>
                   <SelectContent>
                     {residencesType.map((type) => (
-                      <SelectItem
-                        key={type}
-                        value={type}
-                        onClick={() => setType(type)}
-                      >
+                      <SelectItem key={type} value={type}>
                         {type}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Select>
+                <Select onValueChange={setShelter}>
                   <SelectTrigger className="w-full md:w-[180px] bg-background">
                     <SelectValue placeholder="Shelter" />
                   </SelectTrigger>
                   <SelectContent>
                     {residencesShelter.map((shelter) => (
-                      <SelectItem
-                        key={shelter}
-                        value={shelter}
-                        onClick={() => setShelter(shelter)}
-                      >
+                      <SelectItem key={shelter} value={shelter}>
                         {shelter}
                       </SelectItem>
                     ))}
@@ -235,34 +262,26 @@ export function Feed({ mode }: { mode: string }) {
             )}
             {mode === "EatUp" && (
               <>
-                <Select>
+                <Select onValueChange={setKosher}>
                   <SelectTrigger className="w-full md:w-[180px] bg-background">
                     <SelectValue placeholder="Kosher" />
                   </SelectTrigger>
                   <SelectContent>
-                    {EatUpsKosher.map((kosher) => (
-                      <SelectItem
-                        key={kosher}
-                        value={kosher}
-                        onClick={() => setKosher(kosher)}
-                      >
-                        {kosher}
+                    {EatUpsKosher.map((k) => (
+                      <SelectItem key={k} value={k}>
+                        {k}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
-                <Select>
+                <Select onValueChange={setHosting}>
                   <SelectTrigger className="w-full md:w-[180px] bg-background">
                     <SelectValue placeholder="Hosting" />
                   </SelectTrigger>
                   <SelectContent>
-                    {EatUpsHosting.map((hosting) => (
-                      <SelectItem
-                        key={hosting}
-                        value={hosting}
-                        onClick={() => setHosting(hosting)}
-                      >
-                        {hosting}
+                    {EatUpsHosting.map((h) => (
+                      <SelectItem key={h} value={h}>
+                        {h}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -281,15 +300,19 @@ export function Feed({ mode }: { mode: string }) {
               type={mode}
             />
           ))}
-        {mode === "Residences" &&
+        {mode === "Residences" && residences && residences.length > 0 ? (
           filterResidences(residences).map((residence: Residence) => (
             <PostCard
               key={residence._id}
               residences={residence}
               donation={null}
+              eatup={null}
               type={mode}
             />
-          ))}
+          ))
+        ) : mode === "Residences" ? (
+          <div className="text-center py-4">No residences found</div>
+        ) : null}
         {mode === "EatUp" &&
           filterEatUps(eatups).map((eatup: EatUp) => (
             <PostCard
