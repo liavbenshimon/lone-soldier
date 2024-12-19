@@ -1,129 +1,99 @@
 import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectTrigger,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-} from "@/components/ui/select";
 
 interface RightsFilterProps {
-  onApplyFilters: (filters: {
-    loneSoldier: boolean | null;
-    newImmigrant: string | null;
-    parentalStatus: string | null;
-    housingStatus: string | null;
-    financialNeed: boolean | null;
-    educationStatus: string | null;
-    militaryStatus: string | null;
-  }) => void;
+  onApplyFilters: (filters: Partial<Filters>) => void;
 }
 
+type Filters = {
+  loneSoldier: boolean | null;
+  newImmigrant: string | null;
+  parentalStatus: string | null;
+  housingStatus: string | null;
+  financialNeed: boolean | null;
+  educationStatus: string | null;
+  militaryStatus: string | null;
+};
+
 const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
-  const [loneSoldier, setLoneSoldier] = useState<boolean | null>(null);
-  const [newImmigrant, setNewImmigrant] = useState<string | null>(null);
-  const [parentalStatus, setParentalStatus] = useState<string | null>(null);
-  const [housingStatus, setHousingStatus] = useState<string | null>(null);
-  const [financialNeed, setFinancialNeed] = useState<boolean | null>(null);
-  const [educationStatus, setEducationStatus] = useState<string | null>(null);
-  const [militaryStatus, setMilitaryStatus] = useState<string | null>(null);
+  const [filters, setFilters] = useState<Filters>({
+    loneSoldier: null,
+    newImmigrant: null,
+    parentalStatus: null,
+    housingStatus: null,
+    financialNeed: null,
+    educationStatus: null,
+    militaryStatus: null,
+  });
 
-  const handleApply = () => {
-    onApplyFilters({
-      loneSoldier,
-      newImmigrant,
-      parentalStatus,
-      housingStatus,
-      financialNeed,
-      educationStatus,
-      militaryStatus,
-    });
-    console.log("Filters applied:", activeFilters);
+  const handleApply = () => onApplyFilters(filters);
 
+  const updateFilter = (key: keyof Filters, value: any) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
     <div className="space-y-4 p-4 bg-gray-600 rounded-md">
       {/* Lone Soldier */}
-      <Select onValueChange={(value) => setLoneSoldier(value === "true" ? true : value === "false" ? false : null)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Lone Soldier?" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="true">Yes</SelectItem>
-          <SelectItem value="false">No</SelectItem>
-        </SelectContent>
-      </Select>
+      <select
+        onChange={(e) =>
+          updateFilter("loneSoldier", e.target.value === "true" ? true : e.target.value === "false" ? false : null)
+        }
+        className="w-full p-2 rounded-md bg-gray-400"
+      >
+        <option value="">Lone Soldier?</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
 
       {/* New Immigrant Duration */}
-      <Select onValueChange={(value) => setNewImmigrant(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="New Immigrant Duration" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="LessThan1Year">Less than 1 year</SelectItem>
-          <SelectItem value="1to5Years">1 to 5 years</SelectItem>
-          <SelectItem value="MoreThan5Years">More than 5 years</SelectItem>
-        </SelectContent>
-      </Select>
+      <select onChange={(e) => updateFilter("newImmigrant", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+        <option value="">New Immigrant Duration</option>
+        <option value="LessThan1Year">Less than 1 year</option>
+        <option value="1to5Years">1 to 5 years</option>
+        <option value="MoreThan5Years">More than 5 years</option>
+      </select>
 
       {/* Parental Contact Status */}
-      <Select onValueChange={(value) => setParentalStatus(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Parental Contact Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="NoContact">No Contact</SelectItem>
-          <SelectItem value="ParentsAbroad">Parents Living Abroad</SelectItem>
-          <SelectItem value="NoSupport">No Support</SelectItem>
-        </SelectContent>
-      </Select>
+      <select onChange={(e) => updateFilter("parentalStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+        <option value="">Parental Contact Status</option>
+        <option value="NoContact">No Contact</option>
+        <option value="ParentsAbroad">Parents Living Abroad</option>
+        <option value="NoSupport">No Support</option>
+      </select>
 
       {/* Housing Status */}
-      <Select onValueChange={(value) => setHousingStatus(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Housing Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="OnBase">On Base</SelectItem>
-          <SelectItem value="Rental">Rental Housing</SelectItem>
-          <SelectItem value="Kibbutz">Kibbutz Program</SelectItem>
-        </SelectContent>
-      </Select>
+      <select onChange={(e) => updateFilter("housingStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+        <option value="">Housing Status</option>
+        <option value="OnBase">On Base</option>
+        <option value="Rental">Rental Housing</option>
+        <option value="Kibbutz">Kibbutz Program</option>
+      </select>
 
       {/* Financial Need */}
-      <Select onValueChange={(value) => setFinancialNeed(value === "true" ? true : value === "false" ? false : null)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Financial Need?" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="true">Yes</SelectItem>
-          <SelectItem value="false">No</SelectItem>
-        </SelectContent>
-      </Select>
+      <select
+        onChange={(e) =>
+          updateFilter("financialNeed", e.target.value === "true" ? true : e.target.value === "false" ? false : null)
+        }
+        className="w-full p-2 rounded-md bg-gray-400"
+      >
+        <option value="">Financial Need?</option>
+        <option value="true">Yes</option>
+        <option value="false">No</option>
+      </select>
 
       {/* Education Status */}
-      <Select onValueChange={(value) => setEducationStatus(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Education Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Student">Student</SelectItem>
-          <SelectItem value="NonStudent">Non-Student</SelectItem>
-        </SelectContent>
-      </Select>
+      <select onChange={(e) => updateFilter("educationStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+        <option value="">Education Status</option>
+        <option value="Student">Student</option>
+        <option value="NonStudent">Non-Student</option>
+      </select>
 
       {/* Military Status */}
-      <Select onValueChange={(value) => setMilitaryStatus(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Military Status" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem value="Combatant">Combatant</SelectItem>
-          <SelectItem value="NonCombatant">Non-Combatant</SelectItem>
-        </SelectContent>
-      </Select>
+      <select onChange={(e) => updateFilter("militaryStatus", e.target.value)} className="w-full p-2 rounded-md bg-gray-400">
+        <option value="">Military Status</option>
+        <option value="Combatant">Combatant</option>
+        <option value="NonCombatant">Non-Combatant</option>
+      </select>
 
       {/* Apply Filters Button */}
       <button
@@ -135,6 +105,5 @@ const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
     </div>
   );
 };
-
 
 export default RightsFilter;
