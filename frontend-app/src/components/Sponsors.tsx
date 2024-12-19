@@ -1,34 +1,34 @@
 import { Radar } from "lucide-react";
 
 interface SponsorProps {
-  icon: JSX.Element;
-  name: string;
+  url: string;
+  title: string;
 }
 
 const sponsors: SponsorProps[] = [
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 1",
+    title: "iitc logo",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiYPc56Gm6ejEvQnSqa18FftiUjtVLSdgDLw&s",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 2",
+    title: "cyber-pro logo",
+    url: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsTTJSme7yuPkb3djw-M8yJTJqmskZV2k4-A&s",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 3",
+    title: "habibi logo",
+    url: "https://chabibi-yavne.org.il/wp-content/uploads/2021/02/%D7%9C%D7%95%D7%92%D7%95-%D7%A2%D7%9E%D7%95%D7%AA%D7%94-%D7%97%D7%93%D7%A9.jpg",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 4",
+    title: "brothers for life",
+    url: "https://www.achimlachaim.org/wp-content/uploads/2018/11/%D7%9C%D7%95%D7%92%D7%95-%D7%AA%D7%9E%D7%95%D7%A0%D7%94-1000x792.jpg",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 5",
+    title: "power for soldier",
+    url: "https://associations.co.il/wp-content/uploads/2022/04/%D7%A2%D7%95%D7%A6%D7%9E%D7%94-%D7%9C%D7%97%D7%99%D7%99%D7%9C.png",
   },
   {
-    icon: <Radar size={34} />,
-    name: "Sponsor 6",
+    title: "IDF",
+    url: "https://techidf.co.il/wp-content/uploads/2023/01/%D7%9C%D7%95%D7%92%D7%95-%D7%A6%D7%94%D7%9C-%D7%A2%D7%93%D7%9B%D7%A0%D7%99-1920x1793.jpeg",
   },
 ];
 
@@ -40,13 +40,18 @@ export const Sponsors = () => {
       </h2>
 
       <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
-        {sponsors.map(({ icon, name }: SponsorProps) => (
+        {sponsors.map(({ url, title }: SponsorProps) => (
           <div
-            key={name}
+            key={title}
             className="flex items-center gap-1 text-muted-foreground/60"
           >
-            <span>{icon}</span>
-            <h3 className="text-xl  font-bold">{name}</h3>
+            <img
+              src={url}
+              alt={title}
+              className="max-w-10 max-h-10 rounded-md"
+            />
+            {/* <span>{url}</span> */}
+            <h3 className="text-xl  font-bold">{title}</h3>
           </div>
         ))}
       </div>

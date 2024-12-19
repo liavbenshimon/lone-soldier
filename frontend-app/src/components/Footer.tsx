@@ -53,12 +53,16 @@ export const Footer = () => {
           <ul className="space-y-3 text-muted-foreground">
             {legalLinks.map((link) => (
               <li key={link.path}>
-                <a
-                  onClick={() => navigate(link.path)}
-                  style={{ cursor: "pointer" }}
-                >
-                  {link.text}
-                </a>
+                {link.text === "Contact Us" ? (
+                  <a href="tel:0544809493">Call us at (+972)54-480-9493</a>
+                ) : (
+                  <a
+                    onClick={() => navigate(link.path)}
+                    style={{ cursor: "pointer" }}
+                  >
+                    {link.text}
+                  </a>
+                )}
               </li>
             ))}
           </ul>
