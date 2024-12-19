@@ -24,12 +24,12 @@ export const Cta = () => {
         </div>
 
         <div className="space-y-4 lg:col-start-2">
-          <Button
+          {/* <Button
             className="w-full md:mr-4 md:w-auto"
             onClick={() => navigate("/signup")}
           >
             Start Donating
-          </Button>
+          </Button> */}
         </div>
       </div>
     </section>
