@@ -10,6 +10,7 @@ import Tos from "./pages/Tos";
 import YourRights from "./pages/YourRights";
 import Terms from "./components/Terms";
 import ContactUs from "./components/ContactUs"
+import Social from "./pages/Social";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -26,6 +27,8 @@ export default function App() {
           <Route path="/rights" element={<YourRights />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/contact" element={<ContactUs />} />
+
+          <Route path="/home/social" element={<Social />} />
 
           <Route path="/home" element={<HomePage mode="Donations" />} />
           <Route
