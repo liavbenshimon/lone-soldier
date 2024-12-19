@@ -26,7 +26,7 @@ export default function Social() {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex ml-7">
       {/* Navbar com accordion */}
       <Navbar isVertical={true} isAccordion={true} modes="home" />
 
