@@ -11,7 +11,7 @@ interface RightsCardProps {
 const RightsCard: React.FC<RightsCardProps> = ({ title, description, contact }) => {
   return (
     // useless
-    <Card className="p-2 shadow-md bg-gray-200 text-white">
+    <Card className="p-2 shadow-md bg-20 14.3% 4.1% text-white">
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger>
