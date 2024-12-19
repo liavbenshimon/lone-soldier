@@ -1,7 +1,7 @@
 import * as React from "react";
 import { addDays } from "date-fns";
 import { useState, useEffect } from "react";
-import { PostCard } from "./PostCard";
+import { DetailsDialog } from "./DetailsDialog";
 import { Input } from "./ui/input";
 import {
   Select,
@@ -293,20 +293,13 @@ export function Feed({ mode }: { mode: string }) {
         </div>
         {mode === "Donations" &&
           filterDonations(donations).map((donation: Donation) => (
-            <PostCard
-              key={donation._id}
-              residences={null}
-              donation={donation}
-              type={mode}
-            />
+            <DetailsDialog key={donation._id} donation={donation} type={mode} />
           ))}
         {mode === "Residences" && residences && residences.length > 0 ? (
           filterResidences(residences).map((residence: Residence) => (
-            <PostCard
+            <DetailsDialog
               key={residence._id}
-              residences={residence}
-              donation={null}
-              eatup={null}
+              residence={residence}
               type={mode}
             />
           ))
@@ -315,13 +308,7 @@ export function Feed({ mode }: { mode: string }) {
         ) : null}
         {mode === "EatUp" &&
           filterEatUps(eatups).map((eatup: EatUp) => (
-            <PostCard
-              key={eatup._id}
-              residences={null}
-              donation={null}
-              eatup={eatup}
-              type={mode}
-            />
+            <DetailsDialog key={eatup._id} eatup={eatup} type={mode} />
           ))}
       </div>
     </div>
