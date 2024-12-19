@@ -158,7 +158,7 @@ export default function NewPost() {
         )}
 
         {/* Passo 1: Escolha de Opção */}
-        {step === 1 && !selectedOption && (
+        {step === 1 && !selectedOption && (  
           <>
             <div className="text-center text-lg font-semibold text-gray-700 mb-8">
               How would you like to contribute?
