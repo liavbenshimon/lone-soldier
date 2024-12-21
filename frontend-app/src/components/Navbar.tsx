@@ -85,10 +85,6 @@ const routeListLanding: RouteProps[] = [
     href: "#faq",
     label: "FAQ",
   },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
 ];
 interface NavbarProps {
   isVertical?: boolean; // Prop para HomePage
