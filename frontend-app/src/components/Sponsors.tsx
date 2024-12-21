@@ -1,5 +1,3 @@
-import { Radar } from "lucide-react";
-
 interface SponsorProps {
   url: string;
   title: string;

@@ -1,22 +1,13 @@
 import React, { useState } from "react";
+import { Filters } from '@/types/filters';
 
 interface RightsFilterProps {
   onApplyFilters: (filters: Partial<Filters>) => void;
 }
 
-type Filters = {
-  loneSoldier: boolean | null;
-  newImmigrant: string | null;
-  parentalStatus: string | null;
-  housingStatus: string | null;
-  financialNeed: boolean | null;
-  educationStatus: string | null;
-  militaryStatus: string | null;
-};
-
 const RightsFilter: React.FC<RightsFilterProps> = ({ onApplyFilters }) => {
   const [filters, setFilters] = useState<Filters>({
-    loneSoldier: null,
+    loneSoldier: false,
     newImmigrant: null,
     parentalStatus: null,
     housingStatus: null,

@@ -50,7 +50,6 @@ export default function NewPost() {
   const navigate = useNavigate();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [step, setStep] = useState<number>(1);
-  const userId = sessionStorage.getItem("userId");
 
   // Common fields
   const [location, setLocation] = useState<string>("");
@@ -128,7 +127,6 @@ export default function NewPost() {
 
   const handleCreatePost = async () => {
     if (!validateFields()) return;
-    const userId = sessionStorage.getItem("id");
 
     try {
       let endpoint = "";
@@ -143,7 +141,7 @@ export default function NewPost() {
             category,
             description,
             media: [image],
-            authorId: userId,
+            authorId: sessionStorage.getItem("id"),
             ownerPhone,
           };
           break;
@@ -158,9 +156,9 @@ export default function NewPost() {
             hosting,
             description,
             media: [image],
-            authorId: userId,
+            authorId: sessionStorage.getItem("id"),
             title: description,
-            owner: userId,
+            owner: sessionStorage.getItem("id"),
             language: "Hebrew",
           };
           break;
@@ -182,11 +180,11 @@ export default function NewPost() {
             shelter: shelter === "yes",
             description,
             media: [image],
-            authorId: userId,
+            authorId: sessionStorage.getItem("id"),
             contractDuration: parseInt(contractDuration),
             propertyTax: parseFloat(propertyTax),
             phone,
-            owner: userId,
+            owner: sessionStorage.getItem("id"),
             meter: parseFloat(size),
             enterDate: new Date(enterDate).toISOString(),
             shalter: shelter === "yes",

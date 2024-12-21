@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button"; // Certifique-se de ajustar o caminho para o correto
 import { useNavigate } from "react-router-dom";
 
 export const Terms = () => {

@@ -12,6 +12,10 @@ import { ScrollArea } from "./ui/scroll-area";
 import { useState } from "react";
 import { api } from "@/api";
 
+interface FormData {
+  [key: string]: string;
+}
+
 export function EditDialog({
   item,
   onEdit,
@@ -42,7 +46,7 @@ export function EditDialog({
     try {
       const endpoint = getEndpoint(type);
       // Create a new object with only the fields that exist in the form
-      const fieldsToUpdate = {};
+      const fieldsToUpdate: FormData = {};
       const commonFields = [
         { name: "description", label: "Description" },
         { name: "location", label: "Location" },
