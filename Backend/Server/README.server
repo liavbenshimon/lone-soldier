@@ -1,0 +1,23 @@
+# Project Name
+
+## Description
+A Node.js and MongoDB-based server project that handles user authentication and basic post/comment operations.
+
+## Features
+- User sign-up and sign-in with password hashing.
+- JWT-based authentication.
+- Modular routing for users, posts, and comments.
+
+## Setup
+1. Clone the repository.
+2. Run `npm install` to install dependencies.
+3. Create a `.env` file and add your variables.
+4. Run the server: `npm start`.
+
+## Dependencies
+- Express
+- Mongoose
+- Bcrypt
+- JSON Web Token (JWT)
+- CORS
+- dotenv
