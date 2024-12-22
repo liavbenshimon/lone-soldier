@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -11,7 +11,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
 
 import { Button, buttonVariants } from "./ui/button";
 import { Menu, X } from "lucide-react";
@@ -252,7 +251,10 @@ export const Navbar = ({
               {routeList.map((route) => (
                 <a
                   key={route.label}
-                  href={route.href}
+                  onClick={() => {
+                    navigate(route.href);
+                  }}
+                  // href={route.href}
                   className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors"
                 >
                   {route.label}
@@ -312,7 +314,10 @@ export const Navbar = ({
               {routeList.map((route) => (
                 <a
                   key={route.label}
-                  href={route.href}
+                  onClick={() => {
+                    navigate(route.href);
+                  }}
+                  // href={route.href}
                   className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors"
                 >
                   {route.label}
