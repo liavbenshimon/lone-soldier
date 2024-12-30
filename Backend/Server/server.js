@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
 import morgan from "morgan";
-import path from "path";
+import path, { dirname } from "path";
 dotenv.config(); // Load environment variables
 console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 
@@ -14,6 +14,7 @@ import eatupRoutes from "./routes/eatupRoute.js";
 import residenceRoutes from "./routes/residenceRoutes.js";
 const PORT = process.env.PORT || 5000;
 const app = express();
+const __dirname = dirname(__filename);
 
 // Middleware Configuration
 app.use(morgan("dev"));
