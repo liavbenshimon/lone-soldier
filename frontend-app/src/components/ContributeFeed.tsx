@@ -106,11 +106,6 @@ export function ContributePostCard() {
     }
   }, [userId]);
 
-  const handleEdit = (id: string, type: string) => {
-    // Implement edit logic
-    console.log(`Editing ${type} with id: ${id}`);
-  };
-
   const handleDelete = async (id: string, type: string) => {
     try {
       const endpoint =
@@ -129,7 +124,11 @@ export function ContributePostCard() {
 
   return (
     <div className="flex-1 p-6 bg-background">
-      {console.log("Rendering with data:", { donations, residences, eatups })}
+      {/* Debug information */}
+      {(() => {
+        console.log("Rendering with data:", { donations, residences, eatups });
+        return null;
+      })()}
       <div className="max-w-4xl mx-auto space-y-6">
         <h2 className="text-3xl font-bold mb-8 text-center">
           <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
@@ -154,7 +153,7 @@ export function ContributePostCard() {
           >
             <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full md:w-2/3">
-                {item.media && item.media.length > 0 ? (
+                {"media" in item && item.media && item.media.length > 0 ? (
                   <img
                     src={item.media[0]}
                     alt="Post"
@@ -169,7 +168,9 @@ export function ContributePostCard() {
               <div className="w-full md:w-1/3 flex flex-col justify-between">
                 <div>
                   <h3 className="font-bold text-lg md:text-xl mb-2">
-                    {item.description || item.title}
+                    {item.description ||
+                      (item as any).title ||
+                      "No description"}
                   </h3>
                   <p className="text-muted-foreground">Type: {item.type}</p>
                 </div>

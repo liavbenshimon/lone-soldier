@@ -1,6 +1,4 @@
 import { Residence } from "@/types/Residence";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Button } from "./ui/button";
 import { Card } from "./ui/card";
 import { Donation } from "@/types/Donation";
 import { EatUp } from "@/types/EatUps";
@@ -22,21 +20,21 @@ export function PostCard({
         <div className="w-full md:w-2/3 flex justify-center items-center">
           {type === "Donations" && (
             <img
-              src={donation?.media[0]}
+            src={donation?.media?.[0] || ''}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />
           )}
           {type === "Residences" && (
             <img
-              src={residences?.media[0]}
+              src={residences?.media?.[0] || ''}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />
           )}
           {type === "EatUp" && (
             <img
-              src={eatup?.media[0]}
+              src={eatup?.media?.[0] || ''}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />
@@ -48,7 +46,7 @@ export function PostCard({
               <>
                 <h3 className="font-bold text-lg md:text-xl">{eatup?.title}</h3>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  {new Date(eatup?.date).toLocaleDateString()}
+                  {eatup?.date && new Date(eatup.date).toLocaleDateString()}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   Kosher: {eatup?.kosher ? "Yes" : "No"}

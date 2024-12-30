@@ -135,7 +135,8 @@ export function Feed({ mode }: { mode: string }) {
         : true;
       const matchesZone = zone === "all" || residence.zone === zone;
       const matchesType = type === "all" || residence.type === type;
-      const matchesShelter = shelter === "all" || residence.shelter === shelter;
+      const matchesShelter = shelter === "all" || 
+        (shelter === "Sheltered" ? residence.shalter : !residence.shalter);
 
       return matchesSearch && matchesZone && matchesType && matchesShelter;
     });

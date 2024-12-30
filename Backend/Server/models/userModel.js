@@ -1,5 +1,5 @@
 // models/userModel.js
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
   firstName: {
@@ -20,7 +20,7 @@ const userSchema = new mongoose.Schema({
     required: true,
     unique: true,
     lowercase: true,
-    match: [/.+\@.+\..+/, 'Please enter a valid email address'],
+    match: [/.+\@.+\..+/, "Please enter a valid email address"],
   },
   password: {
     type: String,
@@ -42,15 +42,15 @@ const userSchema = new mongoose.Schema({
   type: {
     type: String,
     required: true,
-    enum: ['Contributer', 'Soldier'], // Add the two personas here
+    enum: ["Contributer", "Soldier"], // Add the two personas here
   },
   authorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: false, //ask shalev about false and ask liav about what is the authorId
+  },
 });
 
-const User = mongoose.model('User', userSchema);
+const User = mongoose.model("User", userSchema);
 
 export default User;

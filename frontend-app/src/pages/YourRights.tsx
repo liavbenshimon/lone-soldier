@@ -4,15 +4,20 @@ import { rightsData } from "@/data/rightsData";
 import RightsFilter from "@/components/RightsFilter";
 import RightsList from "@/components/RightsList";
 import { filterRights } from "@/data/filterRights";
+import { Filters } from '@/types/filters';
 
 const YourRights: React.FC = () => {
   const [filteredRights, setFilteredRights] = useState<typeof rightsData>([]);
   const navigate = useNavigate(); // Hook para navegação
 
-  const handleApplyFilters = (filters: Partial<typeof rightsData[0]["filters"]>) => {
+  const handleApplyFilters = (filters: Partial<Filters>) => {
     const cleanedFilters = Object.fromEntries(
-      Object.entries(filters).map(([key, value]) => [key, value ?? null])
-    ) as Partial<typeof rightsData[0]["filters"]>;
+      Object.entries(filters).map(([key, value]) => [
+        key,
+        // Convert null to undefined for loneSoldier
+        key === 'loneSoldier' ? (value === null ? undefined : value) : value ?? null
+      ])
+    ) as Partial<Filters>;
 
     const results = filterRights(rightsData, cleanedFilters);
     setFilteredRights(results);

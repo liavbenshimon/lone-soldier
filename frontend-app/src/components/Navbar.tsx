@@ -1,4 +1,4 @@
-import { ReactPropTypes, useState } from "react";
+import { useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -12,7 +12,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 
-import { GitHubLogoIcon } from "@radix-ui/react-icons";
 import { Button, buttonVariants } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
@@ -85,10 +84,6 @@ const routeListLanding: RouteProps[] = [
     href: "#faq",
     label: "FAQ",
   },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
 ];
 interface NavbarProps {
   isVertical?: boolean; // Prop para HomePage
@@ -103,7 +98,7 @@ export const Navbar = ({
 }: NavbarProps) => {
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false); // Accordion
   const navigate = useNavigate();
-  const [mode, setmode] = useState(modes);
+  const [mode] = useState(modes);
   if (mode == "landing") {
     const routeList = routeListLanding;
 
@@ -256,7 +251,10 @@ export const Navbar = ({
               {routeList.map((route) => (
                 <a
                   key={route.label}
-                  href={route.href}
+                  onClick={() => {
+                    navigate(route.href);
+                  }}
+                  // href={route.href}
                   className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors"
                 >
                   {route.label}
@@ -316,7 +314,10 @@ export const Navbar = ({
               {routeList.map((route) => (
                 <a
                   key={route.label}
-                  href={route.href}
+                  onClick={() => {
+                    navigate(route.href);
+                  }}
+                  // href={route.href}
                   className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors"
                 >
                   {route.label}

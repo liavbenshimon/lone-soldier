@@ -1,4 +1,3 @@
-import { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,8 +9,6 @@ import { Card } from "./ui/card";
 import { Donation } from "@/types/Donation";
 import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps";
-import { api } from "@/api";
-import { Button } from "./ui/button";
 
 interface DetailsDialogProps {
   donation?: Donation | null;
@@ -50,7 +47,8 @@ export function DetailsDialog({
                   {donation?.description}
                 </h3>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  {new Date(donation?.createdAt).toLocaleDateString()}
+                  {donation?.createdAt &&
+                    new Date(donation.createdAt).toLocaleDateString()}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   {donation?.category}
@@ -78,7 +76,8 @@ export function DetailsDialog({
                   {residence?.description}
                 </h3>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  {new Date(residence?.enterDate).toLocaleDateString()}
+                  {residence?.enterDate &&
+                    new Date(residence.enterDate).toLocaleDateString()}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
                   {residence?.type}
@@ -110,7 +109,7 @@ export function DetailsDialog({
                   Kosher: {eatup?.kosher ? "Yes" : "No"}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  Hosting: {eatup?.hosting}
+                  Hosting: {eatup?.hosting || "Not specified"}
                 </p>
               </div>
             </div>
@@ -135,10 +134,10 @@ export function DetailsDialog({
               <img
                 src={
                   type === "Donations"
-                    ? donation?.media[0]
+                    ? donation?.media?.[0] || ''
                     : type === "Residences"
-                    ? residence?.media[0]
-                    : eatup?.media[0]
+                    ? residence?.media?.[0] || ''
+                    : eatup?.media?.[0] || ''
                 }
                 alt="Item"
                 className="w-full h-full rounded-lg object-cover"
@@ -157,7 +156,7 @@ export function DetailsDialog({
                 <DetailItem label="Description" value={donation.description} />
                 <DetailItem
                   label="Created At"
-                  value={new Date(donation.createdAt).toLocaleDateString()}
+                  value={donation.createdAt ? new Date(donation.createdAt).toLocaleDateString() : ''}
                 />
                 {donation.ownerPhone && (
                   <div className="mt-6 pt-6 border-t">
@@ -173,7 +172,10 @@ export function DetailsDialog({
               <>
                 <DetailItem label="Type" value={residence.type} />
                 <DetailItem label="Zone" value={residence.zone} />
-                <DetailItem label="Shelter" value={residence.shelter} />
+                <DetailItem
+                  label="Shelter"
+                  value={residence.shalter ? "Yes" : "No"}
+                />
                 <DetailItem
                   label="Enter Date"
                   value={new Date(residence.enterDate).toLocaleDateString()}
@@ -197,7 +199,10 @@ export function DetailsDialog({
                   label="Kosher"
                   value={eatup.kosher ? "Yes" : "No"}
                 />
-                <DetailItem label="Hosting" value={eatup.hosting} />
+                <DetailItem
+                  label="Hosting"
+                  value={eatup.hosting || "Not specified"}
+                />
                 <DetailItem label="Description" value={eatup.title} />
                 {eatup.phone && (
                   <div className="mt-6 pt-6 border-t">

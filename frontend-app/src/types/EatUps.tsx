@@ -10,4 +10,6 @@ export interface EatUp {
   language: string; // Required
   hosting?: string; // Optional
   religios?: boolean; // Optional
+  media?: string[];  // Add this line
+  phone?: string;    // Add this line
 }

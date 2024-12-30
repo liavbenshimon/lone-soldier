@@ -1,13 +1,14 @@
 export interface Donation {
+  type: string;
   _id: string;
   authorId: string;
-  category: "Furniture" | "Electronics" | "Clothes" | "all";
+  category: "all" | "Furniture" | "Electronics" | "Clothes";
   description: string;
+  title?: string;
   location: string;
-  zone: "North" | "Center" | "South" | "all";
-  media: string[];
-  ownerPhone: string;
-  createdAt: string;
-  updatedAt: string;
+  zone: "all" | "North" | "Center" | "South";
+  media?: string[];
+  createdAt?: string;
+  ownerPhone?: string;
   __v: number;
 }

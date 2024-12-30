@@ -23,12 +23,14 @@ export const uploadImage = async (imageFile: File) => {
 
 const ImageUpload = () => {
   //states for image creation
-  const [image, setImage] = useState(null);
+  const [image, setImage] = useState<File | null>(null);
   const [uploadStatus, setUploadStatus] = useState("");
   const [uploadedImageUrl, setUploadedImageUrl] = useState("");
   //manage the imge state
-  const handleImageChange = (e) => {
-    setImage(e.target.files[0]);
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setImage(e.target.files[0]);
+    }
   };
   //manage upload status
   const handleUpload = async () => {
