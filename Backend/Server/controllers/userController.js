@@ -69,11 +69,9 @@ export const createUser = async (req, res) => {
 
     // ודא שהשדה type הוא אחד משני הערכים המוגדרים
     if (!["Contributer", "Soldier"].includes(type)) {
-      return res
-        .status(400)
-        .json({
-          message: 'Invalid type. Type must be "Contributer" or "Soldier".',
-        });
+      return res.status(400).json({
+        message: 'Invalid type. Type must be "Contributer" or "Soldier".',
+      });
     }
 
     // יצירת משתמש חדש
