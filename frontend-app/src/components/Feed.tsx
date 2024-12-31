@@ -1,8 +1,9 @@
 import * as React from "react";
 import { addDays } from "date-fns";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { DetailsDialog } from "./DetailsDialog";
 import { Input } from "./ui/input";
+import { Skeleton } from "./ui/skeleton";
 import {
   Select,
   SelectContent,
@@ -13,10 +14,11 @@ import {
 import { Search } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "./DatePickerWithRange";
-import { api } from "../api.ts";
 import { Donation } from "@/types/Donation";
 import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { fetchDonations, fetchResidences, fetchEatUps } from "@/query.ts";
 
 const zones = ["North", "Center", "South", "all"];
 //donations
@@ -28,88 +30,105 @@ const residencesShelter = ["Sheltered", "Unsheltered", "all"];
 const EatUpsKosher = ["Kosher", "Not Kosher", "all"];
 const EatUpsHosting = ["Family", "Organization", "all"];
 
+const DonationSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 bg-muted/50 rounded-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-6 w-20" />
+          </div>
+          <Skeleton className="h-4 w-3/4" />
+          <div className="flex gap-2">
+            <Skeleton className="h-8 w-20" />
+            <Skeleton className="h-8 w-20" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const ResidenceSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 bg-muted/50 rounded-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-6 w-1/3" />
+            <Skeleton className="h-6 w-24" />
+          </div>
+          <Skeleton className="h-4 w-full" />
+          <div className="flex gap-3">
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-8 w-24" />
+            <Skeleton className="h-8 w-24" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const EatUpSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 bg-muted/50 rounded-lg space-y-3">
+          <div className="flex items-center justify-between">
+            <Skeleton className="h-7 w-1/3" />
+            <Skeleton className="h-7 w-32" />
+          </div>
+          <Skeleton className="h-4 w-full" />
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-8 w-28" />
+            <Skeleton className="h-8 w-28" />
+            <Skeleton className="h-8 w-32" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 export function Feed({ mode }: { mode: string }) {
   const [search, setSearch] = useState("");
   const [zone, setZone] = useState("all");
-  //donations
   const [category, setCategory] = useState("all");
-  //residences
   const [type, setType] = useState("all");
   const [shelter, setShelter] = useState("all");
-  //eatup
   const [kosher, setKosher] = useState("all");
   const [hosting, setHosting] = useState("all");
-  const [donations, setDonations] = useState<Donation[]>([]);
-  const [residences, setResidences] = useState<Residence[]>([]);
   const [date, setDate] = React.useState<DateRange | undefined>({
     from: addDays(new Date(), -365),
     to: addDays(new Date(), 365),
   });
-  const [eatups, setEatUps] = useState<EatUp[]>([]);
 
-  useEffect(() => {
-    const fetchDonation = async () => {
-      try {
-        const res = await api.get("/donation");
-        console.log("Raw donations response:", res.data);
-        if (Array.isArray(res.data)) {
-          setDonations(res.data);
-          console.log("Processed donations:", res.data);
-        } else if (res.data && Array.isArray(res.data.data)) {
-          setDonations(res.data.data);
-          console.log("Processed donations:", res.data.data);
-        } else {
-          console.error("Invalid donations response structure:", res.data);
-          setDonations([]);
-        }
-      } catch (error) {
-        console.error("Error fetching donations:", error);
-        setDonations([]);
-      }
-    };
-    const fetchResidences = async () => {
-      try {
-        const res = await api.get("/residences");
-        console.log("Raw residences response:", res.data);
-        if (Array.isArray(res.data)) {
-          setResidences(res.data);
-          console.log("Processed residences:", res.data);
-        } else if (res.data && Array.isArray(res.data.data)) {
-          setResidences(res.data.data);
-          console.log("Processed residences:", res.data.data);
-        } else {
-          console.error("Invalid residences response structure:", res.data);
-          setResidences([]);
-        }
-      } catch (error) {
-        console.error("Error fetching residences:", error);
-        setResidences([]);
-      }
-    };
-    const fetchEatUps = async () => {
-      try {
-        const res = await api.get("/eatups");
-        console.log("EatUps response:", res.data);
-        setEatUps(res.data.data);
-      } catch (error) {
-        console.error("Error fetching EatUps:", error);
-      }
-    };
-    if (mode === "Donations") {
-      fetchDonation();
-    }
-    if (mode === "Residences") {
-      fetchResidences();
-    }
-    if (mode === "EatUp") {
-      fetchEatUps();
-    }
-  }, [mode]);
-  console.log(mode);
+  const { data: donationsData, isLoading: isDonationsLoading } = useQuery({
+    queryKey: ["donations"],
+    queryFn: fetchDonations,
+    staleTime: 1000 * 60 * 5,
+    enabled: mode === "Donations",
+  });
+
+  const { data: residencesData, isLoading: isResidencesLoading } = useQuery({
+    queryKey: ["residences"],
+    queryFn: fetchResidences,
+    staleTime: 1000 * 60 * 5,
+    enabled: mode === "Residences",
+  });
+
+  const { data: eatupsData, isLoading: isEatUpsLoading } = useQuery({
+    queryKey: ["eatups"],
+    queryFn: fetchEatUps,
+    staleTime: 1000 * 60 * 5,
+    enabled: mode === "EatUp",
+  });
 
   const filterDonations = (donations: Donation[]) => {
     if (!donations) return [];
-
+    console.log("Filtering donations:", donations);
     return donations.filter((donation) => {
       if (!donation) return false;
 
@@ -135,16 +154,17 @@ export function Feed({ mode }: { mode: string }) {
         : true;
       const matchesZone = zone === "all" || residence.zone === zone;
       const matchesType = type === "all" || residence.type === type;
-      const matchesShelter = shelter === "all" || 
+      const matchesShelter =
+        shelter === "all" ||
         (shelter === "Sheltered" ? residence.shalter : !residence.shalter);
 
       return matchesSearch && matchesZone && matchesType && matchesShelter;
     });
   };
 
-  const filterEatUps = (eatups: EatUp[]) => {
-    console.log("Filtering eatups:", eatups);
-    return eatups.filter((eatup) => {
+  const filterEatUps = (eatupsData: EatUp[]) => {
+    console.log("Filtering eatups:", eatupsData);
+    return eatupsData.filter((eatup) => {
       console.log("Processing eatup:", eatup);
       const matchesSearch = eatup.title
         ? eatup.title.toLowerCase().includes(search.toLowerCase())
@@ -292,12 +312,23 @@ export function Feed({ mode }: { mode: string }) {
             )}
           </div>
         </div>
-        {mode === "Donations" &&
-          filterDonations(donations).map((donation: Donation) => (
+
+        {mode === "Donations" && isDonationsLoading ? (
+          <DonationSkeleton />
+        ) : (
+          mode === "Donations" &&
+          donationsData &&
+          filterDonations(donationsData).map((donation: Donation) => (
             <DetailsDialog key={donation._id} donation={donation} type={mode} />
-          ))}
-        {mode === "Residences" && residences && residences.length > 0 ? (
-          filterResidences(residences).map((residence: Residence) => (
+          ))
+        )}
+
+        {mode === "Residences" && isResidencesLoading ? (
+          <ResidenceSkeleton />
+        ) : mode === "Residences" &&
+          residencesData &&
+          residencesData.length > 0 ? (
+          filterResidences(residencesData).map((residence: Residence) => (
             <DetailsDialog
               key={residence._id}
               residence={residence}
@@ -307,10 +338,16 @@ export function Feed({ mode }: { mode: string }) {
         ) : mode === "Residences" ? (
           <div className="text-center py-4">No residences found</div>
         ) : null}
-        {mode === "EatUp" &&
-          filterEatUps(eatups).map((eatup: EatUp) => (
+
+        {mode === "EatUp" && isEatUpsLoading ? (
+          <EatUpSkeleton />
+        ) : (
+          mode === "EatUp" &&
+          eatupsData &&
+          filterEatUps(eatupsData).map((eatup: EatUp) => (
             <DetailsDialog key={eatup._id} eatup={eatup} type={mode} />
-          ))}
+          ))
+        )}
       </div>
     </div>
   );
