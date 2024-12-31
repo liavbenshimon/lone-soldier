@@ -1,4 +1,6 @@
 import { api } from "@/api";
+import { login } from "@/Redux/authSlice";
+import { setUser } from "@/Redux/userSlice";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -19,6 +21,7 @@ export function SignupForm({
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   // הגדרת useState עם סוג נתונים
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
@@ -53,6 +56,8 @@ export function SignupForm({
       sessionStorage.setItem("token", res.data.token);
       sessionStorage.setItem("id", res.data.user.id);
       sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      dispatch(setUser(res.data.user));
+      dispatch(login(res.data.token));
       if (formData.type === "Contributer") {
         navigate("/contribute");
       } else {

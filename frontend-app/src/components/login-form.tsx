@@ -12,12 +12,16 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { api } from "@/api";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "@/Redux/userSlice";
+import { login } from "@/Redux/authSlice";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const attempt = async (e: React.FormEvent) => {
@@ -30,6 +34,10 @@ export function LoginForm({
       console.log(res);
       sessionStorage.setItem("token", res.data.token);
       sessionStorage.setItem("id", res.data.user._id);
+      if (res.data.user._id) {
+        dispatch(setUser(res.data.user));
+        dispatch(login(res.data.token));
+      }
       if (res.data.user.type === "Contributer") {
         navigate("/contribute");
       } else {

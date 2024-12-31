@@ -11,12 +11,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-
+import { useSelector } from "react-redux";
 import { Button, buttonVariants } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
 import { LogoIcon } from "./Icons";
 import { useNavigate } from "react-router";
+import { RootState } from "@/Redux/store";
 interface RouteProps {
   href: string;
 
@@ -96,6 +97,7 @@ export const Navbar = ({
   isAccordion = false,
   modes,
 }: NavbarProps) => {
+  const user = useSelector((state: RootState) => state.user);
   const [accordionOpen, setAccordionOpen] = useState<boolean>(false); // Accordion
   const navigate = useNavigate();
   const [mode] = useState(modes);
@@ -150,25 +152,39 @@ export const Navbar = ({
                         {label}
                       </a>
                     ))}
+                    {user.firstName ? (
+                      <Button
+                        className="w-full"
+                        onClick={() => {
+                          navigate("/home");
+                        }}
+                      >
+                        {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
 
-                    <Button
-                      className="w-full"
-                      onClick={() => {
-                        navigate("/login");
-                      }}
-                    >
-                      {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
-                      Login
-                    </Button>
-                    <Button
-                      className="w-full"
-                      onClick={() => {
-                        navigate("/signup");
-                      }}
-                    >
-                      {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
-                      SignUp
-                    </Button>
+                        {user.firstName}
+                      </Button>
+                    ) : (
+                      <>
+                        <Button
+                          className="w-full"
+                          onClick={() => {
+                            navigate("/login");
+                          }}
+                        >
+                          {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
+                          Login
+                        </Button>
+                        <Button
+                          className="w-full"
+                          onClick={() => {
+                            navigate("/signup");
+                          }}
+                        >
+                          {/* <GitHubLogoIcon className="mr-2 w-5 h-5" /> */}
+                          SignUp
+                        </Button>
+                      </>
+                    )}
                   </nav>
                 </SheetContent>
               </Sheet>
