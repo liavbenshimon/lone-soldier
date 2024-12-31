@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router";
 import { useState } from "react";
 import { api } from "@/api";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUser } from "@/Redux/userSlice";
 import { login } from "@/Redux/authSlice";
 
