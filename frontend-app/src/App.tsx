@@ -16,7 +16,7 @@ import store from "./Redux/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
+import RequestForm from "./components/RequestForm";
 export default function App() {
   const queryClient = new QueryClient();
   return (
@@ -50,6 +50,7 @@ export default function App() {
               <Route path="/Login" element={<Login />} />
               <Route path="/signUp" element={<SignUp />} />
               <Route path="/termofservice" element={<Tos />} />
+              <Route path="/RequestForm" element={<RequestForm />} />
 
               <Route path="*" element={<h1>404</h1>} />
             </Routes>

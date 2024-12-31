@@ -45,6 +45,10 @@ const routeListHome: RouteProps[] = [
     label: "Your Rights",
   },
   {
+    href: "/RequestForm",
+    label: "Request Form",
+  },
+  {
     href: "/logout",
     label: "Logout",
   },
