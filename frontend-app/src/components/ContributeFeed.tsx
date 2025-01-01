@@ -173,6 +173,27 @@ export function ContributePostCard() {
                       "No description"}
                   </h3>
                   <p className="text-muted-foreground">Type: {item.type}</p>
+                  {item.type === "EatUp" && "limit" in item && item.limit && (
+                    <div className="mt-2">
+                      <p className="text-muted-foreground flex items-center gap-2">
+                        Guests:
+                        <span
+                          className={`font-medium ${
+                            (item.guests?.length || 0) >= item.limit
+                              ? "text-destructive"
+                              : "text-primary"
+                          }`}
+                        >
+                          {item.guests?.length || 0}/{item.limit}
+                        </span>
+                        {(item.guests?.length || 0) >= item.limit && (
+                          <span className="text-sm text-destructive">
+                            (Fully Booked)
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2 mt-4">
                   <EditDialog item={item} type={item.type} onEdit={fetchData} />

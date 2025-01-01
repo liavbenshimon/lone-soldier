@@ -8,7 +8,6 @@ const authenticateToken = (req, res, next) => {
   const authHeader = req.headers.authorization; // Get the Authorization header
   const token = authHeader && authHeader.split(" ")[1]; // Extract the token
 
-
   if (!token) {
     // If no token provided, return 401 Unauthorized
     return res
@@ -17,18 +16,16 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
-    // Verify the token    
+    // Verify the token
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    
     // Attach user ID to the request object for further use
-    req.user = { _id: decoded._id };
+    req.user = { _id: decoded.id }; //WHY WAS THIS _ID? if decoded has only id?!?
+    console.log("User ID:", req.user, decoded); // Debug log
     next(); // Proceed to the next middleware or route handler
-
   } catch (error) {
     console.error("Token verification failed:", error.message); // Log the error
     res.status(403).json({ message: "Invalid or expired token." }); // Return 403 Forbidden
   }
-
 };
 
 export default authenticateToken;
