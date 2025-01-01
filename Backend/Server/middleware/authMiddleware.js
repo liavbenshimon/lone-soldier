@@ -21,7 +21,7 @@ const authenticateToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     
     // Attach user ID to the request object for further use
-    req.user = { _id: decoded._id };
+    req.user = { _id: decoded.id };
     next(); // Proceed to the next middleware or route handler
 
   } catch (error) {
