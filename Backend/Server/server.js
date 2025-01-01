@@ -13,6 +13,7 @@ console.log("JWT_SECRET_KEY:", process.env.JWT_SECRET_KEY);
 import userRoutes from "./routes/userRoutes.js";
 import donationRoutes from "./routes/donationRoutes.js";
 import eatupRoutes from "./routes/eatupRoute.js";
+import profileRoutes from "./routes/profileRoutes.js"
 import residenceRoutes from "./routes/residenceRoutes.js";
 const PORT = process.env.PORT || 5000;
 const app = express();
@@ -44,6 +45,8 @@ app.use("/api/users", userRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/eatups", eatupRoutes);
 app.use("/api/residences", residenceRoutes);
+app.use("/api/profile", profileRoutes);
+
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));

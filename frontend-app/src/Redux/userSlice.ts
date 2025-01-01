@@ -3,6 +3,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   firstName: "",
   lastName: "",
+  nickname: "",
+  bio: "", 
+  profileImage: "",
   passport: "",
   email: "",
   password: "",
@@ -10,6 +13,8 @@ const initialState = {
   personalIdentificationNumber: "",
   media: "",
   type: "",
+  receiveNotifications: false,
+
 };
 
 const userSlice = createSlice({
@@ -22,6 +27,18 @@ const userSlice = createSlice({
     setLastName: (state, action) => {
       state.lastName = action.payload;
     },
+    setNickname: (state, action) => {
+      state.nickname = action.payload;
+    },
+    setBio: (state, action) => {
+      state.bio = action.payload;
+    },
+    setProfileImage: (state, action) => {
+      state.profileImage = action.payload;
+    },
+    setReceiveNotifications: (state, action) => {
+      state.receiveNotifications = action.payload;
+    },      
     setPassport: (state, action) => {
       state.passport = action.payload;
     },
@@ -43,6 +60,14 @@ const userSlice = createSlice({
     setUser: (state, action) => {
       return { ...state, ...action.payload };
     },
+    updateUser: (state, action) => {
+      Object.keys(action.payload).forEach((key) => {
+        if (key in state) {
+          (state as any)[key as keyof typeof state] = action.payload[key];
+        }
+      });
+    },
+    
     resetUser: () => initialState,
   },
 });
@@ -50,6 +75,10 @@ const userSlice = createSlice({
 export const {
   setFirstName,
   setLastName,
+  setNickname,
+  setBio,
+  setProfileImage,
+  setReceiveNotifications,
   setPassport,
   setEmail,
   setPhoneNumber,
@@ -57,6 +86,7 @@ export const {
   setMedia,
   setType,
   setUser,
+  updateUser,
   resetUser,
 } = userSlice.actions;
 

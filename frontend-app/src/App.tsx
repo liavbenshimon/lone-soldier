@@ -1,5 +1,6 @@
 import ContributePage from "./pages/Contribute";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage"
+import Profile from "./pages/Profile";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -50,7 +51,7 @@ export default function App() {
               <Route path="/Login" element={<Login />} />
               <Route path="/signUp" element={<SignUp />} />
               <Route path="/termofservice" element={<Tos />} />
-
+              <Route path="/profile" element={<Profile />} />
               <Route path="*" element={<h1>404</h1>} />
             </Routes>
           </BrowserRouter>
