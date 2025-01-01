@@ -16,6 +16,7 @@ import store from "./Redux/store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import PendingPage from "./pages/PendingPage";
 
 export default function App() {
   const queryClient = new QueryClient();
@@ -33,7 +34,7 @@ export default function App() {
               <Route path="/rights" element={<YourRights />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/contact" element={<ContactUs />} />
-
+              <Route path="/pending" element={<PendingPage />} />
               <Route path="/home/social" element={<Social />} />
 
               <Route path="/home" element={<HomePage mode="Donations" />} />

@@ -2,49 +2,58 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import SignupRequest from "../models/signupRequestModel.js";
 
 dotenv.config();
 
+// Helper function to create JWT token
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "23h",
+  });
+};
+
 // התחברות למשתמש
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
   try {
-    // חפש את המשתמש לפי המייל
+    const { email, password } = req.body;
+
+    // First try to login as regular user
     const user = await User.findOne({ email });
 
-    // אם המשתמש לא נמצא
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    if (user) {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        // Create token for regular user
+        const token = createToken(user._id);
+        res.status(200).json({
+          user,
+          token,
+          type: "user",
+        });
+        return;
+      }
     }
 
-    // בדוק אם הסיסמא שהוזנה תואמת את הסיסמא המאוחסנת
-    const isMatch = await bcrypt.compare(password, user.password);
-
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+    // If no user found or password didn't match, check signup requests
+    const signupRequest = await SignupRequest.findOne({ email });
+    if (signupRequest) {
+      const match = await bcrypt.compare(password, signupRequest.password);
+      if (match) {
+        // Create a special token for pending signup
+        const token = createToken(signupRequest._id);
+        res.status(200).json({
+          request: signupRequest,
+          token,
+          type: "pending",
+        });
+        return;
+      }
     }
 
-    // יצירת טוקן JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "23h",
-    });
-
-    // שלח את התגובה עם הטוקן
-    res.status(200).json({
-      message: "Login successful",
-      token: token,
-      user: {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        type: user.type,
-      },
-    });
+    res.status(401).json({ error: "Invalid login credentials" });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 

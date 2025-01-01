@@ -28,8 +28,9 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status >= 400 && error.response?.status < 500) {
+    if (error.response?.status === 401 || error.response?.status === 403) {
       console.log(error.response?.status);
+      // alert("Unauthorized");
       // Clear session storage
       sessionStorage.clear();
       // Reset Redux state
