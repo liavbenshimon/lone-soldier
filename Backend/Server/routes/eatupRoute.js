@@ -5,6 +5,7 @@ import {
   getEatUpById,
   updateEatUp,
   deleteEatUp,
+  toggleGuestSubscription,
 } from "../controllers/eatupController.js";
 import authenticateToken from "../middleware/authMiddleware.js";
 
@@ -24,5 +25,12 @@ router.put("/:id", authenticateToken, updateEatUp);
 
 // Route to delete a specific EatUp entry by ID
 router.delete("/:id", authenticateToken, deleteEatUp);
+
+// Route to toggle guest subscription
+router.post(
+  "/:id/toggle-subscription",
+  authenticateToken,
+  toggleGuestSubscription
+);
 
 export default router;
