@@ -1,154 +1,151 @@
 function RequestForm() {
   return (
-    <div
-      className="max-w-lg mx-auto bg-[hsl(var(--background))] p-6 rounded-lg shadow-md rtl"
-      dir="rtl"
-    >
+    <div className="max-w-lg mx-auto bg-[hsl(var(--background))] p-6 rounded-lg shadow-md">
       <style>
         {`
-              input::placeholder,
-              textarea::placeholder {
-                color: #A9A9A9; /* צבע אפור בהיר עבור ה-placeholder */
-              }
-            `}
+          input::placeholder,
+          textarea::placeholder {
+            color: #A9A9A9; /* Light gray color for placeholders */
+          }
+        `}
       </style>
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-[hsl(var(--primary-foreground))] shadow-lg text-[hsl(var(--primary))] rtl">
-        בקשה לתרומה
+      <h2 className="text-3xl font-extrabold mb-6 text-center text-[hsl(var(--primary-foreground))] shadow-lg text-[hsl(var(--primary))]">
+        Donation Request
       </h2>
 
-      <form className="rtl">
+      <form>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            שם
+            Name
           </label>
           <input
             type="text"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס שם"
+            placeholder="Enter your name"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            גיל
+            Age
           </label>
           <input
             type="number"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס גיל"
+            placeholder="Enter your age"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            פלאפון
+            Phone
           </label>
           <input
             type="text"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס פלאפון"
+            placeholder="Enter your phone number"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            דוא"ל
+            Email
           </label>
           <input
             type="email"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס דואל"
+            placeholder="Enter your email"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            שירות
+            Service
           </label>
-          <div className="flex gap-4 rtl">
+          <div className="flex gap-4">
             <label className="flex items-center text-[hsl(var(--secondary-foreground))]">
               <input
                 type="radio"
                 name="service"
-                value="סדיר"
+                value="Regular"
                 className="mr-2"
               />
-              סדיר
+              Regular
             </label>
             <label className="flex items-center text-[hsl(var(--secondary-foreground))]">
               <input
                 type="radio"
                 name="service"
-                value="מילואים"
+                value="Reserves"
                 className="mr-2"
               />
-              מילואים
+              Reserves
             </label>
           </div>
         </div>
 
-        {/* פרטי הבקשה */}
+        {/* Request Details */}
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            סוג הפריט
+            Item Type
           </label>
           <input
             type="text"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס סוג פריט"
+            placeholder="Enter item type"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            תיאור הפריט הנדרש
+            Item Description
           </label>
           <textarea
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="פרטים כמו מידה, צבע, מצב רצוי"
+            placeholder="Details like size, color, desired condition"
           ></textarea>
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            כמות נדרשת
+            Required Quantity
           </label>
           <input
             type="number"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס כמות"
+            placeholder="Enter quantity"
           />
         </div>
 
-        {/* פרטים נוספים */}
+        {/* Additional Details */}
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            דחיפות התרומה
+            Urgency
           </label>
           <select className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50">
-            <option value="מידי">מידי</option>
-            <option value="תאריך ספציפי">עד תאריך</option>
+            <option value="Immediate">Immediate</option>
+            <option value="Specific Date">Specific Date</option>
           </select>
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            אזור גיאוגרפי להעדפה למשלוח/איסוף
+            Preferred Geographic Area
           </label>
           <input
             type="text"
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="הכנס אזור גיאוגרפי"
+            placeholder="Enter geographic area"
           />
         </div>
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            הערות או בקשות מיוחדות
+            Notes or Special Requests
           </label>
           <textarea
             className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="פרטים נוספים לתורם"
+            placeholder="Additional details for the donor"
           ></textarea>
         </div>
 
-        {/* הסכמה */}
+        {/* Agreement */}
         <div className="mb-6">
           <label className="flex items-center text-[hsl(var(--secondary-foreground))]">
-            <input type="checkbox" className="mr-2" />
-            אני מסכים לשתף את הפרטים שלי עם התורם
+            <input type="checkbox" className="mr-2" />I agree to share my
+            details with the donor
           </label>
         </div>
 
@@ -156,7 +153,7 @@ function RequestForm() {
           type="submit"
           className="w-full bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))] py-2 px-4 rounded-lg hover:bg-[hsl(var(--primary))] hover:opacity-80"
         >
-          שלח בקשה
+          Submit Request
         </button>
       </form>
     </div>
