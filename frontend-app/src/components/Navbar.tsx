@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -11,7 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Button, buttonVariants } from "./ui/button";
 import { Menu, X } from "lucide-react";
 import { ModeToggle } from "./mode-toggle";
