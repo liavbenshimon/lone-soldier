@@ -7,6 +7,7 @@ import {
   deleteUser,
   editUser,
   getUserByPIN,
+  getUserById, // Importe o controlador que será criado
 } from "../controllers/userController.js";
 import authenticateToken from "../middleware/authMiddleware.js"; // Import authentication middleware
 
@@ -22,6 +23,7 @@ router.get(
   authenticateToken,
   getUserByPIN
 ); // Get user by personal identification number
+router.get("/id/:id", authenticateToken, getUserById); // Nova rota para buscar usuário por ID
 router.delete("/:passport", authenticateToken, deleteUser); // Delete a user by passport
 router.put("/:passport", authenticateToken, editUser); // Edit a user by passport
 

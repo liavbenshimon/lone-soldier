@@ -6,6 +6,23 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // התחברות למשתמש
+// Buscar usuário pelo ID
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params; // Obtenha o ID dos parâmetros da rota
+    const user = await User.findById(id); // Use o método findById do Mongoose
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); // Envie os dados do usuário encontrados
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Error fetching user by ID" });
+  }
+};
+
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 

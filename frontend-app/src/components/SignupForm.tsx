@@ -5,7 +5,14 @@ import { setUser } from "@/Redux/userSlice";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
-// הגדרת סוג נתונים של הטופס
+// Array de nicknames e imagens de perfil
+const nicknames = ["Bob", "Sweet", "Jon", "Juan", "Min", "Laila", "Pedro", "Jess", "Igor", "Cat"];
+const profileImages = ["boy_1.svg", "boy_2.svg", "girl_1.svg", "girl_2.svg"];
+
+// Função para selecionar um item aleatório de uma array
+const getRandomItem = <T,>(array: T[]): T => array[Math.floor(Math.random() * array.length)];
+
+// Tipagem para os dados do formulário
 interface FormData {
   firstName: string;
   lastName: string;
@@ -13,7 +20,7 @@ interface FormData {
   email: string;
   password: string;
   phone: string;
-  personalIdentificationNumber?: string; // שדה אופציונלי
+  personalIdentificationNumber?: string; // Campo opcional
   type: "Contributer" | "Soldier";
 }
 
@@ -23,7 +30,8 @@ export function SignupForm({
 }: React.ComponentPropsWithoutRef<"div">) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  // הגדרת useState עם סוג נתונים
+
+  // Estado do formulário
   const [formData, setFormData] = useState<FormData>({
     firstName: "",
     lastName: "",
@@ -32,12 +40,10 @@ export function SignupForm({
     password: "",
     phone: "",
     personalIdentificationNumber: "",
-    type: "Contributer", // ברירת מחדל
+    type: "Contributer", // Padrão
   });
 
-  // הגדרת פונקציה שתטפל בשינויי שדות
-  //shalev38@gmail.com
-  //12345678
+  // Função para lidar com mudanças nos campos do formulário
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -48,17 +54,35 @@ export function SignupForm({
     }));
   };
 
-  // הגדרת פונקציה לשליחת הטופס
+  // Função para envio do formulário
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const res = await api.post("/users", formData);
+      // Gerar nickname e imagem de perfil aleatórios
+      const randomNickname = getRandomItem(nicknames);
+      const randomProfileImage = getRandomItem(profileImages);
+
+      // Adicionar nickname e profileImage ao payload
+      const extendedFormData = {
+        ...formData,
+        nickname: randomNickname,
+        profileImage: randomProfileImage,
+      };
+
+      const res = await api.post("/users", extendedFormData);
+
       console.log(res);
+
+      // Armazenar informações no sessionStorage
       sessionStorage.setItem("token", res.data.token);
       sessionStorage.setItem("id", res.data.user.id);
-      sessionStorage.setItem("user", JSON.stringify(res.data.user));
+      sessionStorage.setItem("showWelcomeDialog", "false");
+
+      // Atualizar Redux
       dispatch(setUser(res.data.user));
       dispatch(login(res.data.token));
+
+      // Redirecionar com base no tipo de usuário
       if (formData.type === "Contributer") {
         navigate("/contribute");
       } else {

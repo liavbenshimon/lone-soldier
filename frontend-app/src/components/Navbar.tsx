@@ -37,6 +37,10 @@ const routeListHome: RouteProps[] = [
     label: "EatUps",
   },
   {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
     href: "/Home/social",
     label: "Social",
   },

@@ -21,18 +21,22 @@ const ProfileImageDialog: React.FC<ProfileImageDialogProps> = ({
         onClick={(e) => e.stopPropagation()}
       >
         <h2 className="text-2xl font-bold mb-4">Select a Profile Picture</h2>
-        <div className="grid grid-cols-6 gap-4">
+        <div className="grid grid-cols-3 sm:grid-cols-4 gap-6">
           {profileImages.map((img, index) => (
-            <img
+            <div
               key={index}
-              src={`/src/assets/profilePictures/${img}`}
-              alt={img}
               onClick={() => {
-                onSelectImage(`/src/assets/profilePictures/${img}`); // Atualiza com o caminho correto
-                onClose(); // Fecha o diálogo
+                onSelectImage(`/src/assets/profilePictures/${img}`);
+                onClose();
               }}
-              className="w-16 h-16 rounded-full cursor-pointer border-2 hover:border-green-500"
-            />
+              className="w-20 h-20 sm:w-24 sm:h-24 lg:w-32 lg:h-32 rounded-full overflow-hidden cursor-pointer border-2 border-gray-700 hover:border-green-500"
+            >
+              <img
+                src={`/src/assets/profilePictures/${img}`}
+                alt={img}
+                className="w-full h-full object-cover"
+              />
+            </div>
           ))}
         </div>
         <button

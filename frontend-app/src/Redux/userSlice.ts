@@ -1,10 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
+  _id: "", 
   firstName: "",
   lastName: "",
   nickname: "",
-  bio: "", 
+  bio: "",
   profileImage: "",
   passport: "",
   email: "",
@@ -14,7 +15,6 @@ const initialState = {
   media: "",
   type: "",
   receiveNotifications: false,
-
 };
 
 const userSlice = createSlice({
@@ -38,7 +38,7 @@ const userSlice = createSlice({
     },
     setReceiveNotifications: (state, action) => {
       state.receiveNotifications = action.payload;
-    },      
+    },
     setPassport: (state, action) => {
       state.passport = action.payload;
     },
@@ -67,7 +67,6 @@ const userSlice = createSlice({
         }
       });
     },
-    
     resetUser: () => initialState,
   },
 });
