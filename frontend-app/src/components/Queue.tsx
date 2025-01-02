@@ -48,6 +48,8 @@ interface SignupRequest {
   updatedAt: string;
   isKYC: boolean;
   media: string[];
+  approved: "in queue" | "approved" | "deny";
+  reason?: string;
 }
 
 const fetchSignupRequests = async () => {
@@ -55,11 +57,11 @@ const fetchSignupRequests = async () => {
   return response.data;
 };
 
-function QueueSkeleton() {
+const QueueSkeleton = () => {
   return (
     <>
-      {[1, 2, 3, 4, 5].map((index) => (
-        <TableRow key={index}>
+      {Array.from({ length: 5 }).map((_, i) => (
+        <TableRow key={i}>
           <TableCell>
             <div className="flex gap-2">
               <Skeleton className="h-4 w-20" />
@@ -71,6 +73,9 @@ function QueueSkeleton() {
           </TableCell>
           <TableCell>
             <Skeleton className="h-4 w-16" />
+          </TableCell>
+          <TableCell>
+            <Skeleton className="h-6 w-24 rounded-full" />
           </TableCell>
           <TableCell>
             <Skeleton className="h-6 w-24 rounded-full" />
@@ -91,7 +96,7 @@ function QueueSkeleton() {
       ))}
     </>
   );
-}
+};
 
 export default function AdminQueue() {
   const navigate = useNavigate();
@@ -118,9 +123,9 @@ export default function AdminQueue() {
   // Mutation for accepting a request
   const acceptMutation = useMutation({
     mutationFn: async (id: string) => {
-      await api.patch(`/signup-requests/${id}/status`, {
+      await api.put(`/signup-requests/${id}/status`, {
         progress: "completed",
-        approved: true,
+        approved: "approved",
       });
     },
     onSuccess: () => {
@@ -132,7 +137,10 @@ export default function AdminQueue() {
   // Mutation for denying a request
   const denyMutation = useMutation({
     mutationFn: async (id: string) => {
-      await api.delete(`/signup-requests/${id}`);
+      await api.put(`/signup-requests/${id}/status`, {
+        approved: "deny",
+        reason: window.prompt("Please provide a reason for denial:"),
+      });
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["signupRequests"] });
@@ -158,6 +166,19 @@ export default function AdminQueue() {
         return "bg-purple-500";
       case "completed":
         return "bg-green-500";
+      default:
+        return "bg-gray-500";
+    }
+  };
+
+  const getApprovalColor = (approved: string) => {
+    switch (approved) {
+      case "approved":
+        return "bg-green-500";
+      case "deny":
+        return "bg-red-500";
+      case "in queue":
+        return "bg-yellow-500";
       default:
         return "bg-gray-500";
     }
@@ -193,6 +214,7 @@ export default function AdminQueue() {
                 <TableHead>Email</TableHead>
                 <TableHead>Type</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Approval</TableHead>
                 <TableHead>KYC</TableHead>
                 <TableHead>Submitted</TableHead>
                 <TableHead>Updated</TableHead>
@@ -268,6 +290,7 @@ export default function AdminQueue() {
               <TableHead>Email</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Approval</TableHead>
               <TableHead>KYC</TableHead>
               <TableHead>Submitted</TableHead>
               <TableHead>Updated</TableHead>
@@ -288,6 +311,11 @@ export default function AdminQueue() {
                   <TableCell>
                     <Badge className={getProgressColor(request.progress)}>
                       {request.progress}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getApprovalColor(request.approved)}>
+                      {request.approved}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -384,6 +412,21 @@ export default function AdminQueue() {
                     </div>
                   </div>
                 )}
+                <div>
+                  <h3 className="font-semibold">Approval Status</h3>
+                  <Badge className={getApprovalColor(selectedRequest.approved)}>
+                    {selectedRequest.approved}
+                  </Badge>
+                </div>
+                {selectedRequest.approved === "deny" &&
+                  selectedRequest.reason && (
+                    <div>
+                      <h3 className="font-semibold">Denial Reason</h3>
+                      <p className="text-destructive">
+                        {selectedRequest.reason}
+                      </p>
+                    </div>
+                  )}
                 <div className="flex gap-4 pt-4">
                   <Button
                     className="flex-1"

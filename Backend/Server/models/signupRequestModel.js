@@ -45,8 +45,13 @@ const signupRequestSchema = new mongoose.Schema({
   },
   // Request status
   approved: {
-    type: Boolean,
-    default: false,
+    type: String,
+    enum: ["in queue", "approved", "deny"],
+    default: "in queue",
+  },
+  reason: {
+    type: String,
+    default: null,
   },
   progress: {
     type: String,

@@ -3,15 +3,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { api } from "@/api";
+import { cn } from "@/lib/utils";
 
 interface SignupRequest {
   progress: "submitted" | "under review" | "waiting kyc" | "completed";
+  approved: "in queue" | "approved" | "deny";
   type: string;
   firstName: string;
   lastName: string;
   email: string;
   createdAt: string;
   _id: string;
+  reason?: string;
 }
 
 export default function PendingPage() {
@@ -40,17 +43,21 @@ export default function PendingPage() {
     }
   }, [location.state]);
 
-  // Poll for updates
+  // Poll for updates only if not denied
   useEffect(() => {
-    if (!request?._id || !location.state?.token) return;
+    if (!request?._id || !location.state?.token || request.approved === "deny")
+      return;
 
     const fetchRequest = async () => {
       try {
         const response = await api.get(`/signup-requests/${request._id}`);
         setRequest(response.data);
 
-        // If request is completed, redirect to login
-        if (response.data.progress === "completed") {
+        // If request is completed and approved, redirect to login
+        if (
+          response.data.progress === "completed" &&
+          response.data.approved === "approved"
+        ) {
           setTimeout(() => {
             navigate("/login");
           }, 3000);
@@ -64,10 +71,14 @@ export default function PendingPage() {
 
     const interval = setInterval(fetchRequest, 30000);
     return () => clearInterval(interval);
-  }, [request?._id, location.state?.token, navigate]);
+  }, [request?._id, request?.approved, location.state?.token, navigate]);
 
-  const getProgressMessage = (progress: string) => {
-    switch (progress) {
+  const getProgressMessage = (request: SignupRequest) => {
+    if (request.approved === "deny") {
+      return "Your request has been denied.";
+    }
+
+    switch (request.progress) {
       case "submitted":
         return "Your request has been submitted and is waiting for review.";
       case "under review":
@@ -75,7 +86,9 @@ export default function PendingPage() {
       case "waiting kyc":
         return "Please complete your KYC verification.";
       case "completed":
-        return "Your request has been processed. You can now log in.";
+        return request.approved === "approved"
+          ? "Your request has been approved. You can now log in."
+          : "Your request has been processed.";
       default:
         return "Status unknown";
     }
@@ -99,9 +112,19 @@ export default function PendingPage() {
               <div className="space-y-4">
                 <div>
                   <h3 className="font-semibold">Status</h3>
-                  <p className="text-muted-foreground">
-                    {getProgressMessage(request.progress)}
+                  <p
+                    className={cn(
+                      "text-muted-foreground",
+                      request.approved === "deny" && "text-destructive"
+                    )}
+                  >
+                    {getProgressMessage(request)}
                   </p>
+                  {request.approved === "deny" && request.reason && (
+                    <p className="mt-2 text-sm text-destructive border border-destructive/50 rounded-md p-3 bg-destructive/10">
+                      Reason: {request.reason}
+                    </p>
+                  )}
                 </div>
                 <div>
                   <h3 className="font-semibold">Account Type</h3>
@@ -126,8 +149,10 @@ export default function PendingPage() {
               </div>
               <div className="pt-4">
                 <p className="text-sm text-muted-foreground">
-                  {request.progress === "completed"
+                  {request.approved === "approved"
                     ? "Your account has been approved! Redirecting to login..."
+                    : request.approved === "deny"
+                    ? "You can create a new signup request if you wish to try again."
                     : "We will notify you via email when your application status changes."}
                 </p>
               </div>
@@ -141,6 +166,14 @@ export default function PendingPage() {
             >
               Return to Home
             </Button>
+            {/* {request?.approved === "deny" && (
+              <Button
+                className="w-full mt-2"
+                onClick={() => navigate("/signup")}
+              >
+                Create New Request
+              </Button>
+            )} */}
           </div>
         </CardContent>
       </Card>

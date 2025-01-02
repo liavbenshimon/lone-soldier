@@ -7,8 +7,8 @@ import {
   deleteSignupRequest,
   getSignupRequestByEmail,
 } from "../controllers/signupRequestController.js";
-import { requireAuth } from "../middleware/requireAuth.js";
-
+import authenticateToken from "../middleware/authMiddleware.js";
+import { requireAdmin } from "../middleware/requireAdmin.js";
 const router = express.Router();
 
 // Public routes
@@ -16,10 +16,11 @@ router.post("/", createSignupRequest);
 router.get("/by-email/:email", getSignupRequestByEmail);
 
 // Protected routes - require admin authentication
-router.use(requireAuth);
+router.use(authenticateToken);
+router.use(requireAdmin);
 router.get("/", getAllSignupRequests);
 router.get("/:id", getSignupRequestById);
-router.patch("/:id/status", updateSignupRequestStatus);
+router.put("/:id/status", updateSignupRequestStatus);
 router.delete("/:id", deleteSignupRequest);
 
 export default router;

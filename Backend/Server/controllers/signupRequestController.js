@@ -83,7 +83,7 @@ export const updateSignupRequestStatus = async (req, res) => {
     }
 
     const { id } = req.params;
-    const { progress, approved } = req.body;
+    const { progress, approved, reason } = req.body;
 
     const request = await SignupRequest.findById(id);
     if (!request) {
@@ -92,13 +92,13 @@ export const updateSignupRequestStatus = async (req, res) => {
 
     // Update status
     if (progress) request.progress = progress;
-    if (approved !== undefined) {
+    if (approved) {
       request.approved = approved;
-      if (approved) {
+      if (approved === "approved") {
         request.approvedBy = req.user._id;
         request.progress = "completed";
 
-        // Create user account if approved
+        // Create user account only if approved
         const newUser = new User({
           firstName: request.firstName,
           lastName: request.lastName,
@@ -112,6 +112,9 @@ export const updateSignupRequestStatus = async (req, res) => {
         });
 
         await newUser.save();
+      } else if (approved === "deny" && reason) {
+        request.reason = reason;
+        request.progress = "completed";
       }
     }
 
