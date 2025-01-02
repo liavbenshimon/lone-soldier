@@ -41,12 +41,17 @@ export const getRequestById = async (req, res) => {
 // Delete a request
 export const deleteRequest = async (req, res) => {
   try {
-    const request = await Request.findByIdAndDelete(req.params.id);
+    const { id } = req.params;
+
+    // משתמש ב- findOneAndDelete כדי למחוק את הבקשה על פי ה-ID
+    const request = await Request.findOneAndDelete({ _id: id });
     if (!request) {
-      return res.status(404).json({ message: 'Request not found' });
+      return res.status(404).json({ message: "Request not found" });
     }
-    res.status(200).json({ message: 'Request deleted successfully' });
+
+    res.status(200).json({ message: "Request deleted successfully" });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Error deleting request" });
   }
 };
