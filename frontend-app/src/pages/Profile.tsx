@@ -61,41 +61,117 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleSubmit = () => {
+//   const handleSubmit = () => {
+//     if (!nickname) {
+//       setError("Nickname cannot be empty.");
+//       return;
+//     }
+
+//     if (error) {
+//       alert("Please fix the errors before saving!");
+//       return;
+//     }
+
+//     const updatedUser = {
+//       nickname,
+//       email,
+//       phone,
+//       bio,
+//       profileImage,
+//       receiveNotifications,
+//     };
+//     dispatch(updateUser(updatedUser));
+//   };
+const handleSubmit = async () => {
     if (!nickname) {
       setError("Nickname cannot be empty.");
       return;
     }
-
+  
     if (error) {
       alert("Please fix the errors before saving!");
       return;
     }
-
-    const updatedUser = {
-      nickname,
-      email,
-      phone,
-      bio,
-      profileImage,
-      receiveNotifications,
-    };
-    dispatch(updateUser(updatedUser));
+  
+    try {
+      const updatedUser = {
+        nickname,
+        email,
+        phone,
+        bio,
+        profileImage,
+        receiveNotifications,
+      };
+  
+      // Certifique-se de que `user._id` contém o ID do usuário
+      const response = await api.put(`/users/${user._id}`, updatedUser);
+  
+      dispatch(updateUser(response.data)); // Atualiza o Redux com o novo estado
+      alert("Profile updated successfully!");
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Failed to update profile. Please try again.");
+    }
   };
-  useEffect(() => {
+  
+// const handleSubmit = async () => {
+//     if (!nickname) {
+//       setError("Nickname cannot be empty.");
+//       return;
+//     }
+  
+//     if (error) {
+//       alert("Please fix the errors before saving!");
+//       return;
+//     }
+  
+//     try {
+//       const updatedUser = {
+//         nickname,
+//         email,
+//         phone,
+//         bio,
+//         profileImage,
+//         receiveNotifications,
+//       };
+  
+//       const response = await api.put(`/users/${user._id}`, updatedUser);
+      
+//       dispatch(updateUser(response.data)); // Atualiza o Redux com os novos dados
+  
+//       alert("Profile updated successfully!");
+//     } catch (error) {
+//       console.error("Error updating profile:", error);
+//       alert("Failed to update profile. Please try again.");
+//     }
+//   };
+  
+//   useEffect(() => {
+//     const fetchUserData = async () => {
+//       try {
+//         const response = await api.get(`/api/user/id/${user._id}`);
+
+//         const data = response.data;
+
+//         // Atualizar o Redux e os estados locais com os dados do usuário
+//         dispatch(updateUser(data))
+//     } catch (error) {
+//         console.error("Error fetching user data:", error);
+//       }
+//       fetchUserData()
+//     }},[]);
+useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const response = await api.get(`/api/user/id/${user._id}`);
-
-        const data = response.data;
-
-        // Atualizar o Redux e os estados locais com os dados do usuário
-        dispatch(updateUser(data))
-    } catch (error) {
+        const response = await api.get(`/user/id/${user._id}`);
+        dispatch(updateUser(response.data)); // Atualiza o Redux com os dados do backend
+      } catch (error) {
         console.error("Error fetching user data:", error);
       }
-      fetchUserData()
-    }},[]);
+    };
+  
+    fetchUserData();
+  }, [dispatch, user._id]);
   return (
     <div className="flex bg-gray-900 text-foreground min-h-screen">
       {/* Navbar Integration */}

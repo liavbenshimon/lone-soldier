@@ -7,9 +7,9 @@ import {
   deleteUser,
   editUser,
   getUserByPIN,
-  getUserById, // Importe o controlador que será criado
+  getUserById,
 } from "../controllers/userController.js";
-import authenticateToken from "../middleware/authMiddleware.js"; // Import authentication middleware
+import authenticateToken from "../middleware/authMiddleware.js"; 
 
 const router = express.Router();
 
@@ -25,6 +25,6 @@ router.get(
 ); // Get user by personal identification number
 router.get("/id/:id", authenticateToken, getUserById); // Nova rota para buscar usuário por ID
 router.delete("/:passport", authenticateToken, deleteUser); // Delete a user by passport
-router.put("/:passport", authenticateToken, editUser); // Edit a user by passport
+router.put("/:id", authenticateToken, editUser);
 
 export default router;
