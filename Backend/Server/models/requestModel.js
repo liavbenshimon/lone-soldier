@@ -1,19 +1,23 @@
 import mongoose from 'mongoose';
 
-const requestSchema = new mongoose.Schema({
-//   name: { type: String, required: true },
-user:{type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-  age: { type: Number, required: true },
-//   phone: { type: String, required: true },
-//   email: { type: String, required: true },
-  service: { type: String, enum: ['סדיר', 'מילואים'], required: true },
+const donationRequestSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  service: { type: String, enum: ['Regular', 'Reserves'], required: true },
   itemType: { type: String, required: true },
   itemDescription: { type: String },
   quantity: { type: Number, required: true },
-  urgency: { type: String, enum: ['מידי', 'תאריך ספציפי'], required: true },
+  urgency: { type: String, enum: ['Immediate', 'Specific Date'], required: true },
   geographicArea: { type: String },
-  additionalNotes: { type: String },
-  agreeToShareDetails: { type: Boolean, required: true }
+  notes: { type: String },
+  agreeToShareDetails: { type: Boolean, required: true },
+  status: { 
+    type: String, 
+    enum: ['approved', 'deny', 'in process'], 
+    default: 'in process',  // Default value is 'in process'
+    required: true 
+  }
 }, { timestamps: true });
 
-export default mongoose.model('Request', requestSchema);
+const Donationrequest = mongoose.model("Donationrequest", donationRequestSchema);
+
+export default Donationrequest;

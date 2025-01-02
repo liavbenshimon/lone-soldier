@@ -4,10 +4,10 @@ import { useState, ChangeEvent, FormEvent } from "react";
 
 // Define the shape of the formData
 type FormDataType = {
-  name: string;
-  age: string;
-  phone: string;
-  email: string;
+  // name: string;
+  // age: string;
+  // phone: string;
+  // email: string;
   service: string;
   itemType: string;
   itemDescription: string;
@@ -15,15 +15,15 @@ type FormDataType = {
   urgency: string;
   geographicArea: string;
   notes: string;
-  agreement: boolean;
+  agreeToShareDetails: boolean;
 };
 
 function RequestForm() {
   const [formData, setFormData] = useState<FormDataType>({
-    name: "",
-    age: "",
-    phone: "",
-    email: "",
+    // name: "",
+    // age: "",
+    // phone: "",
+    // email: "",
     service: "",
     itemType: "",
     itemDescription: "",
@@ -31,7 +31,7 @@ function RequestForm() {
     urgency: "Immediate",
     geographicArea: "",
     notes: "",
-    agreement: false,
+    agreeToShareDetails: false,
   });
 
   // ChangeEvent for input fields
@@ -89,66 +89,6 @@ function RequestForm() {
       </h2>
 
       <form onSubmit={handleSubmit}>
-        {/* Name */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Name
-          </label>
-          <input
-            type="text"
-            name="name"
-            value={formData.name}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter your name"
-          />
-        </div>
-
-        {/* Age */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Age
-          </label>
-          <input
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter your age"
-          />
-        </div>
-
-        {/* Phone */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Phone
-          </label>
-          <input
-            type="text"
-            name="phone"
-            value={formData.phone}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter your phone number"
-          />
-        </div>
-
-        {/* Email */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Email
-          </label>
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter your email"
-          />
-        </div>
-
         {/* Service */}
         <div className="mb-4">
           <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
@@ -269,8 +209,8 @@ function RequestForm() {
         <div className="mb-4 flex items-center">
           <input
             type="checkbox"
-            name="agreement"
-            checked={formData.agreement}
+            name="agreeToShareDetails"
+            checked={formData.agreeToShareDetails}
             onChange={handleChange}
             className="mr-2"
           />
