@@ -4,6 +4,14 @@ import { resetUser } from "./Redux/userSlice";
 
 const token = sessionStorage.getItem("token");
 
+// List of endpoints that should not trigger auth redirect
+const EXCLUDED_ENDPOINTS = [
+  "/users/login",
+  "/users",
+  "/signup-requests",
+  // "/users/me",
+];
+
 export const api = axios.create({
   baseURL:
     process.env.NODE_ENV === "production"
@@ -28,9 +36,17 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || error.response?.status === 403) {
+    // Check if the request URL is in the excluded list
+    const requestUrl = error.config?.url;
+    const isExcluded = EXCLUDED_ENDPOINTS.some((endpoint) =>
+      requestUrl?.includes(endpoint)
+    );
+
+    if (
+      !isExcluded &&
+      (error.response?.status === 401 || error.response?.status === 403)
+    ) {
       console.log(error.response?.status);
-      // alert("Unauthorized");
       // Clear session storage
       sessionStorage.clear();
       // Reset Redux state

@@ -103,6 +103,23 @@ const routeListLanding: RouteProps[] = [
 
 const routeListAdmin: AdminRouteSection[] = [
   {
+    section: "Admin",
+    routes: [
+      {
+        href: "/admin/queue",
+        label: "Signup Queue",
+      },
+      {
+        href: "/admin/users",
+        label: "Manage Users",
+      },
+      {
+        href: "/admin/posts",
+        label: "Manage Posts",
+      },
+    ],
+  },
+  {
     section: "Soldier",
     routes: [
       {
@@ -137,19 +154,6 @@ const routeListAdmin: AdminRouteSection[] = [
       {
         href: "/new-post",
         label: "Donate",
-      },
-    ],
-  },
-  {
-    section: "Admin",
-    routes: [
-      {
-        href: "/admin/users",
-        label: "Manage Users",
-      },
-      {
-        href: "/admin/posts",
-        label: "Manage Posts",
       },
     ],
   },

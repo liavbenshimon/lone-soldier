@@ -58,6 +58,10 @@ const signupRequestSchema = new mongoose.Schema({
     ref: "User",
     required: false,
   },
+  isKYC: {
+    type: Boolean,
+    default: false,
+  },
   // Timestamps
   createdAt: {
     type: Date,
