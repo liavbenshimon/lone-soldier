@@ -14,6 +14,7 @@ import userRoutes from "./routes/userRoutes.js";
 import donationRoutes from "./routes/donationRoutes.js";
 import eatupRoutes from "./routes/eatupRoute.js";
 import residenceRoutes from "./routes/residenceRoutes.js";
+import signupRequestRoutes from "./routes/signupRequestRoute.js";
 const PORT = process.env.PORT || 5000;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -44,6 +45,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/eatups", eatupRoutes);
 app.use("/api/residences", residenceRoutes);
+app.use("/api/signup-requests", signupRequestRoutes);
 
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
