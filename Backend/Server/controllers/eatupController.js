@@ -1,4 +1,6 @@
 import EatUp from "../models/eatupModel.js";
+import Channel from "../models/channelModel.js";
+import Message from "../models/messageModel.js";
 //TODO: fix subsription
 
 // יצירת רשומת EatUp חדשה
@@ -37,15 +39,40 @@ export const createEatUp = async (req, res) => {
     });
 
     // שמירת הרשומה במסד הנתונים
-    await newEatUp.save();
+    const savedEatUp = await newEatUp.save();
 
-    res
-      .status(201)
-      .json({ message: "EatUp entry created successfully", data: newEatUp });
+    // Create associated channel
+    const channel = new Channel({
+      name: `EatUp: ${title}`,
+      type: "eatup",
+      members: [authorId],
+      eatupId: savedEatUp._id,
+      isPublic: false
+    });
+
+    // Save the channel
+    const savedChannel = await channel.save();
+
+    // Verify the channel was created correctly
+    const verifyChannel = await Channel.findOne({ eatupId: savedEatUp._id });
+    console.log('Verified channel in database:', verifyChannel);
+
+    if (!verifyChannel || !verifyChannel.eatupId) {
+      throw new Error('Channel creation failed - missing required fields');
+    }
+
+    res.status(201).json({
+      message: "EatUp and channel created successfully",
+      data: {
+        eatup: savedEatUp,
+        channel: savedChannel,
+      },
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error creating EatUp entry", error: error.message });
+    res.status(500).json({
+      message: "Error creating EatUp and channel",
+      error: error.message,
+    });
   }
 };
 
@@ -112,32 +139,40 @@ export const deleteEatUp = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const deletedEatUp = await EatUp.findByIdAndDelete(id);
-
-    if (!deletedEatUp) {
-      return res.status(404).json({ message: "EatUp entry not found" });
+    // Find the channel first to get its ID
+    const channel = await Channel.findOne({ eatupId: id });
+    
+    if (channel) {
+      // Delete all messages associated with this channel
+      await Message.deleteMany({ channelId: channel._id });
+      
+      // Delete the channel
+      await Channel.findByIdAndDelete(channel._id);
     }
 
-    res.status(200).json({ message: "EatUp entry deleted successfully" });
+    // Delete the EatUp
+    await EatUp.findByIdAndDelete(id);
+
+    res.status(200).json({ 
+      message: "EatUp, channel, and all messages deleted successfully",
+      channelId: channel?._id // Return channelId so frontend knows which channel was deleted
+    });
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error deleting EatUp entry", error: error.message });
+    res.status(500).json({ 
+      message: "Error deleting EatUp and associated data", 
+      error: error.message 
+    });
   }
 };
 
 // Toggle guest subscription
 export const toggleGuestSubscription = async (req, res) => {
   const { id } = req.params;
-
   const userId = req.user._id;
-  console.log("User ID:", userId); // Debug log
 
   try {
     // First, get the current state of the EatUp
     const eatup = await EatUp.findById(id);
-    console.log("Found EatUp:", eatup); // Debug log
-
     if (!eatup) {
       return res.status(404).json({ message: "EatUp not found" });
     }
@@ -156,24 +191,39 @@ export const toggleGuestSubscription = async (req, res) => {
       return res.status(400).json({ message: "Guest limit reached" });
     }
 
+    // Find the associated channel using eatupId
+    const channel = await Channel.findOne({ eatupId: id });
+    
+    if (!channel) {
+      return res.status(404).json({ message: "Associated channel not found" });
+    }
+
     // Check current subscription status
     const isSubscribed = eatup.guests.includes(userId.toString());
-    console.log("Is currently subscribed:", isSubscribed); // Debug log
-
     let updatedEatUp;
 
     if (isSubscribed) {
-      // Remove user from guests
+      // Remove user from guests and channel
       updatedEatUp = await EatUp.findByIdAndUpdate(
         id,
         { $pull: { guests: userId.toString() } },
         { new: true }
       );
+      await Channel.findByIdAndUpdate(
+        channel._id,
+        { $pull: { members: userId } },
+        { new: true }
+      );
     } else {
-      // Add user to guests
+      // Add user to guests and channel
       updatedEatUp = await EatUp.findByIdAndUpdate(
         id,
         { $addToSet: { guests: userId.toString() } },
+        { new: true }
+      );
+      await Channel.findByIdAndUpdate(
+        channel._id,
+        { $addToSet: { members: userId } },
         { new: true }
       );
     }
@@ -183,24 +233,30 @@ export const toggleGuestSubscription = async (req, res) => {
       throw new Error("Failed to update EatUp");
     }
 
-    // Check final subscription status
     const finalIsSubscribed = updatedEatUp.guests.includes(userId.toString());
-    console.log("Final subscription status:", finalIsSubscribed); // Debug log
-    console.log("Updated guest list:", updatedEatUp.guests); // Debug log
 
+    // Return more detailed response for debugging
     res.status(200).json({
       message: finalIsSubscribed
-        ? "Subscribed successfully"
-        : "Unsubscribed successfully",
+        ? "Subscribed successfully and joined channel"
+        : "Unsubscribed successfully and left channel",
       data: updatedEatUp,
       isSubscribed: finalIsSubscribed,
       guestCount: updatedEatUp.guests.length,
+      channelId: channel._id,
+      channelName: channel.name,
+      eatupId: id,
+      userId: userId
     });
   } catch (error) {
     console.error("Error in toggleGuestSubscription:", error);
     res.status(500).json({
       message: "Error toggling subscription",
       error: error.message,
+      details: {
+        eatupId: id,
+        userId: userId
+      }
     });
   }
 };

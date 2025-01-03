@@ -1,35 +1,11 @@
 import mongoose from "mongoose";
 
 const channelSchema = new mongoose.Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  members: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User", // If you have a separate User model
-    },
-  ],
-  isPublic: {
-    type: Boolean,
-    default: false,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  isClosed: {
-    type: Boolean,
-    default: false,
-  },
-  closeAt: {
-    type: Date,
-    default: null,
-    required: false,
-  },
+  name: { type: String, required: true },
+  type: { type: String, enum: ["direct", "group", "eatup"], required: true },
+  members: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  eatupId: { type: mongoose.Schema.Types.ObjectId, ref: "EatUp" },
+  isPublic: { type: Boolean, default: false }
 });
 
-const Channel = mongoose.model("Channel", channelSchema);
-
-export default Channel;
+export default mongoose.model("Channel", channelSchema);
