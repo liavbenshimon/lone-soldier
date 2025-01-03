@@ -234,23 +234,27 @@ export const deleteUser = async (req, res) => {
 
 export const editUser = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedData = req.body;
+    const { id } = req.params; // Obtenha o ID do usuário
+    const updatedData = req.body; // Dados enviados pelo frontend
 
-    const updatedUser = await User.findByIdAndUpdate(id, updatedData, {
-      new: true, // Retorna o documento atualizado
-    });
+    // Atualize todos os campos fornecidos
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      updatedData,
+      { new: true } // Retorne o documento atualizado
+    );
 
     if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(updatedUser);
+    res.status(200).json(updatedUser); // Retorne o usuário atualizado
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Error updating user", error });
   }
 };
+;
 
 
 

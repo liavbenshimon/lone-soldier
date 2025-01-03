@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    default: "", // URL to the profile image
+    default: "", 
   },
   receiveNotifications: {
     type: Boolean,
