@@ -10,6 +10,7 @@ import { Send } from "lucide-react";
 import { Navbar } from "@/components/Navbar";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { socketService } from "@/services/socketService";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface Message {
   _id: string;
@@ -28,15 +29,26 @@ const DEBUG_MODE = false; // You can change this to true to enable logging
 
 export default function ChannelPage() {
   const { channelId } = useParams();
+  const queryClient = useQueryClient();
   const users = useSelector((state: RootState) => state.user);
-  const user = { ...users, _id: sessionStorage.getItem("id") }; //TODO: fix this
+  const user = { ...users, _id: sessionStorage.getItem("id") };
   const channels = useSelector((state: RootState) => state.channels.channels);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isConnected, setIsConnected] = useState(false);
 
   const currentChannel = channels.find((channel) => channel._id === channelId);
+
+  // Query for fetching messages
+  const { data: messages = [] } = useQuery({
+    queryKey: ["messages", channelId],
+    queryFn: async () => {
+      const response = await api.get(`/messages/${channelId}`);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
+    gcTime: 30 * 60 * 1000, // Keep data in cache for 30 minutes
+  });
 
   // Add a debug logger function
   const debugLog = (message: string, data?: any) => {
@@ -49,25 +61,12 @@ export default function ChannelPage() {
     }
   };
 
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await api.get(`/messages/${channelId}`);
-        setMessages(response.data);
-        scrollToBottom();
-      } catch (error) {
-        console.error("Error fetching messages:", error);
-      }
-    };
-    fetchMessages();
-  }, [channelId]);
-
+  // Socket connection effect
   useEffect(() => {
     if (!channelId || !user._id) return;
 
     const socket = socketService.connect(channelId);
 
-    // Connection events
     socket.on("connect", () => {
       debugLog(`🟢 Socket Connected to channel: ${channelId}`);
       setIsConnected(true);
@@ -88,7 +87,14 @@ export default function ChannelPage() {
     socket.on("message received", (newMessage: Message) => {
       debugLog(`📨 Received message in channel ${channelId}:`, newMessage);
       if (newMessage.channelId === channelId) {
-        setMessages((prev) => [...prev, newMessage]);
+        // Update the query cache with the new message
+        queryClient.setQueryData(
+          ["messages", channelId],
+          (oldData: Message[] = []) => {
+            const newData = [...oldData, newMessage];
+            return newData;
+          }
+        );
         scrollToBottom();
         debugLog(`✅ Message added to chat`);
       }
@@ -116,7 +122,7 @@ export default function ChannelPage() {
         debugLog(`🔌 Socket disconnected`);
       }
     };
-  }, [channelId, user._id]);
+  }, [channelId, user._id, queryClient]);
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -129,6 +135,7 @@ export default function ChannelPage() {
     }
   };
 
+  // Scroll to bottom when messages change
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
@@ -176,7 +183,7 @@ export default function ChannelPage() {
               {/* Messages Area */}
               <ScrollArea ref={scrollAreaRef} className="flex-1" type="always">
                 <div className="flex flex-col gap-4 p-4">
-                  {messages.map((message) => {
+                  {messages.map((message: Message) => {
                     const isCurrentUser = message.sender._id === user._id;
                     return (
                       <div
