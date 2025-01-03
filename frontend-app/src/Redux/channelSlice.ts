@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { api } from "@/api";
 
 interface Channel {
@@ -17,21 +17,6 @@ const initialState: ChannelList = {
   channels: [],
 };
 
-// Async thunk for fetching channels
-export const fetchChannels = createAsyncThunk(
-  "channels/fetchChannels",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await api.get("/channels");
-      return response.data;
-    } catch (error: any) {
-      return rejectWithValue(
-        error.response?.data?.error || "Failed to fetch channels"
-      );
-    }
-  }
-);
-
 const channelSlice = createSlice({
   name: "channels",
   initialState,
@@ -39,11 +24,11 @@ const channelSlice = createSlice({
     clearChannels: (state) => {
       state.channels = [];
     },
-    setChannels: (state) => {
-      // state.channels = await api.get();
+    setChannels: (state, action) => {
+      state.channels = action.payload;
     },
   },
 });
 
-export const { setChannels, clearChannels } = channelSlice.actions;
+export const { clearChannels, setChannels } = channelSlice.actions;
 export default channelSlice.reducer;

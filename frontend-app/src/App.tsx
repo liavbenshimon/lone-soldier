@@ -68,7 +68,7 @@ function AppRoutes() {
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/termofservice" element={<Tos />} />
 
-      <Route path="/channel/:id" element={<ChannelPage />} />
+      <Route path="/channel/:channelId" element={<ChannelPage />} />
 
       <Route path="*" element={<h1>404</h1>} />
     </Routes>

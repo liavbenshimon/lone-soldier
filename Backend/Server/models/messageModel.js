@@ -1,35 +1,48 @@
 import mongoose from "mongoose";
 
-const messageSchema = new mongoose.Schema({
-  channel: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Channel",
-    required: true,
+const messageSchema = new mongoose.Schema(
+  {
+    channelId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Channel",
+      required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+    },
+    sender: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    readBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["sent", "delivered", "read"],
+      default: "sent",
+    },
   },
-  sender: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User", // or just store username/email if you prefer
-    required: true,
-  },
-  content: {
-    type: String,
-    required: true,
-  },
-  readBy: {
-    type: [mongoose.Schema.Types.ObjectId],
-    ref: "User",
-    default: [],
-    required: true,
-  },
-  // e.g. if you want to mark pinned messages or ephemeral messages
-  // pinned: { type: Boolean, default: false },
-  // ephemeral: { type: Boolean, default: false },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+  { timestamps: true }
+);
+
+messageSchema.pre("find", function () {
+  this.populate("sender", "firstName lastName email").populate(
+    "readBy",
+    "firstName lastName email"
+  );
 });
 
-const Message = mongoose.model("Message", messageSchema);
+messageSchema.pre("findOne", function () {
+  this.populate("sender", "firstName lastName email").populate(
+    "readBy",
+    "firstName lastName email"
+  );
+});
 
-export default Message;
+export default mongoose.model("Message", messageSchema);

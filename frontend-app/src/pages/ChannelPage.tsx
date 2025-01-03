@@ -1,122 +1,266 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/Redux/store";
-// import { setActiveChannel } from "@/Redux/channelSlice";
 import { api } from "@/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card } from "@/components/ui/card";
+import { Send } from "lucide-react";
+import { Navbar } from "@/components/Navbar";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { socketService } from "@/services/socketService";
 
 interface Message {
   _id: string;
+  channelId: string;
   content: string;
   sender: {
     _id: string;
     firstName: string;
     lastName: string;
+    media?: string[];
   };
   createdAt: string;
 }
 
+const DEBUG_MODE = false; // You can change this to true to enable logging
+
 export default function ChannelPage() {
-  const { channelId } = useParams<{ channelId: string }>();
-  const dispatch = useDispatch();
+  const { channelId } = useParams();
+  const users = useSelector((state: RootState) => state.user);
+  const user = { ...users, _id: sessionStorage.getItem("id") }; //TODO: fix this
+  const channels = useSelector((state: RootState) => state.channels.channels);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [isConnected, setIsConnected] = useState(false);
 
-  const activeChannel = useSelector((state: RootState) =>
-    state.channels.channels.find((c) => c._id === channelId)
-  );
+  const currentChannel = channels.find((channel) => channel._id === channelId);
+
+  // Add a debug logger function
+  const debugLog = (message: string, data?: any) => {
+    if (DEBUG_MODE) {
+      if (data) {
+        console.log(message, data);
+      } else {
+        console.log(message);
+      }
+    }
+  };
 
   useEffect(() => {
-    if (channelId) {
-      // dispatch(setActiveChannel(channelId));
-      // fetchMessages();
-    }
+    const fetchMessages = async () => {
+      try {
+        const response = await api.get(`/messages/${channelId}`);
+        setMessages(response.data);
+        scrollToBottom();
+      } catch (error) {
+        console.error("Error fetching messages:", error);
+      }
+    };
+    fetchMessages();
   }, [channelId]);
 
-  const fetchMessages = async () => {
-    try {
-      const response = await api.get(`/messages/${channelId}`);
-      setMessages(response.data);
-      setLoading(false);
-    } catch (error: any) {
-      setError(error.response?.data?.error || "Failed to fetch messages");
-      setLoading(false);
+  useEffect(() => {
+    if (!channelId || !user._id) return;
+
+    const socket = socketService.connect(channelId);
+
+    // Connection events
+    socket.on("connect", () => {
+      debugLog(`🟢 Socket Connected to channel: ${channelId}`);
+      setIsConnected(true);
+      socket.emit("join channel", channelId);
+      debugLog(`📡 Emitted: join channel ${channelId}`);
+    });
+
+    socket.on("connect_error", (error) => {
+      debugLog(`🔴 Socket Connection Error:`, error);
+    });
+
+    socket.on("disconnect", (reason) => {
+      debugLog(`🔴 Socket Disconnected. Reason:`, reason);
+      setIsConnected(false);
+    });
+
+    // Message events
+    socket.on("message received", (newMessage: Message) => {
+      debugLog(`📨 Received message in channel ${channelId}:`, newMessage);
+      if (newMessage.channelId === channelId) {
+        setMessages((prev) => [...prev, newMessage]);
+        scrollToBottom();
+        debugLog(`✅ Message added to chat`);
+      }
+    });
+
+    // Channel events
+    socket.on("channel users", (users) => {
+      debugLog(`👥 Channel users updated:`, users);
+    });
+
+    socket.on("typing users", (users) => {
+      debugLog(`✍️ Users typing:`, users);
+    });
+
+    socket.on("error", (error) => {
+      debugLog(`❌ Socket Error:`, error);
+    });
+
+    // Cleanup
+    return () => {
+      if (socket) {
+        debugLog(`👋 Leaving channel: ${channelId}`);
+        socket.emit("leave channel", channelId);
+        socketService.disconnect();
+        debugLog(`🔌 Socket disconnected`);
+      }
+    };
+  }, [channelId, user._id]);
+
+  const scrollToBottom = () => {
+    if (scrollAreaRef.current) {
+      const scrollContainer = scrollAreaRef.current.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      );
+      if (scrollContainer) {
+        scrollContainer.scrollTop = scrollContainer.scrollHeight;
+      }
     }
   };
 
-  const sendMessage = async (e: React.FormEvent) => {
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !channelId || !user._id) return;
 
     try {
-      const response = await api.post(`/messages/${channelId}`, {
-        content: newMessage,
+      debugLog(`📤 Emitting message to channel ${channelId}:`, {
+        content: newMessage.trim(),
+        sender: user._id,
       });
-      setMessages([...messages, response.data]);
+
+      socketService.emitMessage({
+        channelId: channelId,
+        content: newMessage.trim(),
+        sender: user._id,
+      });
+
       setNewMessage("");
-    } catch (error: any) {
-      setError(error.response?.data?.error || "Failed to send message");
+      debugLog(`✅ Message emission completed`);
+    } catch (error) {
+      debugLog(`❌ Error sending message:`, error);
     }
   };
-
-  if (!activeChannel) {
-    return <div>Channel not found</div>;
-  }
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <Card className="h-[calc(100vh-8rem)]">
-        <div className="p-4 border-b">
-          <h1 className="text-2xl font-bold">{activeChannel.name}</h1>
+    <div className="flex h-screen">
+      <Navbar isVertical isAccordion modes="home" />
+
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
+        {/* Channel Header */}
+        <div className="h-14 md:h-20 border-b flex items-center justify-center bg-background shrink-0">
+          <h1 className="text-xl md:text-3xl lg:text-4xl font-bold text-center bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text px-6">
+            {currentChannel?.name || "Channel"}
+          </h1>
         </div>
 
-        <div className="flex flex-col h-[calc(100%-8rem)]">
-          <ScrollArea className="flex-1 p-4">
-            {loading ? (
-              <div>Loading messages...</div>
-            ) : error ? (
-              <div className="text-red-500">{error}</div>
-            ) : (
-              <div className="space-y-4">
-                {messages.map((message) => (
-                  <div
-                    key={message._id}
-                    className="bg-muted/50 rounded-lg p-3 space-y-1"
+        {/* Content Container - Updated with max-width and center alignment */}
+        <div className="flex-1 flex justify-center overflow-hidden">
+          <div className="w-full max-w-3xl px-4 py-6 flex flex-col">
+            {/* Chat Container */}
+            <div className="flex-1 flex flex-col rounded-lg border shadow-sm overflow-hidden bg-background/50">
+              {/* Messages Area */}
+              <ScrollArea ref={scrollAreaRef} className="flex-1" type="always">
+                <div className="flex flex-col gap-4 p-4">
+                  {messages.map((message) => {
+                    const isCurrentUser = message.sender._id === user._id;
+                    return (
+                      <div
+                        key={message._id}
+                        className={`flex items-start gap-2 w-full ${
+                          isCurrentUser ? "flex-row-reverse" : "flex-row"
+                        }`}
+                      >
+                        {/* Avatar */}
+                        <Avatar className="w-8 h-8 shrink-0 mt-1">
+                          {message.sender.media?.[0] ? (
+                            <AvatarImage src={message.sender.media[0]} />
+                          ) : (
+                            <AvatarFallback className="bg-primary/10 text-xs">
+                              {message.sender.firstName?.[0]}
+                              {message.sender.lastName?.[0]}
+                            </AvatarFallback>
+                          )}
+                        </Avatar>
+
+                        {/* Message Content Container */}
+                        <div
+                          className={`flex flex-col ${
+                            isCurrentUser ? "items-end" : "items-start"
+                          } max-w-[calc(100%-4rem)] space-y-1`}
+                        >
+                          {/* Name */}
+                          <span className="text-xs font-medium text-muted-foreground px-1">
+                            {message.sender.firstName} {message.sender.lastName}
+                          </span>
+
+                          {/* Message Bubble */}
+                          <div
+                            className={`w-fit max-w-full ${
+                              isCurrentUser
+                                ? "bg-[#F596D3]/20 border border-[#F596D3]/30 rounded-l-lg rounded-br-lg"
+                                : "bg-gray-100 dark:bg-gray-800/50 rounded-r-lg rounded-bl-lg"
+                            } px-3 py-2`}
+                          >
+                            {/* Message Text - Added break-all for long words */}
+                            <div className="break-all whitespace-pre-wrap text-sm inline-block">
+                              {message.content}
+                            </div>
+
+                            {/* Timestamp */}
+                            <div className="text-[10px] mt-1 text-muted-foreground/70 text-right">
+                              {new Date(message.createdAt).toLocaleTimeString(
+                                [],
+                                {
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </ScrollArea>
+
+              {/* Message Input */}
+              <div className="p-4 bg-accent/30 border-t">
+                <form onSubmit={handleSendMessage} className="flex gap-2">
+                  <Input
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-1 bg-background"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={!newMessage.trim()}
+                    className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90"
                   >
-                    <div className="flex justify-between items-center">
-                      <span className="font-semibold">
-                        {message.sender.firstName} {message.sender.lastName}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {new Date(message.createdAt).toLocaleTimeString()}
-                      </span>
-                    </div>
-                    <p>{message.content}</p>
-                  </div>
-                ))}
+                    <Send className="h-4 w-4" />
+                  </Button>
+                </form>
               </div>
-            )}
-          </ScrollArea>
-
-          <form onSubmit={sendMessage} className="p-4 border-t">
-            <div className="flex gap-2">
-              <Input
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                placeholder="Type your message..."
-                className="flex-1"
-              />
-              <Button type="submit">Send</Button>
             </div>
-          </form>
+          </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 }
