@@ -21,6 +21,9 @@ import channelRoutes from "./routes/channelRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 const PORT = process.env.PORT || 5000;
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 // Create HTTP server
 const httpServer = createServer(app);
 
