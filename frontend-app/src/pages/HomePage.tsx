@@ -5,7 +5,6 @@ import { RootState } from "@/Redux/store";
 
 export default function HomePage({ mode }: { mode: string }) {
   const user = useSelector((state: RootState) => state.user);
-  console.log(user);
   return (
     <div className="flex bg-background text-foreground min-h-screen">
       {/* Navbar Vertical com Accordion na HomePage */}

@@ -47,7 +47,7 @@ export const createEatUp = async (req, res) => {
       type: "eatup",
       members: [authorId],
       eatupId: savedEatUp._id,
-      isPublic: false
+      isPublic: false,
     });
 
     // Save the channel
@@ -55,10 +55,10 @@ export const createEatUp = async (req, res) => {
 
     // Verify the channel was created correctly
     const verifyChannel = await Channel.findOne({ eatupId: savedEatUp._id });
-    console.log('Verified channel in database:', verifyChannel);
+    console.log("Verified channel in database:", verifyChannel);
 
     if (!verifyChannel || !verifyChannel.eatupId) {
-      throw new Error('Channel creation failed - missing required fields');
+      throw new Error("Channel creation failed - missing required fields");
     }
 
     res.status(201).json({
@@ -141,11 +141,11 @@ export const deleteEatUp = async (req, res) => {
   try {
     // Find the channel first to get its ID
     const channel = await Channel.findOne({ eatupId: id });
-    
+
     if (channel) {
       // Delete all messages associated with this channel
       await Message.deleteMany({ channelId: channel._id });
-      
+
       // Delete the channel
       await Channel.findByIdAndDelete(channel._id);
     }
@@ -153,14 +153,14 @@ export const deleteEatUp = async (req, res) => {
     // Delete the EatUp
     await EatUp.findByIdAndDelete(id);
 
-    res.status(200).json({ 
+    res.status(200).json({
       message: "EatUp, channel, and all messages deleted successfully",
-      channelId: channel?._id // Return channelId so frontend knows which channel was deleted
+      channelId: channel?._id, // Return channelId so frontend knows which channel was deleted
     });
   } catch (error) {
-    res.status(500).json({ 
-      message: "Error deleting EatUp and associated data", 
-      error: error.message 
+    res.status(500).json({
+      message: "Error deleting EatUp and associated data",
+      error: error.message,
     });
   }
 };
@@ -193,7 +193,7 @@ export const toggleGuestSubscription = async (req, res) => {
 
     // Find the associated channel using eatupId
     const channel = await Channel.findOne({ eatupId: id });
-    
+
     if (!channel) {
       return res.status(404).json({ message: "Associated channel not found" });
     }
@@ -246,7 +246,7 @@ export const toggleGuestSubscription = async (req, res) => {
       channelId: channel._id,
       channelName: channel.name,
       eatupId: id,
-      userId: userId
+      userId: userId,
     });
   } catch (error) {
     console.error("Error in toggleGuestSubscription:", error);
@@ -255,8 +255,8 @@ export const toggleGuestSubscription = async (req, res) => {
       error: error.message,
       details: {
         eatupId: id,
-        userId: userId
-      }
+        userId: userId,
+      },
     });
   }
 };

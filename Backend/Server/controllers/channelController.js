@@ -71,20 +71,20 @@ export const addMember = async (req, res) => {
 export const getChannelsForUser = async (req, res) => {
   try {
     const userId = req.user._id;
-    
+
     const channels = await Channel.find({
-      members: userId
+      members: userId,
     }).sort({ updatedAt: -1 });
 
     res.status(200).json({
       success: true,
-      data: channels
+      data: channels,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Error fetching channels",
-      error: error.message
+      error: error.message,
     });
   }
 };

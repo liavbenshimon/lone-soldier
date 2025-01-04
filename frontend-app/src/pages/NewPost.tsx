@@ -170,7 +170,10 @@ export default function NewPost() {
           };
           // Make API call for EatUp
           const eatupResponse = await api.post(endpoint, postData);
-          console.log("EatUp and channel created successfully:", eatupResponse.data);
+          console.log(
+            "EatUp and channel created successfully:",
+            eatupResponse.data
+          );
           alert("EatUp created successfully!");
           // Navigate to the new channel
           navigate(`/channel/${eatupResponse.data.data.channel._id}`);
@@ -204,7 +207,10 @@ export default function NewPost() {
           };
           // Make API call for residence
           const residenceResponse = await api.post(endpoint, postData);
-          console.log("Residence created successfully:", residenceResponse.data);
+          console.log(
+            "Residence created successfully:",
+            residenceResponse.data
+          );
           alert("Residence created successfully!");
           navigate("/contribute");
           break;

@@ -20,7 +20,6 @@ const authenticateToken = (req, res, next) => {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     // Attach user ID to the request object for further use
     req.user = { _id: decoded.id }; //WHY WAS THIS _ID? if decoded has only id?!?
-    console.log("User ID:", req.user, decoded); // Debug log
     next(); // Proceed to the next middleware or route handler
   } catch (error) {
     console.error("Token verification failed:", error.message); // Log the error
