@@ -30,10 +30,12 @@ const userSchema = new mongoose.Schema({
   phone: {
     type: String,
     required: true,
+    unique: true,
   },
   personalIdentificationNumber: {
     type: String,
     optional: true,
+    unique: true,
   },
   media: {
     type: [String], // An array of URLs
@@ -60,7 +62,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    default: "", 
+    default: "",
   },
   receiveNotifications: {
     type: Boolean,
