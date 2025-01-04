@@ -40,8 +40,11 @@ const authenticateToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = { _id: decoded.id }; // Adiciona o ID do usuário à requisição
-    next();
+
+    // Attach user ID to the request object for further use
+    req.user = { _id: decoded.id }; //WHY WAS THIS _ID? if decoded has only id?!?
+    next(); // Proceed to the next middleware or route handler
+
   } catch (error) {
     console.error("Token verification failed:", error.message);
     res.status(403).json({ message: "Invalid or expired token." });

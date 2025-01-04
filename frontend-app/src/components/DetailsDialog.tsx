@@ -12,6 +12,7 @@ import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps";
 import { useState, useEffect } from "react";
 import { api } from "@/api";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface DetailsDialogProps {
   donation?: Donation | null;
@@ -30,12 +31,16 @@ export function DetailsDialog({
   const [guestCount, setGuestCount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isLimitReached, setIsLimitReached] = useState(false);
+  const queryClient = useQueryClient();
 
   const handleSubscribe = async () => {
     if (!eatup?._id) return;
 
     setIsLoading(true);
     try {
+      // Log for debugging
+      console.log("Attempting to subscribe to EatUp:", eatup._id);
+
       const response = await api.post(
         `/eatups/${eatup._id}/toggle-subscription`
       );
@@ -44,16 +49,27 @@ export function DetailsDialog({
       if (response.data) {
         setIsSubscribed(response.data.isSubscribed);
         setGuestCount(response.data.guestCount);
+
+        // Invalidate and refetch channels after subscription change
+        queryClient.invalidateQueries({ queryKey: ["channels"] });
+
         // Check if limit is reached after update
         if (eatup.limit && response.data.guestCount >= eatup.limit) {
           setIsLimitReached(true);
         } else {
           setIsLimitReached(false);
         }
+
+        // Show success message
+        alert(response.data.message);
       }
     } catch (error: any) {
-      console.error("Subscription error:", error.response || error);
-      if (error.response?.status === 400) {
+      console.error("Subscription error:", error);
+      console.error("Error response:", error.response);
+
+      if (error.response?.status === 404) {
+        alert(error.response.data.message || "Channel not found");
+      } else if (error.response?.status === 400) {
         alert(error.response.data.message);
         if (error.response.data.message === "Guest limit reached") {
           setIsLimitReached(true);

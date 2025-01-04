@@ -21,7 +21,7 @@ import {
 
 export function SignupForm() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({

@@ -16,7 +16,6 @@ export function ContributePostCard() {
 
   const fetchData = async () => {
     try {
-      console.log("Starting fetchData with userId:", userId);
 
       const [donationsRes, residencesRes, eatupsRes] = await Promise.all([
         api.get("/donation"),
@@ -24,24 +23,15 @@ export function ContributePostCard() {
         api.get("/eatups"),
       ]);
 
-      console.log("Raw API responses:", {
-        donations: donationsRes,
-        residences: residencesRes,
-        eatups: eatupsRes,
-      });
+      
 
       // Handle donations
       const donationsData = Array.isArray(donationsRes.data)
         ? donationsRes.data
         : donationsRes.data?.data || [];
-      console.log("Processed donations data:", donationsData);
 
       const userDonations = donationsData.filter((item: Donation) => {
-        console.log("Checking donation item:", {
-          itemAuthorId: item.authorId,
-          userId: userId,
-          matches: item.authorId === userId,
-        });
+        
         return item.authorId === userId;
       });
 
@@ -49,14 +39,10 @@ export function ContributePostCard() {
       const residencesData = Array.isArray(residencesRes.data)
         ? residencesRes.data
         : residencesRes.data?.data || [];
-      console.log("Processed residences data:", residencesData);
+      
 
       const userResidences = residencesData.filter((item: Residence) => {
-        console.log("Checking residence item:", {
-          itemOwner: item.owner,
-          userId: userId,
-          matches: item.owner === userId,
-        });
+        
         return item.owner === userId;
       });
 
@@ -64,34 +50,17 @@ export function ContributePostCard() {
       const eatupsData = Array.isArray(eatupsRes.data)
         ? eatupsRes.data
         : eatupsRes.data?.data || [];
-      console.log("Processed eatups data:", eatupsData);
 
       const userEatups = eatupsData.filter((item: EatUp) => {
-        console.log("Checking eatup item:", {
-          itemOwner: item.owner,
-          userId: userId,
-          matches: item.owner === userId,
-        });
         return item.owner === userId;
       });
 
-      console.log("Final filtered data:", {
-        userDonations,
-        userResidences,
-        userEatups,
-        userId,
-      });
 
       setDonations(userDonations);
       setResidences(userResidences);
       setEatUps(userEatups);
 
       // Debug render data
-      console.log("Data after state updates:", {
-        donations: userDonations,
-        residences: userResidences,
-        eatups: userEatups,
-      });
     } catch (error) {
       console.error("Error in fetchData:", error);
       setDonations([]);
@@ -126,7 +95,6 @@ export function ContributePostCard() {
     <div className="flex-1 p-6 bg-background">
       {/* Debug information */}
       {(() => {
-        console.log("Rendering with data:", { donations, residences, eatups });
         return null;
       })()}
       <div className="max-w-4xl mx-auto space-y-6">
