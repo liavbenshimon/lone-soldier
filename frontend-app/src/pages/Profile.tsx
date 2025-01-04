@@ -16,6 +16,8 @@ const getRandomItem = <T,>(array: T[]): T => array[Math.floor(Math.random() * ar
 const Profile: React.FC = () => {
   const user = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+console.log(user.bio);
+
 
   const defaultNickname = user.nickname || getRandomItem(nicknames);
   const [nickname, setNickname] = useState(defaultNickname);
@@ -23,8 +25,12 @@ const Profile: React.FC = () => {
     user.profileImage || `/src/assets/profilePictures/${getRandomItem(profileImages)}`
   );
   const [email, setEmail] = useState(user.email || "");
+  console.log(email);
+  
   const [phone, setPhone] = useState(user.phone || "");
   const [bio, setBio] = useState(user.bio || "");
+  console.log(bio);
+  
   const [receiveNotifications, setReceiveNotifications] = useState<boolean>(
     user.receiveNotifications ?? false
   );
@@ -93,14 +99,26 @@ const Profile: React.FC = () => {
     const fetchUserData = async () => {
       try {
         const response = await api.get(`/users/${user._id}`);
+        console.log(response.data);
+        setNickname(response.data.nickname) 
+        setProfileImage(response.data.profileImage) 
+        setEmail(response.data.email) 
+        setPhone(response.data.phone) 
+        setBio(response.data.bio) 
+        setReceiveNotifications(response.data.receiveNotifications) 
+
+        console.log(user._id);
+        
+        
         dispatch(updateUser(response.data));
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
+    
     };
 
     fetchUserData();
-  }, [dispatch, user._id]);
+  }, []);
 
   return (
     <div className="flex bg-gray-900 text-foreground min-h-screen">
@@ -132,16 +150,6 @@ const Profile: React.FC = () => {
                 </button>
                 {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Enter email"
-                  className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
-                />
-              </div>
               <div className="w-full lg:w-auto mt-4 lg:mt-0">
               <label className="block text-sm font-medium mb-1">Phone</label>
               <input
@@ -159,7 +167,7 @@ const Profile: React.FC = () => {
     src={profileImage}
     alt="Profile"
     onClick={() => setIsDialogOpen(true)}
-    className="rounded-full cursor-pointer border-2 hover:border-green-500 w-[100px] h-[100px] lg:w-[300px] lg:h-[300px]"
+    className="rounded-full cursor-pointer border-2 hover:border-green-500 w-[100px] h-[100px] lg:w-[200px] lg:h-[200px]"
   />
   <p className="text-xs mt-5 text-center">
     Change <br /> profile picture
@@ -168,6 +176,17 @@ const Profile: React.FC = () => {
 
 
           </div>
+              <div>
+                <label className="block text-sm font-medium mb-1">Email</label>
+                <input
+                  type="email"
+                  disabled
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter email"
+                  className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
+                />
+              </div>
 
           <div className="space-y-4">
             {/* <div className="lg:pr-[52%] mb-6">

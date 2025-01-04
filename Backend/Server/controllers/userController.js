@@ -6,17 +6,16 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // התחברות למשתמש
-// Buscar usuário pelo ID
 export const getUserById = async (req, res) => {
   try {
-    const { id } = req.params; // Obtenha o ID dos parâmetros da rota
-    const user = await User.findById(id); // Use o método findById do Mongoose
+    const { id } = req.params; 
+    const user = await User.findById(id);
 
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(user); // Envie os dados do usuário encontrados
+    res.status(200).json(user); 
   } catch (error) {
     console.error("Error fetching user by ID:", error);
     res.status(500).json({ message: "Error fetching user by ID" });
@@ -234,14 +233,13 @@ export const deleteUser = async (req, res) => {
 
 export const editUser = async (req, res) => {
   try {
-    const { id } = req.params; // Obtenha o ID do usuário
-    const updatedData = req.body; // Dados enviados pelo frontend
+    const { id } = req.params; 
+    const updatedData = req.body; 
 
-    // Atualize todos os campos fornecidos
     const updatedUser = await User.findByIdAndUpdate(
       id,
       updatedData,
-      { new: true } // Retorne o documento atualizado
+      // { new: true } 
     );
 
     if (!updatedUser) {
