@@ -6,25 +6,31 @@ import {
   getAllUsers,
   deleteUser,
   editUser,
-  // getUserByPIN,
+
   getUserById,
+  getUserByPIN,
+  getCurrentUser,
 } from "../controllers/userController.js";
-import authenticateToken from "../middleware/authMiddleware.js"; 
+import authenticateToken from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Routes for user management
-router.post("/login", loginUser); // User login and JWT generation
-router.post("/", createUser); // Create a new user
-// router.get("/:firstName/:lastName", authenticateToken, getUserByFullName); 
-router.get("/:id", authenticateToken, getUserById); // Nova rota para buscar usuário por ID
-router.get("/", authenticateToken, getAllUsers); // Get all users
+// Public routes
+router.post("/login", loginUser);
+router.post("/", createUser);
+
+// Protected routes
+// Note: Order matters! More specific routes should come before generic ones
+router.get("/me", authenticateToken, getCurrentUser);
 // router.get(
 //   "/pin/:personalIdentificationNumber",
 //   authenticateToken,
 //   getUserByPIN
-// ); 
-router.delete("/:passport", authenticateToken, deleteUser); // Delete a user by passport
-router.put("/:id", authenticateToken, editUser);
+// );
+// router.get("/:firstName/:lastName", authenticateToken, getUserByFullName);
+router.get("/:id", authenticateToken, getUserById);
+router.get("/", authenticateToken, getAllUsers);
+router.delete("/:passport", authenticateToken, deleteUser);
+router.put("/:passport", authenticateToken, editUser);
 
 export default router;

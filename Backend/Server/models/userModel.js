@@ -41,8 +41,8 @@ const userSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    required: true,
-    enum: ["Contributer", "Soldier"], // Add the two personas here
+    enum: ["Soldier", "Contributor", "Admin"],
+    default: "Soldier",
   },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
