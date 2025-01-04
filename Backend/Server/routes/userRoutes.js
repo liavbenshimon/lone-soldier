@@ -31,6 +31,6 @@ router.get("/me", authenticateToken, getCurrentUser);
 router.get("/:id", authenticateToken, getUserById);
 router.get("/", authenticateToken, getAllUsers);
 router.delete("/:passport", authenticateToken, deleteUser);
-router.put("/:passport", authenticateToken, editUser);
+router.put("/:id", authenticateToken, editUser);
 
 export default router;
