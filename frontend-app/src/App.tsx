@@ -1,7 +1,7 @@
 import ContributePage from "./pages/Contribute";
 import HomePage from "./pages/HomePage"
 import Profile from "./pages/Profile";
-
+import StrangeProfile from "./pages/StrangeProfile";
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -61,6 +61,7 @@ function AppRoutes() {
       <Route path="/home/social" element={<Social />} />
       <Route path="/admin/queue" element={<AdminQueue />} />
       <Route path="/profile" element={<Profile />} />
+      <Route path="/profile/:id" element={<StrangeProfile />} />
 
 
       <Route path="/home" element={<HomePage mode="Donations" />} />

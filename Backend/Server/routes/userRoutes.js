@@ -10,6 +10,7 @@ import {
   getUserById,
   getUserByPIN,
   getCurrentUser,
+  getPublicUserProfile
 } from "../controllers/userController.js";
 import authenticateToken from "../middleware/authMiddleware.js";
 
@@ -28,6 +29,9 @@ router.get("/me", authenticateToken, getCurrentUser);
 //   getUserByPIN
 // );
 // router.get("/:firstName/:lastName", authenticateToken, getUserByFullName);
+
+// Strange Profile✨
+router.get("/:id/public", authenticateToken, getPublicUserProfile);
 router.get("/:id", authenticateToken, getUserById);
 router.get("/", authenticateToken, getAllUsers);
 router.delete("/:passport", authenticateToken, deleteUser);

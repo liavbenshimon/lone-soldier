@@ -256,7 +256,7 @@ export const editUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json(updatedUser); // Retorne o usuário atualizado
+    res.status(200).json(updatedUser); 
   } catch (error) {
     console.error("Error updating user:", error);
     res.status(500).json({ message: "Error updating user", error });
@@ -294,5 +294,21 @@ export const getCurrentUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching current user" });
+  }
+};
+
+export const getPublicUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("nickname bio profileImage type");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); // Only return public fields
+  } catch (error) {
+    console.error("Error fetching public user profile:", error);
+    res.status(500).json({ message: "Error fetching user profile" });
   }
 };
