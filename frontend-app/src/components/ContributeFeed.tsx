@@ -33,6 +33,7 @@ interface DonationRequest {
   createdAt: string;
 }
 
+
 const ContributePostCard: React.FC = () => {
   const [requests, setRequests] = useState<DonationRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -42,6 +43,7 @@ const ContributePostCard: React.FC = () => {
 
   const [open, setOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
+
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -210,6 +212,7 @@ const ContributePostCard: React.FC = () => {
           ))}
         </div>
       )}
+
     </div>
   );
 };

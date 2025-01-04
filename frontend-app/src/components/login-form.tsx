@@ -24,32 +24,54 @@ export function LoginForm({
   const dispatch = useDispatch();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const attempt = async (e: React.FormEvent) => {
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
       const res = await api.post("/users/login", {
-        email: email,
-        password: password,
+        email,
+        password,
       });
-      console.log(res);
-      sessionStorage.setItem("token", res.data.token);
-      sessionStorage.setItem("id", res.data.user._id);
-      if (res.data.user._id) {
+      //////
+
+      if (res?.data?.user?._id) {
+        sessionStorage.setItem("token", res.data.token);
+        sessionStorage.setItem("id", res.data.user._id);
         dispatch(setUser(res.data.user));
         dispatch(login(res.data.token));
       }
-      if (res.data.user.type === "Contributer") {
+      if (res?.data?.user?.type === "Contributer") {
         navigate("/contribute");
-      } else {
+      } else if (res?.data?.user?.type === "Soldier") {
         navigate("/Home");
+      } else if (res?.data?.user?.type === "Admin") {
+        navigate("/Home");
+      } else if (res?.data?.type === "pending") {
+        // For pending requests, we still want to be authenticated
+        // but we'll navigate to the pending page
+
+
+        navigate("/pending", {
+          state: {
+            request: res.data.request,
+          },
+        });
       }
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+      setError(error.response?.data?.error || "Failed to login");
+    } finally {
+      setLoading(false);
     }
   };
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <Card>
+      <Card className="w-full">
         <CardHeader>
           <CardTitle className="text-2xl">Login</CardTitle>
           <CardDescription>
@@ -57,8 +79,8 @@ export function LoginForm({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
-            <div className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="w-full">
+            <div className="flex flex-col gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="email">Email</Label>
                 <Input
@@ -88,21 +110,24 @@ export function LoginForm({
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>
-              <Button type="submit" className="w-full" onClick={attempt}>
-                Login
+              {error && (
+                <div className="text-sm text-red-500 mt-2">{error}</div>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Logging in..." : "Login"}
               </Button>
               <Button variant="outline" className="w-full">
                 Login with Google
               </Button>
-            </div>
-            <div className="mt-4 text-center text-sm">
-              Don&apos;t have an account?{" "}
-              <button
-                onClick={() => navigate("/signup")}
-                className="underline underline-offset-4"
-              >
-                Sign up
-              </button>
+              <div className="text-center text-sm">
+                Don&apos;t have an account?{" "}
+                <button
+                  onClick={() => navigate("/signup")}
+                  className="underline underline-offset-4"
+                >
+                  Sign up
+                </button>
+              </div>
             </div>
           </form>
         </CardContent>
