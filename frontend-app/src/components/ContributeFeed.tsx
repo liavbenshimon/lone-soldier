@@ -33,7 +33,6 @@ interface DonationRequest {
   createdAt: string;
 }
 
-
 const ContributePostCard: React.FC = () => {
   const [requests, setRequests] = useState<DonationRequest[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -43,7 +42,6 @@ const ContributePostCard: React.FC = () => {
 
   const [open, setOpen] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-
 
   useEffect(() => {
     const fetchRequests = async () => {
@@ -119,7 +117,7 @@ const ContributePostCard: React.FC = () => {
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button
-                      className="w-full md:w-1/3"
+                      className="w-full md:w-auto "
                       onClick={() => {
                         setSelectedRequest(req); // Set the selected request
                         setShowMessage(false); // Reset message state
@@ -130,7 +128,7 @@ const ContributePostCard: React.FC = () => {
                     </Button>
                   </DialogTrigger>
 
-                  <DialogContent className="bg-card text-card-foreground p-6 max-w-lg mx-auto rounded-lg">
+                  <DialogContent className="bg-card text-card-foreground p-6 max-w-lg mx-auto rounded-lg overflow-y-auto max-h-[80vh]">
                     {!showMessage ? (
                       <>
                         <h3 className="text-xl font-bold mb-4">
@@ -212,7 +210,6 @@ const ContributePostCard: React.FC = () => {
           ))}
         </div>
       )}
-
     </div>
   );
 };
