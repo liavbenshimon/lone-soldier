@@ -162,22 +162,24 @@ console.log(user.bio);
             </div>
             </div>
 
-            <div className="flex-none lg:w-1/2 flex flex-col items-center justify-center mt-4 lg:mt-0">
+            <div className="flex-none lg:w-1/2 flex flex-col items-center justify-center mt-5 lg:mt-0">
   <img
     src={profileImage}
     alt="Profile"
     onClick={() => setIsDialogOpen(true)}
-    className="rounded-full cursor-pointer border-2 hover:border-green-500 w-[100px] h-[100px] lg:w-[200px] lg:h-[200px]"
+    className="rounded-full cursor-pointer border-2 hover:border-green-500 w-[100px] h-[100px] lg:w-[175px] lg:h-[175px]"
   />
-  <p className="text-xs mt-5 text-center">
+  <button 
+  onClick={() => setIsDialogOpen(true)}
+  className="text-xs mt-6 text-center text-green-500 hover:underline decoration-1">
     Change <br /> profile picture
-  </p>
+  </button>
 </div>
 
 
           </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Email</label>
+                <label className="block text-sm font-medium mb-1 mt-4">Email</label>
                 <input
                   type="email"
                   disabled
@@ -189,18 +191,9 @@ console.log(user.bio);
               </div>
 
           <div className="space-y-4">
-            {/* <div className="lg:pr-[52%] mb-6">
-              <label className="block text-sm font-medium mb-1">Phone</label>
-              <input
-                type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="Enter phone number"
-                className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
-              />
-            </div> */}
+            
             <div>
-              <label className="block text-sm font-medium mt-3 mb-1">Biography</label>
+              <label className="block text-sm font-medium mt-4 mb-1">Biography</label>
               <textarea
                 value={bio}
                 onChange={(e) => setBio(e.target.value)}
