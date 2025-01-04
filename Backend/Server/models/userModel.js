@@ -41,13 +41,30 @@ const userSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    required: true,
-    enum: ["Contributer", "Soldier"], // Add the two personas here
+    enum: ["Soldier", "Contributor", "Admin"],
+    default: "Soldier",
   },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: false, //ask shalev about false and ask liav about what is the authorId
+  },
+  // Additional fields for Profile
+  nickname: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  profileImage: {
+    type: String,
+    default: "", 
+  },
+  receiveNotifications: {
+    type: Boolean,
+    default: false,
   },
 });
 

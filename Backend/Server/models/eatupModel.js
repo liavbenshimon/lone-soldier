@@ -2,24 +2,23 @@ import mongoose from "mongoose";
 
 const ZoneEnum = ["North", "South", "Center"]; // Define the possible values for zone
 
-
 const eatupSchema = new mongoose.Schema({
-    zone: {
-        type: String,
-        enum: ZoneEnum,
-        required: true,
-      },
+  zone: {
+    type: String,
+    enum: ZoneEnum,
+    required: true,
+  },
   title: {
     type: String,
     required: true,
   },
   phone: {
     type: String,
-    required: true,
+    required: false, //get phone from user
   },
   media: {
     type: [String], // An array of URLs
-    default: []
+    default: [],
   },
   owner: {
     type: String,
@@ -30,12 +29,12 @@ const eatupSchema = new mongoose.Schema({
     required: true,
   },
   kosher: {
-    type: Boolean, 
+    type: Boolean,
     required: true,
   },
   description: {
     type: String,
-    required: false, 
+    required: false,
   },
   language: {
     type: String,
@@ -49,13 +48,20 @@ const eatupSchema = new mongoose.Schema({
     type: Boolean,
     required: false,
   },
+  limit: {
+    type: Number,
+    required: false,
+  },
+  guests: {
+    type: [String],
+    default: [],
+  },
   authorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-        required: true,
-      }
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
 });
-
 
 const EatUp = mongoose.model("EatUp", eatupSchema);
 

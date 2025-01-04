@@ -2,49 +2,75 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import SignupRequest from "../models/signupRequestModel.js";
 
 dotenv.config();
 
+// Helper function to create JWT token
+const createToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET_KEY, {
+    expiresIn: "23h",
+  });
+};
+
 // התחברות למשתמש
-export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
+export const getUserById = async (req, res) => {
   try {
-    // חפש את המשתמש לפי המייל
-    const user = await User.findOne({ email });
-
-    // אם המשתמש לא נמצא
+    const { id } = req.params; 
+    const user = await User.findById(id);
+    console.log(user);
+    
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // בדוק אם הסיסמא שהוזנה תואמת את הסיסמא המאוחסנת
-    const isMatch = await bcrypt.compare(password, user.password);
+    res.status(200).json(user); 
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Error fetching user by ID" });
+  }
+};
 
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid password" });
+export const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // First try to login as regular user
+    const user = await User.findOne({ email });
+
+    if (user) {
+      const match = await bcrypt.compare(password, user.password);
+      if (match) {
+        // Create token for regular user
+        const token = createToken(user._id);
+        res.status(200).json({
+          user,
+          token,
+          type: "user",
+        });
+        return;
+      }
     }
 
-    // יצירת טוקן JWT
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET_KEY, {
-      expiresIn: "23h",
-    });
+    // If no user found or password didn't match, check signup requests
+    const signupRequest = await SignupRequest.findOne({ email });
+    if (signupRequest) {
+      const match = await bcrypt.compare(password, signupRequest.password);
+      if (match) {
+        // Create a special token for pending signup
+        const token = createToken(signupRequest._id);
+        res.status(200).json({
+          request: signupRequest,
+          token,
+          type: "pending",
+        });
+        return;
+      }
+    }
 
-    // שלח את התגובה עם הטוקן
-    res.status(200).json({
-      message: "Login successful",
-      token: token,
-      user: {
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        phone: user.phone,
-        type: user.type,
-      },
-    });
+    res.status(401).json({ error: "Invalid login credentials" });
   } catch (error) {
-    res.status(500).json({ message: "Error logging in", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
@@ -69,11 +95,9 @@ export const createUser = async (req, res) => {
 
     // ודא שהשדה type הוא אחד משני הערכים המוגדרים
     if (!["Contributer", "Soldier"].includes(type)) {
-      return res
-        .status(400)
-        .json({
-          message: 'Invalid type. Type must be "Contributer" or "Soldier".',
-        });
+      return res.status(400).json({
+        message: 'Invalid type. Type must be "Contributer" or "Soldier".',
+      });
     }
 
     // יצירת משתמש חדש
@@ -157,50 +181,90 @@ export const deleteUser = async (req, res) => {
 };
 
 // עדכון פרטי משתמש לפי דרכון (passport)
+// export const editUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       firstName,
+//       lastName,
+//       email,
+//       phone,
+//       personalIdentificationNumber,
+//       media,
+//       type,
+//       authorId,
+//     } = req.body;
+
+//     const user = await User.findOne({ _id:id });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // עדכון שדות המשתמש
+//     user.firstName = firstName || user.firstName;
+//     user.lastName = lastName || user.lastName;
+//     user.email = email || user.email;
+//     user.phone = phone || user.phone;
+//     user.personalIdentificationNumber =
+//       personalIdentificationNumber || user.personalIdentificationNumber;
+//     user.media = media || user.media;
+
+//     // שמור את המשתמש המעודכן
+//     await user.save();
+
+//     res.status(200).json({
+//       message: "User updated successfully",
+//       user: user,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error updating user" });
+//   }
+//};
+// export const editUser = async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+//     const updatedData = req.body;
+
+//     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+//       new: true,
+//     });
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     res.status(200).json(updatedUser);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Failed to update user" });
+//   }
+// };
+
 export const editUser = async (req, res) => {
   try {
-    const { passport } = req.params;
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      personalIdentificationNumber,
-      media,
-      type,
-      authorId,
-    } = req.body;
+    const { id } = req.params; 
+    const updatedData = req.body; 
 
-    const user = await User.findOne({ passport });
-    if (!user) {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      updatedData,
+      // { new: true } 
+    );
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // עדכון שדות המשתמש
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
-    user.email = email || user.email;
-    user.phone = phone || user.phone;
-    user.personalIdentificationNumber =
-      personalIdentificationNumber || user.personalIdentificationNumber;
-    user.media = media || user.media;
-
-    // עדכון שדות חדשים
-    if (type) user.type = type;
-    if (authorId) user.authorId = authorId;
-
-    // שמור את המשתמש המעודכן
-    await user.save();
-
-    res.status(200).json({
-      message: "User updated successfully",
-      user: user,
-    });
+    res.status(200).json(updatedUser); 
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error updating user" });
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Error updating user", error });
   }
 };
+;
+
+
 
 // קבלת משתמש לפי מספר זיהוי אישי (personalIdentificationNumber)
 export const getUserByPIN = async (req, res) => {
@@ -215,5 +279,36 @@ export const getUserByPIN = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error fetching user by PIN" });
+  }
+};
+
+// Get current user data
+export const getCurrentUser = async (req, res) => {
+  try {
+    // req.user is set by the auth middleware
+    const user = await User.findById(req.user._id).select("-password");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error fetching current user" });
+  }
+};
+
+export const getPublicUserProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("nickname bio profileImage type");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); // Only return public fields
+  } catch (error) {
+    console.error("Error fetching public user profile:", error);
+    res.status(500).json({ message: "Error fetching user profile" });
   }
 };

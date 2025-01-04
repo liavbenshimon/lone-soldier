@@ -1,26 +1,30 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api } from "@/api";
-import React, { useState } from "react";
-import { useNavigate } from "react-router";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
-// הגדרת סוג נתונים של הטופס
-interface FormData {
-  firstName: string;
-  lastName: string;
-  passport: string;
-  email: string;
-  password: string;
-  phone: string;
-  personalIdentificationNumber?: string; // שדה אופציונלי
-  type: "Contributer" | "Soldier";
-}
-
-export function SignupForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"div">) {
+export function SignupForm() {
   const navigate = useNavigate();
-  // הגדרת useState עם סוג נתונים
-  const [formData, setFormData] = useState<FormData>({
+  const dispatch = useDispatch();
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     passport: "",
@@ -28,199 +32,165 @@ export function SignupForm({
     password: "",
     phone: "",
     personalIdentificationNumber: "",
-    type: "Contributer", // ברירת מחדל
+
+    type: "",
   });
 
-  // הגדרת פונקציה שתטפל בשינויי שדות
-  //shalev38@gmail.com
-  //12345678
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
-  };
-
-  // הגדרת פונקציה לשליחת הטופס
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setLoading(true);
+
     try {
-      const res = await api.post("/users", formData);
-      console.log(res);
-      sessionStorage.setItem("token", res.data.token);
-      sessionStorage.setItem("id", res.data.user.id);
-      sessionStorage.setItem("user", JSON.stringify(res.data.user));
-      if (formData.type === "Contributer") {
-        navigate("/contribute");
-      } else {
-        navigate("/Home");
-      }
-    } catch (error) {
-      console.error(error);
+
+      const response = await api.post("/signup-requests", formData);
+
+      // Navigate to pending page with request data
+      navigate("/pending", {
+        state: {
+          token: response.data.token,
+          request: response.data.request,
+        },
+      });
+    } catch (error: any) {
+      setError(
+        error.response?.data?.error || "Failed to submit signup request"
+      );
+    } finally {
+      setLoading(false);
     }
   };
 
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleTypeChange = (value: string) => {
+    setFormData({
+      ...formData,
+      type: value,
+    });
+  };
+
   return (
-    <div className={`flex flex-col gap-6 ${className}`} {...props}>
-      <div className="card">
-        <div className="card-header">
-          <h2 className="text-2xl">Sign Up</h2>
-          <p>Enter your details below to create an account</p>
-        </div>
-        <div className="card-content">
+    <div className="container mx-auto max-w-lg py-10">
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-2xl">Create an account</CardTitle>
+          <CardDescription>
+            Enter your details below to create your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <form onSubmit={handleSubmit}>
-            <div className="flex flex-col gap-6">
-              {/* First Name */}
-              <div className="grid gap-2">
-                <label htmlFor="firstName" className="text-primary">
-                  First Name
-                </label>
-                <input
-                  id="firstName"
-                  type="text"
-                  placeholder="First Name"
-                  value={formData.firstName}
-                  onChange={handleInputChange}
-                  required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
-                />
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-2 gap-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="firstName">First Name</Label>
+                  <Input
+                    id="firstName"
+                    required
+                    value={formData.firstName}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    id="lastName"
+                    required
+                    value={formData.lastName}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
-
-              {/* Last Name */}
               <div className="grid gap-2">
-                <label htmlFor="lastName" className="text-primary">
-                  Last Name
-                </label>
-                <input
-                  id="lastName"
-                  type="text"
-                  placeholder="Last Name"
-                  value={formData.lastName}
-                  onChange={handleInputChange}
-                  required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
-                />
-              </div>
-
-              {/* Passport */}
-              <div className="grid gap-2">
-                <label htmlFor="passport" className="text-primary">
-                  Passport Number
-                </label>
-                <input
+                <Label htmlFor="passport">Passport Number</Label>
+                <Input
                   id="passport"
-                  type="text"
-                  placeholder="Passport Number"
-                  value={formData.passport}
-                  onChange={handleInputChange}
                   required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  value={formData.passport}
+                  onChange={handleChange}
                 />
               </div>
-
-              {/* Email */}
               <div className="grid gap-2">
-                <label htmlFor="email" className="text-primary">
-                  Email
-                </label>
-                <input
+                <Label htmlFor="email">Email</Label>
+                <Input
                   id="email"
                   type="email"
-                  placeholder="m@example.com"
-                  value={formData.email}
-                  onChange={handleInputChange}
                   required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  value={formData.email}
+                  onChange={handleChange}
                 />
               </div>
-
-              {/* Password */}
               <div className="grid gap-2">
-                <label htmlFor="password" className="text-primary">
-                  Password
-                </label>
-                <input
+                <Label htmlFor="password">Password</Label>
+                <Input
                   id="password"
                   type="password"
+                  required
                   value={formData.password}
-                  onChange={handleInputChange}
-                  required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  onChange={handleChange}
                 />
               </div>
-
-              {/* Phone */}
               <div className="grid gap-2">
-                <label htmlFor="phone" className="text-primary">
-                  Phone
-                </label>
-                <input
+                <Label htmlFor="phone">Phone</Label>
+                <Input
                   id="phone"
-                  type="text"
-                  placeholder="Phone"
+                  type="tel"
+                  required
                   value={formData.phone}
-                  onChange={handleInputChange}
-                  required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  onChange={handleChange}
                 />
               </div>
-
-              {/* Personal Identification Number (Optional) */}
               <div className="grid gap-2">
-                <label
-                  htmlFor="personalIdentificationNumber"
-                  className="text-primary"
-                >
-                  Personal ID
-                </label>
-                <input
+                <Label htmlFor="personalIdentificationNumber">
+                  Personal ID Number (Optional)
+                </Label>
+                <Input
                   id="personalIdentificationNumber"
-                  type="text"
-                  value={formData.personalIdentificationNumber || ""}
-                  onChange={handleInputChange}
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  value={formData.personalIdentificationNumber}
+                  onChange={handleChange}
                 />
               </div>
-
-              {/* User Type (Contributer or Soldier) */}
               <div className="grid gap-2">
-                <label htmlFor="type" className="text-primary">
-                  User Type
-                </label>
-                <select
-                  id="type"
-                  value={formData.type}
-                  onChange={handleInputChange}
+                <Label>Account Type</Label>
+                <Select
                   required
-                  className="border-2 border-border dark:border-border dark:bg-muted dark:text-muted-foreground p-2 rounded focus:border-ring focus:ring-2 dark:focus:ring-primary text-black"
+                  value={formData.type}
+                  onValueChange={handleTypeChange}
                 >
-                  <option value="Contributer">Contributer</option>
-                  <option value="Soldier">Soldier</option>
-                </select>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select account type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Soldier">Soldier</SelectItem>
+                    <SelectItem value="Contributor">Contributor</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              {/* Submit Button */}
-              <button
-                type="submit"
-                className="w-full bg-primary text-primary-foreground p-2 rounded"
-              >
-                Sign Up
-              </button>
-            </div>
-
-            {/* Link to Login */}
-            <div className="mt-4 text-center text-sm">
-              Already have an account?{" "}
-              <a href="#" className="underline underline-offset-4 text-primary">
-                Login
-              </a>
+              {error && (
+                <div className="text-sm text-red-500 mt-2">{error}</div>
+              )}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Submitting..." : "Sign Up"}
+              </Button>
+              <div className="text-center text-sm">
+                Already have an account?{" "}
+                <button
+                  onClick={() => navigate("/login")}
+                  className="underline underline-offset-4"
+                >
+                  Login
+                </button>
+              </div>
             </div>
           </form>
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
