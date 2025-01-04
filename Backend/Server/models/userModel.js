@@ -49,6 +49,23 @@ const userSchema = new mongoose.Schema({
     ref: "User",
     required: false, //ask shalev about false and ask liav about what is the authorId
   },
+  // Additional fields for Profile
+  nickname: {
+    type: String,
+    default: "",
+  },
+  bio: {
+    type: String,
+    default: "",
+  },
+  profileImage: {
+    type: String,
+    default: "", 
+  },
+  receiveNotifications: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const User = mongoose.model("User", userSchema);

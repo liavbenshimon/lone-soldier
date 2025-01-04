@@ -20,6 +20,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 const fetchChannels = async () => {
   const response = await api.get("/channels");
   return response.data;
+
 };
 
 export const Navbar = ({

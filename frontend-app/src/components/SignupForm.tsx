@@ -21,6 +21,7 @@ import {
 
 export function SignupForm() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -31,6 +32,7 @@ export function SignupForm() {
     password: "",
     phone: "",
     personalIdentificationNumber: "",
+
     type: "",
   });
 
@@ -40,6 +42,7 @@ export function SignupForm() {
     setLoading(true);
 
     try {
+
       const response = await api.post("/signup-requests", formData);
 
       // Navigate to pending page with request data

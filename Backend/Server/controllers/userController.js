@@ -14,6 +14,23 @@ const createToken = (id) => {
 };
 
 // התחברות למשתמש
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const user = await User.findById(id);
+    console.log(user);
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json(user); 
+  } catch (error) {
+    console.error("Error fetching user by ID:", error);
+    res.status(500).json({ message: "Error fetching user by ID" });
+  }
+};
+
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -164,50 +181,90 @@ export const deleteUser = async (req, res) => {
 };
 
 // עדכון פרטי משתמש לפי דרכון (passport)
+// export const editUser = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const {
+//       firstName,
+//       lastName,
+//       email,
+//       phone,
+//       personalIdentificationNumber,
+//       media,
+//       type,
+//       authorId,
+//     } = req.body;
+
+//     const user = await User.findOne({ _id:id });
+//     if (!user) {
+//       return res.status(404).json({ message: "User not found" });
+//     }
+
+//     // עדכון שדות המשתמש
+//     user.firstName = firstName || user.firstName;
+//     user.lastName = lastName || user.lastName;
+//     user.email = email || user.email;
+//     user.phone = phone || user.phone;
+//     user.personalIdentificationNumber =
+//       personalIdentificationNumber || user.personalIdentificationNumber;
+//     user.media = media || user.media;
+
+//     // שמור את המשתמש המעודכן
+//     await user.save();
+
+//     res.status(200).json({
+//       message: "User updated successfully",
+//       user: user,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error updating user" });
+//   }
+//};
+// export const editUser = async (req, res) => {
+//   try {
+//     const userId = req.params.id;
+//     const updatedData = req.body;
+
+//     const updatedUser = await User.findByIdAndUpdate(userId, updatedData, {
+//       new: true,
+//     });
+
+//     if (!updatedUser) {
+//       return res.status(404).json({ error: "User not found" });
+//     }
+
+//     res.status(200).json(updatedUser);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: "Failed to update user" });
+//   }
+// };
+
 export const editUser = async (req, res) => {
   try {
-    const { passport } = req.params;
-    const {
-      firstName,
-      lastName,
-      email,
-      phone,
-      personalIdentificationNumber,
-      media,
-      type,
-      authorId,
-    } = req.body;
+    const { id } = req.params; 
+    const updatedData = req.body; 
 
-    const user = await User.findOne({ passport });
-    if (!user) {
+    const updatedUser = await User.findByIdAndUpdate(
+      id,
+      updatedData,
+      // { new: true } 
+    );
+
+    if (!updatedUser) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // עדכון שדות המשתמש
-    user.firstName = firstName || user.firstName;
-    user.lastName = lastName || user.lastName;
-    user.email = email || user.email;
-    user.phone = phone || user.phone;
-    user.personalIdentificationNumber =
-      personalIdentificationNumber || user.personalIdentificationNumber;
-    user.media = media || user.media;
-
-    // עדכון שדות חדשים
-    if (type) user.type = type;
-    if (authorId) user.authorId = authorId;
-
-    // שמור את המשתמש המעודכן
-    await user.save();
-
-    res.status(200).json({
-      message: "User updated successfully",
-      user: user,
-    });
+    res.status(200).json(updatedUser); // Retorne o usuário atualizado
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error updating user" });
+    console.error("Error updating user:", error);
+    res.status(500).json({ message: "Error updating user", error });
   }
 };
+;
+
+
 
 // קבלת משתמש לפי מספר זיהוי אישי (personalIdentificationNumber)
 export const getUserByPIN = async (req, res) => {
