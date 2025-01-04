@@ -6,4 +6,4 @@ export interface Filters {
   financialNeed: boolean | null;
   educationStatus: string | null;
   militaryStatus: string | null;
-} 
+}

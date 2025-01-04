@@ -13,7 +13,7 @@ export const Hero = () => {
         <main className="text-5xl md:text-6xl font-bold">
           <h1 className="inline">
             <span className="inline bg-gradient-to-r from-[#F596D3]  to-[#D247BF] text-transparent bg-clip-text">
-              LoneSoldier
+              Not Alone
             </span>{" "}
             a Platform
           </h1>{" "}
@@ -115,7 +115,8 @@ export const Hero = () => {
                   <div className="text-6xl">😢</div>
                   <h3 className="text-xl font-bold">We’re sorry!</h3>
                   <p className="text-muted-foreground">
-                    We are not accepting monetary donations at the moment. Please check back later!
+                    We are not accepting monetary donations at the moment.
+                    Please check back later!
                   </p>
                   <Button
                     variant="outline"

@@ -40,7 +40,7 @@ export const SideNavLayout = ({
           <div className="flex items-center mb-6">
             <h1 className="ml-2 font-bold text-xl">
               <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text ml-10">
-                LoneSoldier
+                Not Alone
               </span>
             </h1>
           </div>
