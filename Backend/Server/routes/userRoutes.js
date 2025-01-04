@@ -2,10 +2,12 @@ import express from "express";
 import {
   createUser,
   loginUser,
-  getUserByFullName,
+  // getUserByFullName,
   getAllUsers,
   deleteUser,
   editUser,
+
+  getUserById,
   getUserByPIN,
   getCurrentUser,
 } from "../controllers/userController.js";
@@ -20,12 +22,13 @@ router.post("/", createUser);
 // Protected routes
 // Note: Order matters! More specific routes should come before generic ones
 router.get("/me", authenticateToken, getCurrentUser);
-router.get(
-  "/pin/:personalIdentificationNumber",
-  authenticateToken,
-  getUserByPIN
-);
-router.get("/:firstName/:lastName", authenticateToken, getUserByFullName);
+// router.get(
+//   "/pin/:personalIdentificationNumber",
+//   authenticateToken,
+//   getUserByPIN
+// );
+// router.get("/:firstName/:lastName", authenticateToken, getUserByFullName);
+router.get("/:id", authenticateToken, getUserById);
 router.get("/", authenticateToken, getAllUsers);
 router.delete("/:passport", authenticateToken, deleteUser);
 router.put("/:passport", authenticateToken, editUser);

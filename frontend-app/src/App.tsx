@@ -1,5 +1,8 @@
 import ContributePage from "./pages/Contribute";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/HomePage"
+import Profile from "./pages/Profile";
+
+
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
@@ -57,6 +60,8 @@ function AppRoutes() {
       <Route path="/pending" element={<PendingPage />} />
       <Route path="/home/social" element={<Social />} />
       <Route path="/admin/queue" element={<AdminQueue />} />
+      <Route path="/profile" element={<Profile />} />
+
 
       <Route path="/home" element={<HomePage mode="Donations" />} />
       <Route path="/home/donations" element={<HomePage mode="Donations" />} />
@@ -80,6 +85,7 @@ export default function App() {
         <QueryClientProvider client={queryClient}>
           <BrowserRouter>
             <AppRoutes />
+
           </BrowserRouter>
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
