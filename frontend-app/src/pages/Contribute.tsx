@@ -1,5 +1,5 @@
 import { Navbar } from "@/components/Navbar";
-import { ContributePostCard } from "@/components/ContributeFeed";
+import ContributePostCard from "@/components/ContributeFeed";
 
 export default function ContributePage() {
   return (

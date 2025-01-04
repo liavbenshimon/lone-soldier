@@ -10,7 +10,9 @@ router.get('/:id', authenticateToken, getRequestById);
 router.get('/', authenticateToken, getRequests);
 //post
 router.post('/', authenticateToken, createRequest);
+//Delete
 router.delete('/:id', authenticateToken, deleteRequest);
-router.put('/:id', authenticateToken, updateRequest); 
+//Put
+router.put('/:id', authenticateToken, updateRequest); 53
 
 export default router;
