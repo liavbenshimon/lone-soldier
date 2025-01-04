@@ -128,7 +128,6 @@ export function Feed({ mode }: { mode: string }) {
 
   const filterDonations = (donations: Donation[]) => {
     if (!donations) return [];
-    console.log("Filtering donations:", donations);
     return donations.filter((donation) => {
       if (!donation) return false;
 
@@ -163,9 +162,7 @@ export function Feed({ mode }: { mode: string }) {
   };
 
   const filterEatUps = (eatupsData: EatUp[]) => {
-    console.log("Filtering eatups:", eatupsData);
     return eatupsData.filter((eatup) => {
-      console.log("Processing eatup:", eatup);
       const matchesSearch = eatup.title
         ? eatup.title.toLowerCase().includes(search.toLowerCase())
         : true;
@@ -189,16 +186,7 @@ export function Feed({ mode }: { mode: string }) {
         matchesHosting &&
         matchesDate;
 
-      console.log("Filter result:", {
-        matchesSearch,
-        matchesZone,
-        matchesKosher,
-        matchesHosting,
-        matchesDate,
-        eatupDate,
-        fromDate: date?.from,
-        toDate: date?.to,
-      });
+      
       return result;
     });
   };

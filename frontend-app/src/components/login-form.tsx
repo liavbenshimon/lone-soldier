@@ -54,7 +54,7 @@ export function LoginForm({
       } else if (res?.data?.type === "pending") {
         // For pending requests, we still want to be authenticated
         // but we'll navigate to the pending page
-        console.log("works");
+
 
         navigate("/pending", {
           state: {

@@ -24,6 +24,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { fetchUserData } from "./Redux/userSlice";
 import { api } from "./api";
+import ChannelPage from "./pages/ChannelPage";
 
 function AppRoutes() {
   const dispatch = useDispatch();
@@ -71,6 +72,8 @@ function AppRoutes() {
       <Route path="/Login" element={<Login />} />
       <Route path="/signUp" element={<SignUp />} />
       <Route path="/termofservice" element={<Tos />} />
+
+      <Route path="/channel/:channelId" element={<ChannelPage />} />
 
       <Route path="*" element={<h1>404</h1>} />
     </Routes>

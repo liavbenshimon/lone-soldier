@@ -8,12 +8,12 @@ import { useState } from "react";
 
 export default function HomePage({ mode }: { mode: string }) {
   const user = useSelector((state: RootState) => state.user);
-  console.log(user);
 
-  const [firstTimeConnected, setFirstTimeConnected] = useState(() => {
-    return sessionStorage.getItem("showWelcomeDialog") === "true";
-  });
-  
+//  console.log(user);
+
+//  const [firstTimeConnected, setFirstTimeConnected] = useState(() => {
+//    return sessionStorage.getItem("showWelcomeDialog") === "true";
+//  });
   
   return (
     <div className="flex bg-background text-foreground min-h-screen">
