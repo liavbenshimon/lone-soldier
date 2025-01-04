@@ -25,7 +25,90 @@ export const createSignupRequest = async (req, res) => {
       type,
     } = req.body;
 
-    // Hash password
+    // Validate required fields
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "passport",
+      "email",
+      "password",
+      "phone",
+      "type",
+    ];
+    const missingFields = requiredFields.filter((field) => !req.body[field]);
+
+    if (missingFields.length > 0) {
+      return res.status(400).json({
+        error: `Missing required fields: ${missingFields.join(", ")}`,
+      });
+    }
+
+    // Validate type
+    if (!["Soldier", "Contributor"].includes(type)) {
+      return res.status(400).json({
+        error: 'Invalid type. Must be either "Soldier" or "Contributor"',
+      });
+    }
+
+    // Check for existing user with same unique fields
+    const existingUser = await User.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { passport },
+        { phone },
+        ...(personalIdentificationNumber
+          ? [{ personalIdentificationNumber }]
+          : []),
+      ],
+    });
+
+    if (existingUser) {
+      let errorField = "";
+      if (existingUser.email === email.toLowerCase()) errorField = "Email";
+      else if (existingUser.passport === passport)
+        errorField = "Passport number";
+      else if (existingUser.phone === phone) errorField = "Phone number";
+      else if (
+        existingUser.personalIdentificationNumber ===
+        personalIdentificationNumber
+      )
+        errorField = "Personal identification number";
+
+      return res.status(400).json({
+        error: `${errorField} is already registered to an existing user`,
+      });
+    }
+
+    // Check for existing signup request with same unique fields
+    const existingRequest = await SignupRequest.findOne({
+      $or: [
+        { email: email.toLowerCase() },
+        { passport },
+        { phone },
+        ...(personalIdentificationNumber
+          ? [{ personalIdentificationNumber }]
+          : []),
+      ],
+    });
+
+    if (existingRequest) {
+      let errorField = "";
+      if (existingRequest.email === email.toLowerCase()) errorField = "Email";
+      else if (existingRequest.passport === passport)
+        errorField = "Passport number";
+      else if (existingRequest.phone === phone) errorField = "Phone number";
+      else if (
+        existingRequest.personalIdentificationNumber ===
+        personalIdentificationNumber
+      )
+        errorField = "Personal identification number";
+
+      return res.status(400).json({
+        error: `${errorField} already has a pending signup request`,
+      });
+    }
+
+    // If all validations pass, create the signup request
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -33,7 +116,7 @@ export const createSignupRequest = async (req, res) => {
       firstName,
       lastName,
       passport,
-      email,
+      email: email.toLowerCase(),
       password: hashedPassword,
       phone,
       personalIdentificationNumber,
@@ -52,6 +135,19 @@ export const createSignupRequest = async (req, res) => {
       request: signupRequest,
     });
   } catch (error) {
+    // Handle specific MongoDB errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      const fieldMap = {
+        email: "Email",
+        passport: "Passport number",
+        phone: "Phone number",
+        personalIdentificationNumber: "Personal identification number",
+      };
+      return res.status(400).json({
+        error: `${fieldMap[field] || field} is already registered`,
+      });
+    }
     res.status(400).json({ error: error.message });
   }
 };
