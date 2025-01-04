@@ -14,6 +14,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useNavigate } from "react-router-dom";
+import { useQueryClient } from "@tanstack/react-query";
 
 // Import constants
 const zones = ["North", "Center", "South"];
@@ -85,6 +86,8 @@ export default function NewPost() {
 
   const [errors, setErrors] = useState<Errors>({});
   const [showAlert, setShowAlert] = useState(false);
+
+  const queryClient = useQueryClient();
 
   const validateFields = () => {
     const newErrors: Errors = {};
@@ -174,6 +177,10 @@ export default function NewPost() {
             "EatUp and channel created successfully:",
             eatupResponse.data
           );
+
+          // Invalidate and refetch channels
+          queryClient.invalidateQueries({ queryKey: ["channels"] });
+
           alert("EatUp created successfully!");
           // Navigate to the new channel
           navigate(`/channel/${eatupResponse.data.data.channel._id}`);
