@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
 import { RootState } from "@/Redux/store";
+
 import { NavbarProps } from "./navigation/types";
 import { setChannels } from "@/Redux/channelSlice";
 import {
@@ -20,7 +21,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 const fetchChannels = async () => {
   const response = await api.get("/channels");
   return response.data;
-
 };
 
 export const Navbar = ({

@@ -20,21 +20,21 @@ export function PostCard({
         <div className="w-full md:w-2/3 flex justify-center items-center">
           {type === "Donations" && (
             <img
-            src={donation?.media?.[0] || ''}
+              src={donation?.media?.[0] || ""}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />
           )}
           {type === "Residences" && (
             <img
-              src={residences?.media?.[0] || ''}
+              src={residences?.media?.[0] || ""}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />
           )}
           {type === "EatUp" && (
             <img
-              src={eatup?.media?.[0] || ''}
+              src={eatup?.media?.[0] || ""}
               alt="Post"
               className="object-contain rounded-md max-h-[250px] max-w-[250px]"
             />

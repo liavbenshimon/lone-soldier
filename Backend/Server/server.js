@@ -17,6 +17,8 @@ import donationRoutes from "./routes/donationRoutes.js";
 import eatupRoutes from "./routes/eatupRoute.js";
 import profileRoutes from "./routes/profileRoutes.js"
 import residenceRoutes from "./routes/residenceRoutes.js";
+import requestRoutes from './routes/requestRoutes.js';
+
 import signupRequestRoutes from "./routes/signupRequestRoute.js";
 import channelRoutes from "./routes/channelRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
@@ -57,6 +59,10 @@ app.use("/api/users", userRoutes);
 app.use("/api/donation", donationRoutes);
 app.use("/api/eatups", eatupRoutes);
 app.use("/api/residences", residenceRoutes);
+
+app.use('/api/requests', requestRoutes);
+
+
 app.use("/api/profile", profileRoutes);
 
 app.use("/api/signup-requests", signupRequestRoutes);
