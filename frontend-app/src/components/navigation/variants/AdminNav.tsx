@@ -4,7 +4,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { ModeToggle } from "../../mode-toggle";
 import { AdminRouteSection, RouteProps } from "../types";
 import { SideNavLayout } from "../layouts/SideNavLayout";
 import { ChannelsDrawer } from "../ChannelsDrawer";

@@ -22,7 +22,6 @@ import PendingPage from "./pages/PendingPage";
 import AdminQueue from "./pages/AdminQueue";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { fetchUserData } from "./Redux/userSlice";
 import { api } from "./api";
 import ChannelPage from "./pages/ChannelPage";
 

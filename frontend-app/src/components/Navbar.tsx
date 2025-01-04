@@ -37,7 +37,7 @@ export const Navbar = ({
 
   const {
     data: channelsData,
-    isFetching,
+    // isFetching,
     refetch,
   } = useQuery({
     queryKey: ["channels"],

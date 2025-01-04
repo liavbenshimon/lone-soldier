@@ -1,13 +1,12 @@
 import { Navbar } from "@/components/Navbar";
 import { Feed } from "@/components/Feed";
-import { useSelector } from "react-redux";
-import { RootState } from "@/Redux/store";
-import { WelcomeDialog } from "@/components/WelcomeDialog";
-import { useState } from "react";
+// import { useSelector } from "react-redux";
+// import { RootState } from "@/Redux/store";
+
 
 
 export default function HomePage({ mode }: { mode: string }) {
-  const user = useSelector((state: RootState) => state.user);
+//  const user = useSelector((state: RootState) => state.user);
 
 //  console.log(user);
 

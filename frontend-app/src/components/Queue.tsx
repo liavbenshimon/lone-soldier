@@ -3,7 +3,7 @@
 //TODO: change the deny button to not delete the request
 //TODO: Add select for status
 
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { api } from "@/api";
 import {
   Table,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { useNavigate } from "react-router-dom";
+
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -32,8 +32,6 @@ import {
 } from "@/components/ui/select";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/Navbar";
-import { useSelector } from "react-redux";
-import { RootState } from "@/Redux/store";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface SignupRequest {
@@ -99,7 +97,7 @@ const QueueSkeleton = () => {
 };
 
 export default function AdminQueue() {
-  const navigate = useNavigate();
+
   const queryClient = useQueryClient();
   const [selectedRequest, setSelectedRequest] = useState<SignupRequest | null>(
     null

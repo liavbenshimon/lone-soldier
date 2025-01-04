@@ -36,7 +36,7 @@ export default function ChannelPage() {
   const [newMessage, setNewMessage] = useState("");
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const [isConnected, setIsConnected] = useState(false);
-
+  console.log(isConnected);
   const currentChannel = channels.find((channel) => channel._id === channelId);
 
   // Query for fetching messages
