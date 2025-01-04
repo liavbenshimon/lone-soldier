@@ -53,7 +53,7 @@ export const Navbar = ({
     if (newState && modes !== "landing") {
       console.log("Navbar menu opened");
       const state = queryClient.getQueryState(["channels"]);
-      const isStale = state?.dataUpdatedAt 
+      const isStale = state?.dataUpdatedAt
         ? Date.now() - state.dataUpdatedAt > 1000 * 60 * 1 // 1 minute
         : true;
 
