@@ -2,14 +2,6 @@ import { RouteProps, AdminRouteSection } from "./types";
 
 export const routeListHome: RouteProps[] = [
   {
-    href: "/Home/donations",
-    label: "Donations",
-  },
-  {
-    href: "/Home/residences",
-    label: "Residences",
-  },
-  {
     href: "/Home/eatup",
     label: "EatUps",
   },
@@ -25,7 +17,19 @@ export const routeListHome: RouteProps[] = [
     href: "/logout",
     label: "Logout",
   },
+  {
+    href: "/requestForm",
+    label: "RequestForm",
+  },
 ];
+// {
+//   href: "/Home/donations",
+//   label: "Donations",
+// },
+// {
+//   href: "/Home/residences",
+//   label: "Residences",
+// },
 
 export const routeListContribute: RouteProps[] = [
   {

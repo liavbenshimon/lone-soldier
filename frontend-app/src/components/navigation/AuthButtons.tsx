@@ -6,9 +6,9 @@ interface AuthButtonsProps {
 }
 
 export const AuthButtons = ({ user, navigate }: AuthButtonsProps) => {
-  if (user.firstName) {
+  if (user.type === "Soldier") {
     return (
-      <Button className="w-full" onClick={() => navigate("/home")}>
+      <Button className="w-full" onClick={() => navigate("/home/eatup")}>
         {user.firstName}
       </Button>
     );
