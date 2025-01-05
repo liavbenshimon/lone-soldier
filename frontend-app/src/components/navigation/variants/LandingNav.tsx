@@ -37,7 +37,8 @@ export const LandingNav = ({ routeList, user, navigate }: LandingNavProps) => {
               className="ml-2 font-bold text-xl flex"
               rel="noreferrer noopener"
             >
-              <LogoIcon />
+              {/* <LogoIcon /> */}
+              <img src="./icon.svg" alt="Logo" class="w-[30px] h-[30px]" />
               Not Alone
             </a>
           </NavigationMenuItem>
