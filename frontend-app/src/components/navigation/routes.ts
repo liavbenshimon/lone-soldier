@@ -20,7 +20,7 @@ export const routeListHome: RouteProps[] = [
   {
     href: "/requestForm",
     label: "Request Form",
-  }, 
+  },
   {
     href: "/profile",
     label: "Profile",
@@ -28,7 +28,7 @@ export const routeListHome: RouteProps[] = [
   {
     href: "/logout",
     label: "Logout",
-  }
+  },
 ];
 // {
 //   href: "/Home/donations",
@@ -67,7 +67,7 @@ export const routeListContribute: RouteProps[] = [
   {
     href: "/logout",
     label: "Logout",
-  }
+  },
 ];
 
 export const routeListLanding: RouteProps[] = [
@@ -113,7 +113,11 @@ export const routeListAdmin: AdminRouteSection[] = [
       {
         href: "/",
         label: "Home",
-      }, 
+      },
+      {
+        href: "/requestForm",
+        label: "Request Form",
+      },
       // {
       //   href: "/Home/donations",
       //   label: "Donations",
@@ -134,6 +138,10 @@ export const routeListAdmin: AdminRouteSection[] = [
         href: "/rights",
         label: "Your Rights",
       },
+      {
+        href: "/profile",
+        label: "Profile",
+      },
     ],
   },
   {
@@ -146,6 +154,10 @@ export const routeListAdmin: AdminRouteSection[] = [
       {
         href: "/new-post",
         label: "Donate",
+      },
+      {
+        href: "/my-eatups",
+        label: "My EatUps",
       },
     ],
   },

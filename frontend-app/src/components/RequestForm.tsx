@@ -1,13 +1,15 @@
 import { AxiosError } from "axios";
 import { api } from "@/api";
 import { useState, ChangeEvent, FormEvent } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Card } from "@/components/ui/card";
+import { Navbar } from "@/components/Navbar";
 
 // Define the shape of the formData
 type FormDataType = {
-  // name: string;
-  // age: string;
-  // phone: string;
-  // email: string;
   service: string;
   itemType: string;
   itemDescription: string;
@@ -20,10 +22,6 @@ type FormDataType = {
 
 function RequestForm() {
   const [formData, setFormData] = useState<FormDataType>({
-    // name: "",
-    // age: "",
-    // phone: "",
-    // email: "",
     service: "",
     itemType: "",
     itemDescription: "",
@@ -70,165 +68,134 @@ function RequestForm() {
   };
 
   return (
-    <div className="max-w-lg mx-auto bg-[hsl(var(--background))] p-6 rounded-lg shadow-md">
-      <style>
-        {`
-      input::placeholder,
-      textarea::placeholder {
-        color: #A9A9A9; /* צבע אפור עבור ה-placeholder */
-      }
+    <div className="flex bg-background text-foreground min-h-screen">
+      <Navbar modes="home" isVertical={true} isAccordion={true} />
+      <div className="flex-1 flex justify-center">
+        <div className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
+          <Card className="p-6">
+            <h2 className="text-3xl font-bold mb-8 text-center">
+              <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
+                Donation Request
+              </span>
+            </h2>
 
-      input,
-      textarea {
-        color: black; /* צבע שחור עבור הטקסט שהמשתמש מקליד */
-      }
-    `}
-      </style>
-      <h2 className="text-3xl font-extrabold mb-6 text-center text-[hsl(var(--primary-foreground))] shadow-lg text-[hsl(var(--primary))]">
-        Donation Request
-      </h2>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              {/* Service */}
+              <div className="space-y-2">
+                <Label>Service</Label>
+                <div className="flex gap-4">
+                  <label className="flex items-center space-x-2">
+                    <Input
+                      type="radio"
+                      name="service"
+                      value="Regular"
+                      checked={formData.service === "Regular"}
+                      onChange={handleChange}
+                    />
+                    <span>Regular</span>
+                  </label>
+                  <label className="flex items-center space-x-2">
+                    <Input
+                      type="radio"
+                      name="service"
+                      value="Reserves"
+                      checked={formData.service === "Reserves"}
+                      onChange={handleChange}
+                    />
+                    <span>Reserves</span>
+                  </label>
+                </div>
+              </div>
 
-      <form onSubmit={handleSubmit}>
-        {/* Service */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Service
-          </label>
-          <div className="flex gap-4">
-            <label className="flex items-center text-[hsl(var(--secondary-foreground))]">
-              <input
-                type="radio"
-                name="service"
-                value="Regular"
-                checked={formData.service === "Regular"}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              Regular
-            </label>
-            <label className="flex items-center text-[hsl(var(--secondary-foreground))]">
-              <input
-                type="radio"
-                name="service"
-                value="Reserves"
-                checked={formData.service === "Reserves"}
-                onChange={handleChange}
-                className="mr-2"
-              />
-              Reserves
-            </label>
-          </div>
+              {/* Request Details */}
+              <div className="space-y-2">
+                <Label>Item Type</Label>
+                <Input
+                  name="itemType"
+                  value={formData.itemType}
+                  onChange={handleChange}
+                  placeholder="Enter item type"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Item Description</Label>
+                <Textarea
+                  name="itemDescription"
+                  value={formData.itemDescription}
+                  onChange={handleChange}
+                  placeholder="Details like size, color, desired condition"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Required Quantity</Label>
+                <Input
+                  type="number"
+                  name="quantity"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  placeholder="Enter quantity"
+                />
+              </div>
+
+              {/* Additional Details */}
+              <div className="space-y-2">
+                <Label>Urgency</Label>
+                <select
+                  name="urgency"
+                  value={formData.urgency}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-[#F596D3]"
+                >
+                  <option value="Immediate">Immediate</option>
+                  <option value="Specific Date">Specific Date</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Preferred Geographic Area</Label>
+                <Input
+                  name="geographicArea"
+                  value={formData.geographicArea}
+                  onChange={handleChange}
+                  placeholder="Enter geographic area"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label>Additional Notes</Label>
+                <Textarea
+                  name="notes"
+                  value={formData.notes}
+                  onChange={handleChange}
+                  placeholder="Additional comments"
+                />
+              </div>
+
+              {/* Agreement */}
+              <div className="flex items-center space-x-2">
+                <Input
+                  type="checkbox"
+                  name="agreeToShareDetails"
+                  checked={formData.agreeToShareDetails}
+                  onChange={handleChange}
+                  className="w-4 h-4"
+                />
+                <Label>I agree to the terms and conditions</Label>
+              </div>
+
+              {/* Submit Button */}
+              <Button
+                type="submit"
+                className="w-full bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90 transition-opacity"
+              >
+                Submit Request
+              </Button>
+            </form>
+          </Card>
         </div>
-
-        {/* Request Details */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Item Type
-          </label>
-          <input
-            type="text"
-            name="itemType"
-            value={formData.itemType}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter item type"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Item Description
-          </label>
-          <textarea
-            name="itemDescription"
-            value={formData.itemDescription}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Details like size, color, desired condition"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Required Quantity
-          </label>
-          <input
-            type="number"
-            name="quantity"
-            value={formData.quantity}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter quantity"
-          />
-        </div>
-
-        {/* Additional Details */}
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Urgency
-          </label>
-          <select
-            name="urgency"
-            value={formData.urgency}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-          >
-            <option value="Immediate">Immediate</option>
-            <option value="Specific Date">Specific Date</option>
-          </select>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Preferred Geographic Area
-          </label>
-          <input
-            type="text"
-            name="geographicArea"
-            value={formData.geographicArea}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Enter geographic area"
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-[hsl(var(--secondary-foreground))] mb-2">
-            Additional Notes
-          </label>
-          <textarea
-            name="notes"
-            value={formData.notes}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border border-[hsl(var(--border))] rounded-lg focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))] focus:ring-opacity-50"
-            placeholder="Additional comments"
-          />
-        </div>
-
-        {/* Agreement */}
-        <div className="mb-4 flex items-center">
-          <input
-            type="checkbox"
-            name="agreeToShareDetails"
-            checked={formData.agreeToShareDetails}
-            onChange={handleChange}
-            className="mr-2"
-          />
-          <label className="text-[hsl(var(--secondary-foreground))]">
-            I agree to the terms and conditions
-          </label>
-        </div>
-
-        {/* Submit Button */}
-        <div className="flex justify-center">
-          <button
-            type="submit"
-            className="bg-[hsl(var(--primary))] text-white px-6 py-2 rounded-lg font-semibold hover:bg-[hsl(var(--primary-dark))] focus:outline-none focus:ring-2 focus:ring-[hsl(var(--ring))]"
-          >
-            Submit Request
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
