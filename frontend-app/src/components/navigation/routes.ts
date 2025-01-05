@@ -2,6 +2,10 @@ import { RouteProps, AdminRouteSection } from "./types";
 
 export const routeListHome: RouteProps[] = [
   {
+    href: "/",
+    label: "Home",
+  },
+  {
     href: "/Home/eatup",
     label: "EatUps",
   },
@@ -14,13 +18,17 @@ export const routeListHome: RouteProps[] = [
     label: "Your Rights",
   },
   {
-    href: "/logout",
-    label: "Logout",
+    href: "/requestForm",
+    label: "Request Form",
+  }, 
+  {
+    href: "/profile",
+    label: "Profile",
   },
   {
-    href: "/requestForm",
-    label: "RequestForm",
-  },
+    href: "/logout",
+    label: "Logout",
+  }
 ];
 // {
 //   href: "/Home/donations",
@@ -32,6 +40,10 @@ export const routeListHome: RouteProps[] = [
 // },
 
 export const routeListContribute: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
   {
     href: "/contribute",
     label: "contribute",
@@ -45,12 +57,16 @@ export const routeListContribute: RouteProps[] = [
     label: "Social",
   },
   {
-    href: "/logout",
-    label: "Logout",
-  },
-  {
     href: "/my-eatups",
     label: "My EatUps",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
   }
 ];
 
@@ -95,13 +111,17 @@ export const routeListAdmin: AdminRouteSection[] = [
     section: "Soldier",
     routes: [
       {
-        href: "/Home/donations",
-        label: "Donations",
-      },
-      {
-        href: "/Home/residences",
-        label: "Residences",
-      },
+        href: "/",
+        label: "Home",
+      }, 
+      // {
+      //   href: "/Home/donations",
+      //   label: "Donations",
+      // },
+      // {
+      //   href: "/Home/residences",
+      //   label: "Residences",
+      // },
       {
         href: "/Home/eatup",
         label: "EatUps",
