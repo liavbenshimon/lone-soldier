@@ -26,6 +26,7 @@ import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { api } from "./api";
 import ChannelPage from "./pages/ChannelPage";
+import MyEatUps from "./pages/MyEatUps";
 
 function AppRoutes() {
   const dispatch = useDispatch();
@@ -63,7 +64,7 @@ function AppRoutes() {
       <Route path="/home/social" element={<Social />} />
       <Route path="/admin/queue" element={<AdminQueue />} />
       <Route path="/profile" element={<Profile />} />
-
+      <Route path="/my-eatups" element={<MyEatUps />} />
 
       <Route path="/home" element={<HomePage mode="Donations" />} />
       <Route path="/home/donations" element={<HomePage mode="Donations" />} />
