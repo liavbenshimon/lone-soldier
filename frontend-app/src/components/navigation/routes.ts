@@ -48,6 +48,10 @@ export const routeListContribute: RouteProps[] = [
     href: "/logout",
     label: "Logout",
   },
+  {
+    href: "/my-eatups",
+    label: "My EatUps",
+  }
 ];
 
 export const routeListLanding: RouteProps[] = [
