@@ -19,6 +19,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
+import { Navbar } from "./Navbar";
 
 // Zod schema for signup validation
 const signupSchema = z.object({
@@ -177,160 +178,172 @@ export function SignupForm() {
   };
 
   return (
-    <div className="container mx-auto max-w-lg py-10">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
-            Enter your details below to create your account
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} noValidate>
-            <div className="flex flex-col gap-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    id="firstName"
-                    required
-                    value={formData.firstName}
-                    onChange={handleChange}
-                    className={errors.firstName ? "border-red-500" : ""}
-                  />
-                  {errors.firstName && (
-                    <p className="text-sm text-red-500">{errors.firstName}</p>
+    <div className="flex bg-background text-foreground min-h-screen">
+      <Navbar modes="landing" />
+
+      <div className="flex-1 mx-10">
+        <div className="py-6">
+          <Card className="max-w-2xl mx-auto p-6">
+            <CardHeader>
+              <CardTitle className="text-2xl">Create an account</CardTitle>
+              <CardDescription>
+                Enter your details below to create your account
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={handleSubmit} noValidate>
+                <div className="flex flex-col gap-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="firstName">First Name</Label>
+                      <Input
+                        id="firstName"
+                        required
+                        value={formData.firstName}
+                        onChange={handleChange}
+                        className={errors.firstName ? "border-red-500" : ""}
+                      />
+                      {errors.firstName && (
+                        <p className="text-sm text-red-500">
+                          {errors.firstName}
+                        </p>
+                      )}
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="lastName">Last Name</Label>
+                      <Input
+                        id="lastName"
+                        required
+                        value={formData.lastName}
+                        onChange={handleChange}
+                        className={errors.lastName ? "border-red-500" : ""}
+                      />
+                      {errors.lastName && (
+                        <p className="text-sm text-red-500">
+                          {errors.lastName}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="passport">Passport Number</Label>
+                    <Input
+                      id="passport"
+                      required
+                      value={formData.passport}
+                      onChange={handleChange}
+                      className={errors.passport ? "border-red-500" : ""}
+                    />
+                    {errors.passport && (
+                      <p className="text-sm text-red-500">{errors.passport}</p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={handleChange}
+                      className={errors.email ? "border-red-500" : ""}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-500">{errors.email}</p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      id="password"
+                      type="password"
+                      required
+                      value={formData.password}
+                      onChange={handleChange}
+                      className={errors.password ? "border-red-500" : ""}
+                    />
+                    {errors.password && (
+                      <p className="text-sm text-red-500">{errors.password}</p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="phone">Phone</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      required
+                      value={formData.phone}
+                      onChange={handleChange}
+                      className={errors.phone ? "border-red-500" : ""}
+                    />
+                    {errors.phone && (
+                      <p className="text-sm text-red-500">{errors.phone}</p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="personalIdentificationNumber">
+                      Personal ID Number (Optional)
+                    </Label>
+                    <Input
+                      id="personalIdentificationNumber"
+                      value={formData.personalIdentificationNumber}
+                      onChange={handleChange}
+                      className={
+                        errors.personalIdentificationNumber
+                          ? "border-red-500"
+                          : ""
+                      }
+                    />
+                    {errors.personalIdentificationNumber && (
+                      <p className="text-sm text-red-500">
+                        {errors.personalIdentificationNumber}
+                      </p>
+                    )}
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Account Type</Label>
+                    <Select
+                      required
+                      value={formData.type || undefined}
+                      onValueChange={handleTypeChange}
+                    >
+                      <SelectTrigger
+                        className={errors.type ? "border-red-500" : ""}
+                      >
+                        <SelectValue placeholder="Select account type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Soldier">Soldier</SelectItem>
+                        <SelectItem value="Contributor">Contributor</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {errors.type && (
+                      <p className="text-sm text-red-500">{errors.type}</p>
+                    )}
+                  </div>
+                  {error && (
+                    <div className="text-sm text-red-500 p-2 bg-red-50 dark:bg-red-950/50 rounded-md">
+                      {error}
+                    </div>
                   )}
+                  <Button type="submit" className="w-full" disabled={loading}>
+                    {loading ? "Submitting..." : "Sign Up"}
+                  </Button>
+                  <div className="text-center text-sm">
+                    Already have an account?{" "}
+                    <button
+                      onClick={() => navigate("/login")}
+                      className="underline underline-offset-4"
+                    >
+                      Login
+                    </button>
+                  </div>
                 </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    id="lastName"
-                    required
-                    value={formData.lastName}
-                    onChange={handleChange}
-                    className={errors.lastName ? "border-red-500" : ""}
-                  />
-                  {errors.lastName && (
-                    <p className="text-sm text-red-500">{errors.lastName}</p>
-                  )}
-                </div>
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="passport">Passport Number</Label>
-                <Input
-                  id="passport"
-                  required
-                  value={formData.passport}
-                  onChange={handleChange}
-                  className={errors.passport ? "border-red-500" : ""}
-                />
-                {errors.passport && (
-                  <p className="text-sm text-red-500">{errors.passport}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  required
-                  value={formData.email}
-                  onChange={handleChange}
-                  className={errors.email ? "border-red-500" : ""}
-                />
-                {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  type="password"
-                  required
-                  value={formData.password}
-                  onChange={handleChange}
-                  className={errors.password ? "border-red-500" : ""}
-                />
-                {errors.password && (
-                  <p className="text-sm text-red-500">{errors.password}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="phone">Phone</Label>
-                <Input
-                  id="phone"
-                  type="tel"
-                  required
-                  value={formData.phone}
-                  onChange={handleChange}
-                  className={errors.phone ? "border-red-500" : ""}
-                />
-                {errors.phone && (
-                  <p className="text-sm text-red-500">{errors.phone}</p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="personalIdentificationNumber">
-                  Personal ID Number (Optional)
-                </Label>
-                <Input
-                  id="personalIdentificationNumber"
-                  value={formData.personalIdentificationNumber}
-                  onChange={handleChange}
-                  className={
-                    errors.personalIdentificationNumber ? "border-red-500" : ""
-                  }
-                />
-                {errors.personalIdentificationNumber && (
-                  <p className="text-sm text-red-500">
-                    {errors.personalIdentificationNumber}
-                  </p>
-                )}
-              </div>
-              <div className="grid gap-2">
-                <Label>Account Type</Label>
-                <Select
-                  required
-                  value={formData.type || undefined}
-                  onValueChange={handleTypeChange}
-                >
-                  <SelectTrigger
-                    className={errors.type ? "border-red-500" : ""}
-                  >
-                    <SelectValue placeholder="Select account type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Soldier">Soldier</SelectItem>
-                    <SelectItem value="Contributor">Contributor</SelectItem>
-                  </SelectContent>
-                </Select>
-                {errors.type && (
-                  <p className="text-sm text-red-500">{errors.type}</p>
-                )}
-              </div>
-              {error && (
-                <div className="text-sm text-red-500 p-2 bg-red-50 dark:bg-red-950/50 rounded-md">
-                  {error}
-                </div>
-              )}
-              <Button type="submit" className="w-full" disabled={loading}>
-                {loading ? "Submitting..." : "Sign Up"}
-              </Button>
-              <div className="text-center text-sm">
-                Already have an account?{" "}
-                <button
-                  onClick={() => navigate("/login")}
-                  className="underline underline-offset-4"
-                >
-                  Login
-                </button>
-              </div>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
+              </form>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
     </div>
   );
 }

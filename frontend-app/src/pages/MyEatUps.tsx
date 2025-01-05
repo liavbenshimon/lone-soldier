@@ -67,7 +67,10 @@ export default function MyEatUps() {
                   My EatUps
                 </span>
               </h2>
-              <Button onClick={() => navigate("/new-post")}>
+              <Button
+                onClick={() => navigate("/new-post")}
+                className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90 transition-opacity"
+              >
                 Create New EatUp
               </Button>
             </div>
@@ -162,6 +165,7 @@ export default function MyEatUps() {
                             navigate(`/channel/${eatup.channel?._id}`)
                           }
                           variant="outline"
+                          className="hover:bg-[#F596D3]/10"
                         >
                           View Channel
                         </Button>

@@ -63,7 +63,9 @@ const ContributePostCard: React.FC = () => {
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <h1 className="text-xl md:text-2xl lg:text-3xl font-bold text-center my-6">
-        Donation Requests
+        <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
+          Donation Requests
+        </span>
       </h1>
       {requests.length === 0 ? (
         <p className="text-center">No requests found.</p>
@@ -117,11 +119,11 @@ const ContributePostCard: React.FC = () => {
                 <Dialog open={open} onOpenChange={setOpen}>
                   <DialogTrigger asChild>
                     <Button
-                      className="w-full md:w-auto "
+                      className="w-full md:w-auto bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90 transition-opacity"
                       onClick={() => {
-                        setSelectedRequest(req); // Set the selected request
-                        setShowMessage(false); // Reset message state
-                        setOpen(true); // Open the dialog
+                        setSelectedRequest(req);
+                        setShowMessage(false);
+                        setOpen(true);
                       }}
                     >
                       Start Donating
@@ -188,7 +190,10 @@ const ContributePostCard: React.FC = () => {
                             />
                           </div>
 
-                          <Button type="submit" className="w-full">
+                          <Button
+                            type="submit"
+                            className="w-full bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90 transition-opacity"
+                          >
                             Continue
                           </Button>
                         </form>

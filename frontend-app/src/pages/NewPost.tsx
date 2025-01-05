@@ -129,11 +129,11 @@ export default function NewPost() {
   };
 
   return (
-    <div className="flex h-screen">
-      <Navbar isVertical isAccordion modes="home" />
+    <div className="flex bg-background text-foreground min-h-screen">
+      <Navbar modes="home2" isVertical={true} isAccordion={true} />
 
-      <div className="flex-1 overflow-auto">
-        <div className="flex-1 p-6 pl-20 md:pl-6 bg-background">
+      <div className="flex-1 mx-10">
+        <div className="py-6">
           <Card className="max-w-2xl mx-auto p-6">
             <h2 className="text-3xl font-bold mb-8 text-center">
               <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
@@ -290,7 +290,7 @@ export default function NewPost() {
 
               <Button
                 onClick={handleCreatePost}
-                className="w-full"
+                className="w-full bg-gradient-to-r from-[#F596D3] to-[#D247BF] hover:opacity-90 transition-opacity"
                 disabled={loading}
               >
                 {loading ? "Creating..." : "Create EatUp"}
