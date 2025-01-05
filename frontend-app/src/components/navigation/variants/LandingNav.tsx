@@ -5,7 +5,6 @@ import {
 } from "@/components/ui/navigation-menu";
 import { buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "../../mode-toggle";
-import { LogoIcon } from "../../Icons";
 import {
   Sheet,
   SheetContent,

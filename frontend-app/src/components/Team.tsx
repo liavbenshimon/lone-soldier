@@ -24,7 +24,7 @@ interface SociaNetworkslProps {
 
 const teamList: TeamProps[] = [
   {
-    imageUrl: "https://avatars.githubusercontent.com/u/143484938?v=4",
+    imageUrl: "/natanphoto.jpg",
     name: "Nathan Kilinski",
     position: "FullStack Developer",
     description:
