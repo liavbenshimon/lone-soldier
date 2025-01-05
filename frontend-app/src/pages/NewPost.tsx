@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,93 +14,117 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
+import { FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
 import { Navbar } from "@/components/Navbar";
 
 // Import constants
-const zones = ["North", "Center", "South"];
-const EatUpsHosting = ["Family", "Organization"];
+const zones = ["North", "Center", "South"] as const;
+const EatUpsHosting = ["Family", "Organization"] as const;
 
-interface Errors {
-  location?: boolean;
-  zone?: boolean;
-  date?: boolean;
-  kosher?: boolean;
-  hosting?: boolean;
-  description?: boolean;
-  image?: boolean;
-}
+// Zod schema for form validation
+const eatupSchema = z.object({
+  location: z.string().min(1, "Location is required"),
+  zone: z.enum(zones, {
+    required_error: "Please select a zone",
+  }),
+  date: z.string().min(1, "Date and time are required"),
+  kosher: z.boolean(),
+  hosting: z.enum(EatUpsHosting, {
+    required_error: "Please select a hosting type",
+  }),
+  description: z.string().min(1, "Description is required"),
+  image: z.string().min(1, "Image is required"),
+  limit: z
+    .string()
+    .transform((val) => (val ? parseInt(val) : undefined))
+    .optional(),
+});
+
+type FormData = {
+  location: string;
+  zone: string;
+  description: string;
+  image: string;
+  date: string;
+  kosher: boolean;
+  hosting: string;
+  limit: string;
+};
+
+type FormErrors = Partial<Record<keyof FormData, string>>;
 
 export default function NewPost() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
   // Form fields
-  const [location, setLocation] = useState<string>("");
-  const [zone, setZone] = useState<string>("");
-  const [description, setDescription] = useState<string>("");
-  const [image, setImage] = useState<string>("");
-  const [date, setDate] = useState<string>("");
-  const [kosher, setKosher] = useState<boolean>(false);
-  const [hosting, setHosting] = useState<string>("");
-  const [limit, setLimit] = useState<string>("");
+  const [formData, setFormData] = useState<FormData>({
+    location: "",
+    zone: "",
+    description: "",
+    image: "",
+    date: "",
+    kosher: false,
+    hosting: "",
+    limit: "",
+  });
 
-  const [errors, setErrors] = useState<Errors>({});
-  const [showAlert, setShowAlert] = useState(false);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
-  const validateFields = () => {
-    const newErrors: Errors = {};
-
-    if (!location) newErrors.location = true;
-    if (!zone) newErrors.zone = true;
-    if (!description) newErrors.description = true;
-    if (!image) newErrors.image = true;
-    if (!date) newErrors.date = true;
-    if (!hosting) newErrors.hosting = true;
-
-    setErrors(newErrors);
-    if (Object.keys(newErrors).length > 0) {
-      setShowAlert(true);
+  const validateForm = () => {
+    try {
+      eatupSchema.parse(formData);
+      setErrors({});
+      return true;
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const newErrors: FormErrors = {};
+        error.errors.forEach((err) => {
+          if (err.path[0]) {
+            newErrors[err.path[0] as keyof FormData] = err.message;
+          }
+        });
+        setErrors(newErrors);
+      }
       return false;
     }
-    return true;
   };
 
   const handleCreatePost = async () => {
-    if (!validateFields()) return;
+    setServerError(null);
+    if (!validateForm()) return;
 
+    setLoading(true);
     try {
       const postData = {
-        location,
-        zone,
-        date: new Date(date).toISOString(),
-        kosher,
-        hosting,
-        description,
-        media: [image],
+        ...formData,
+        date: new Date(formData.date).toISOString(),
+        media: [formData.image],
         authorId: sessionStorage.getItem("id"),
-        title: description,
+        title: formData.description,
         owner: sessionStorage.getItem("id"),
         language: "Hebrew",
-        limit: limit ? parseInt(limit) : undefined,
+        limit: formData.limit ? parseInt(formData.limit) : undefined,
       };
 
       const eatupResponse = await api.post("/eatups", postData);
-      console.log(
-        "EatUp and channel created successfully:",
-        eatupResponse.data
-      );
 
       // Invalidate and refetch channels
       queryClient.invalidateQueries({ queryKey: ["channels"] });
 
-      alert("EatUp created successfully!");
       // Navigate to the new channel
       navigate(`/channel/${eatupResponse.data.data.channel._id}`);
-    } catch (error) {
-      console.error("Error creating EatUp:", error);
-      alert("Error creating EatUp.");
+    } catch (error: any) {
+      const errorMessage =
+        error.response?.data?.error ||
+        "Failed to create EatUp. Please try again.";
+      setServerError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -117,22 +142,29 @@ export default function NewPost() {
             </h2>
 
             <div className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="location" className="text-sm font-medium">
-                  Location *
-                </label>
+              <FormItem>
+                <FormLabel>Location *</FormLabel>
                 <Input
-                  id="location"
                   placeholder="Enter location"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
+                  value={formData.location}
+                  onChange={(e) =>
+                    setFormData({ ...formData, location: e.target.value })
+                  }
                   className={errors.location ? "border-red-500" : ""}
                 />
-              </div>
+                {errors.location && (
+                  <FormMessage>{errors.location}</FormMessage>
+                )}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Zone *</label>
-                <Select value={zone} onValueChange={setZone}>
+              <FormItem>
+                <FormLabel>Zone *</FormLabel>
+                <Select
+                  value={formData.zone}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, zone: value })
+                  }
+                >
                   <SelectTrigger
                     className={errors.zone ? "border-red-500" : ""}
                   >
@@ -146,24 +178,30 @@ export default function NewPost() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+                {errors.zone && <FormMessage>{errors.zone}</FormMessage>}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label htmlFor="date" className="text-sm font-medium">
-                  Date and Time *
-                </label>
+              <FormItem>
+                <FormLabel>Date and Time *</FormLabel>
                 <Input
-                  id="date"
                   type="datetime-local"
-                  value={date}
-                  onChange={(e) => setDate(e.target.value)}
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
                   className={errors.date ? "border-red-500" : ""}
                 />
-              </div>
+                {errors.date && <FormMessage>{errors.date}</FormMessage>}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Hosting Type *</label>
-                <Select value={hosting} onValueChange={setHosting}>
+              <FormItem>
+                <FormLabel>Hosting Type *</FormLabel>
+                <Select
+                  value={formData.hosting}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, hosting: value })
+                  }
+                >
                   <SelectTrigger
                     className={errors.hosting ? "border-red-500" : ""}
                   >
@@ -177,13 +215,16 @@ export default function NewPost() {
                     ))}
                   </SelectContent>
                 </Select>
-              </div>
+                {errors.hosting && <FormMessage>{errors.hosting}</FormMessage>}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Kosher</label>
+              <FormItem>
+                <FormLabel>Kosher</FormLabel>
                 <Select
-                  value={kosher ? "yes" : "no"}
-                  onValueChange={(value) => setKosher(value === "yes")}
+                  value={formData.kosher ? "yes" : "no"}
+                  onValueChange={(value) =>
+                    setFormData({ ...formData, kosher: value === "yes" })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Is it kosher?" />
@@ -193,36 +234,38 @@ export default function NewPost() {
                     <SelectItem value="no">No</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
+              </FormItem>
 
-              <div className="space-y-2">
-                <label htmlFor="limit" className="text-sm font-medium">
-                  Guest Limit (Optional)
-                </label>
+              <FormItem>
+                <FormLabel>Guest Limit (Optional)</FormLabel>
                 <Input
-                  id="limit"
                   type="number"
                   placeholder="Enter guest limit"
-                  value={limit}
-                  onChange={(e) => setLimit(e.target.value)}
+                  value={formData.limit}
+                  onChange={(e) =>
+                    setFormData({ ...formData, limit: e.target.value })
+                  }
                 />
-              </div>
+                {errors.limit && <FormMessage>{errors.limit}</FormMessage>}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label htmlFor="description" className="text-sm font-medium">
-                  Description *
-                </label>
+              <FormItem>
+                <FormLabel>Description *</FormLabel>
                 <Textarea
-                  id="description"
                   placeholder="Enter description"
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
+                  value={formData.description}
+                  onChange={(e) =>
+                    setFormData({ ...formData, description: e.target.value })
+                  }
                   className={errors.description ? "border-red-500" : ""}
                 />
-              </div>
+                {errors.description && (
+                  <FormMessage>{errors.description}</FormMessage>
+                )}
+              </FormItem>
 
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Image *</label>
+              <FormItem>
+                <FormLabel>Image *</FormLabel>
                 <Input
                   type="file"
                   accept="image/*"
@@ -230,24 +273,27 @@ export default function NewPost() {
                     const file = e.target.files?.[0];
                     if (file) {
                       const imageUrl = await uploadImage(file);
-                      setImage(imageUrl);
+                      setFormData({ ...formData, image: imageUrl });
                     }
                   }}
                   className={errors.image ? "border-red-500" : ""}
                 />
-              </div>
+                {errors.image && <FormMessage>{errors.image}</FormMessage>}
+              </FormItem>
 
-              {showAlert && Object.keys(errors).length > 0 && (
+              {serverError && (
                 <Alert variant="destructive">
                   <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>
-                    Please fill in all required fields marked with *
-                  </AlertDescription>
+                  <AlertDescription>{serverError}</AlertDescription>
                 </Alert>
               )}
 
-              <Button onClick={handleCreatePost} className="w-full">
-                Create EatUp
+              <Button
+                onClick={handleCreatePost}
+                className="w-full"
+                disabled={loading}
+              >
+                {loading ? "Creating..." : "Create EatUp"}
               </Button>
             </div>
           </Card>
