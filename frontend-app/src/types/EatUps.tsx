@@ -1,16 +1,17 @@
 export interface EatUp {
   _id: string;
+  location: string;
+  zone: string;
   title: string;
   description: string;
-  zone: string;
   date: string;
   kosher: boolean;
   hosting: string;
-  media: string[];
-  phone?: string;
+  media?: string[];
+  owner: string;
   guests?: string[];
   limit?: number;
-  authorId: string;
-  owner: string;
-  language: string;
+  channel?: {
+    _id: string;
+  };
 }
