@@ -67,7 +67,13 @@ export const fetchEatUps = async (): Promise<EatUp[]> => {
       return [];
     }
     const res = await api.get("/eatups");
-    return res.data.data;
+    if (Array.isArray(res.data)) {
+      return res.data;
+    } else if (res.data && Array.isArray(res.data.data)) {
+      return res.data.data;
+    }
+    console.warn("Unexpected EatUps response format:", res.data);
+    return [];
   } catch (error) {
     console.error("Error fetching eatups:", error);
     if (

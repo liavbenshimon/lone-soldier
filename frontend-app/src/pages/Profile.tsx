@@ -7,8 +7,6 @@ import Checkbox from "../components/Checkbox";
 import { Navbar } from "@/components/Navbar";
 import { Filter } from "bad-words";
 import { api } from "@/api";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 
 const nicknames = [
   "Bob",
@@ -23,8 +21,6 @@ const nicknames = [
   "Cat",
 ];
 const profileImages = ["boy_1.svg", "boy_2.svg", "girl_1.svg", "girl_2.svg"];
-const DEFAULT_PROFILE_IMAGE =
-  "https://api.dicebear.com/7.x/avataaars/svg?seed=default";
 
 const getRandomItem = <T,>(array: T[]): T =>
   array[Math.floor(Math.random() * array.length)];
@@ -37,7 +33,8 @@ const Profile: React.FC = () => {
   const defaultNickname = user.nickname || getRandomItem(nicknames);
   const [nickname, setNickname] = useState(defaultNickname);
   const [profileImage, setProfileImage] = useState(
-    user.profileImage || DEFAULT_PROFILE_IMAGE
+    user.profileImage ||
+      `/src/assets/profilePictures/${getRandomItem(profileImages)}`
   );
   const [email, setEmail] = useState(user.email || "");
   console.log(email);
@@ -134,128 +131,114 @@ const Profile: React.FC = () => {
   }, []);
 
   return (
-    <div className="flex bg-background text-foreground min-h-screen">
+    <div className="flex bg-gray-900 text-foreground min-h-screen">
       <Navbar modes="home" isVertical={true} isAccordion={true} />
-      <div className="flex-1 flex justify-center">
-        <div className="w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-6">
-          <h1 className="text-3xl font-bold mb-6 text-center">
-            <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
-              Profile
-            </span>{" "}
-            Settings
-          </h1>
 
-          <div className="w-full max-w-4xl bg-card p-6 rounded-lg shadow-md">
-            <div className="flex flex-row items-start space-x-4">
-              <div className="flex-1 space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-1">
-                    Nickname
-                  </label>
-                  <input
-                    type="text"
-                    value={nickname}
-                    onChange={(e) => handleNicknameChange(e.target.value)}
-                    onBlur={handleNicknameBlur}
-                    placeholder="Enter a unique nickname"
-                    className="w-full p-2 rounded bg-background text-foreground border border-input"
-                  />
-                  <button
-                    onClick={() => setNickname(getRandomItem(nicknames))}
-                    className="mt-2 text-sm text-[#F596D3] hover:text-[#D247BF] hover:underline"
-                  >
-                    Suggest a Nickname
-                  </button>
-                  {error && (
-                    <p className="text-red-500 text-sm mt-2">{error}</p>
-                  )}
-                </div>
-                <div className="w-full lg:w-auto mt-4 lg:mt-0">
-                  <label className="block text-sm font-medium mb-1">
-                    Phone
-                  </label>
-                  <input
-                    type="tel"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder="Enter phone number"
-                    className="w-full p-2 rounded bg-background text-foreground border border-input"
-                  />
-                </div>
-              </div>
+      <div className="flex-1 flex flex-col items-center py-10 px-4">
+        <h1 className="text-3xl font-bold mb-6">
+          <span className="text-pink-500">Profile</span> Settings
+        </h1>
 
-              <div className="flex-none lg:w-1/2 flex flex-col items-center justify-center mt-5 lg:mt-0">
-                <img
-                  src={profileImage || DEFAULT_PROFILE_IMAGE}
-                  alt="Profile"
-                  onClick={() => setIsDialogOpen(true)}
-                  className="rounded-full cursor-pointer border-2 hover:border-[#F596D3] w-[100px] h-[100px] lg:w-[175px] lg:h-[175px]"
+        <div className="w-full max-w-4xl bg-gray-800 p-6 rounded-lg shadow-md">
+          <div className="flex flex-row items-start space-x-4">
+            <div className="flex-1 space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Nickname
+                </label>
+                <input
+                  type="text"
+                  value={nickname}
+                  onChange={(e) => handleNicknameChange(e.target.value)}
+                  onBlur={handleNicknameBlur}
+                  placeholder="Enter a unique nickname"
+                  className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
                 />
                 <button
-                  onClick={() => setIsDialogOpen(true)}
-                  className="text-xs mt-6 text-center text-[#F596D3] hover:text-[#D247BF] hover:underline decoration-1"
+                  onClick={() => setNickname(getRandomItem(nicknames))}
+                  className="mt-2 text-sm text-blue-500 hover:underline"
                 >
-                  Change <br /> profile picture
+                  Suggest a Nickname
                 </button>
+                {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1 mt-4">
-                Email
-              </label>
-              <Input
-                type="email"
-                disabled
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-                placeholder="Enter email"
-                className="w-full"
-              />
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mt-4 mb-1">
-                  Biography
-                </label>
-                <Textarea
-                  value={bio}
-                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
-                    setBio(e.target.value)
-                  }
-                  placeholder="Write a short bio"
-                  className="w-full resize-none"
-                  rows={4}
+              <div className="w-full lg:w-auto mt-4 lg:mt-0">
+                <label className="block text-sm font-medium mb-1">Phone</label>
+                <input
+                  type="tel"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  placeholder="Enter phone number"
+                  className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
                 />
               </div>
             </div>
 
-            <div className="flex items-center mt-4">
-              <Checkbox
-                checked={receiveNotifications}
-                onCheckedChange={(checked: boolean) =>
-                  setReceiveNotifications(checked)
-                }
+            <div className="flex-none lg:w-1/2 flex flex-col items-center justify-center mt-5 lg:mt-0">
+              <img
+                src={profileImage}
+                alt="Profile"
+                onClick={() => setIsDialogOpen(true)}
+                className="rounded-full cursor-pointer border-2 hover:border-green-500 w-[100px] h-[100px] lg:w-[175px] lg:h-[175px]"
               />
+              <button
+                onClick={() => setIsDialogOpen(true)}
+                className="text-xs mt-6 text-center text-green-500 hover:underline decoration-1"
+              >
+                Change <br /> profile picture
+              </button>
             </div>
-            <button
-              onClick={handleSubmit}
-              className="w-full bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-white font-bold py-2 rounded hover:opacity-90 transition-opacity mt-4"
-            >
-              Save Changes
-            </button>
+          </div>
+          <div>
+            <label className="block text-sm font-medium mb-1 mt-4">Email</label>
+            <input
+              type="email"
+              disabled
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email"
+              className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600"
+            />
           </div>
 
-          {isDialogOpen && (
-            <ProfileImageDialog
-              profileImages={profileImages}
-              onSelectImage={(img) => setProfileImage(img)}
-              onClose={() => setIsDialogOpen(false)}
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium mt-4 mb-1">
+                Biography
+              </label>
+              <textarea
+                value={bio}
+                onChange={(e) => setBio(e.target.value)}
+                placeholder="Write a short bio"
+                className="w-full p-2 rounded bg-gray-700 text-gray-100 border border-gray-600 resize-none overflow-y-auto scrollbar-thin scrollbar-thumb-green-500 scrollbar-track-gray-700"
+                rows={4}
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center mt-4">
+            <Checkbox
+              checked={receiveNotifications}
+              onCheckedChange={(checked: boolean) =>
+                setReceiveNotifications(checked)
+              }
             />
-          )}
+          </div>
+          <button
+            onClick={handleSubmit}
+            className="w-full bg-green-500 text-gray-900 font-bold py-2 rounded hover:bg-green-400 mt-4"
+          >
+            Save Changes
+          </button>
         </div>
+
+        {isDialogOpen && (
+          <ProfileImageDialog
+            profileImages={profileImages}
+            onSelectImage={(img) => setProfileImage(img)}
+            onClose={() => setIsDialogOpen(false)}
+          />
+        )}
       </div>
     </div>
   );

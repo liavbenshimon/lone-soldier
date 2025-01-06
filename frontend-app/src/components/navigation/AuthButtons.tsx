@@ -13,13 +13,6 @@ export const AuthButtons = ({ user, navigate }: AuthButtonsProps) => {
       </Button>
     );
   }
-  if (user.type === "Admin") {
-    return (
-      <Button className="w-full" onClick={() => navigate("/admin/queue")}>
-        {user.firstName}
-      </Button>
-    );
-  }
 
   return (
     <>

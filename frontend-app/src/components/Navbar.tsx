@@ -6,8 +6,11 @@ import { RootState } from "@/Redux/store";
 import { NavbarProps } from "./navigation/types";
 import { setChannels } from "@/Redux/channelSlice";
 import {
-  routeListHome,
-  routeListContribute,
+  routeListSoldier,
+  routeListMunicipality,
+  routeListDonor,
+  routeListOrganization,
+  routeListBusiness,
   routeListLanding,
   routeListAdmin,
 } from "./navigation/routes";
@@ -35,15 +38,11 @@ export const Navbar = ({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const {
-    data: channelsData,
-    // isFetching,
-    refetch,
-  } = useQuery({
+  const { data: channelsData, refetch } = useQuery({
     queryKey: ["channels"],
     queryFn: fetchChannels,
-    staleTime: 1000 * 60 * 1, // 5 minutes
-    gcTime: 1000 * 60 * 1, // 5 minutes
+    staleTime: 1000 * 60 * 1,
+    gcTime: 1000 * 60 * 1,
     retry: 3,
     enabled: !!user.email,
     refetchOnMount: false,
@@ -55,7 +54,7 @@ export const Navbar = ({
       console.log("Navbar menu opened");
       const state = queryClient.getQueryState(["channels"]);
       const isStale = state?.dataUpdatedAt
-        ? Date.now() - state.dataUpdatedAt > 1000 * 60 * 1 // 1 minute
+        ? Date.now() - state.dataUpdatedAt > 1000 * 60 * 1
         : true;
 
       if (isStale) {
@@ -68,7 +67,6 @@ export const Navbar = ({
     setAccordionOpen(newState);
   };
 
-  // Update channels when data changes
   useEffect(() => {
     if (channelsData?.data) {
       dispatch(setChannels(channelsData.data));
@@ -92,9 +90,22 @@ export const Navbar = ({
 
   const getRouteList = () => {
     const userType = user.type?.toLowerCase();
-    if (userType === "admin") return routeListAdmin;
-    if (userType === "contributer") return routeListContribute;
-    return routeListHome;
+    switch (userType) {
+      case "admin":
+        return routeListAdmin;
+      case "soldier":
+        return routeListSoldier;
+      case "municipality":
+        return routeListMunicipality;
+      case "donor":
+        return routeListDonor;
+      case "organization":
+        return routeListOrganization;
+      case "business":
+        return routeListBusiness;
+      default:
+        return [];
+    }
   };
 
   if (modes === "landing") {
@@ -110,7 +121,7 @@ export const Navbar = ({
   const routeList = getRouteList();
   const navProps = {
     routeList,
-    channelsLinks: channelsLinks || [], // Ensure we always pass an array
+    channelsLinks: channelsLinks || [],
     navigate,
     accordionOpen,
     setAccordionOpen: handleAccordionToggle,

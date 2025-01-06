@@ -1,79 +1,111 @@
 import { RouteProps, AdminRouteSection } from "./types";
 
-export const routeListHome: RouteProps[] = [
+// Common routes available to all authenticated users
+const commonRoutes: RouteProps[] = [
   {
-    href: "/",
-    label: "Home",
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
+// Soldier-specific routes
+export const routeListSoldier: RouteProps[] = [
+  {
+    href: "/requestForm",
+    label: "Request Form",
+  },
+  {
+    href: "/Home/social",
+    label: "Soldier Social",
   },
   {
     href: "/Home/eatup",
     label: "EatUps",
   },
   {
+    href: "/vouchers",
+    label: "Vouchers",
+  },
+  ...commonRoutes,
+];
+
+// Municipality-specific routes
+export const routeListMunicipality: RouteProps[] = [
+  {
+    href: "/answer-request-form",
+    label: "Answer Request Form",
+  },
+  {
     href: "/Home/social",
-    label: "Social",
+    label: "Municipality Social",
   },
   {
-    href: "/rights",
-    label: "Your Rights",
+    href: "/create-events",
+    label: "Create Events",
   },
   {
-    href: "/requestForm",
-    label: "Request Form",
+    href: "/connect-donors",
+    label: "Connect Donors to Soldier",
   },
-  {
-    href: "/profile",
-    label: "Profile",
-  },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
-];
-// {
-//   href: "/Home/donations",
-//   label: "Donations",
-// },
-// {
-//   href: "/Home/residences",
-//   label: "Residences",
-// },
-
-export const routeListContribute: RouteProps[] = [
-  {
-    href: "/",
-    label: "Home",
-  },
-  {
-    href: "/contribute",
-    label: "contribute",
-  },
-  {
-    href: "/new-post",
-    label: "Donate",
-  },
-  {
-    href: "/social",
-    label: "Social",
-  },
-  {
-    href: "/my-eatups",
-    label: "My EatUps",
-  },
-  {
-    href: "/profile",
-    label: "Profile",
-  },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
-  {
-    href: "/my-eatups",
-    label: "My EatUps",
-  },
+  ...commonRoutes,
 ];
 
+// Donor-specific routes
+export const routeListDonor: RouteProps[] = [
+  {
+    href: "/pay-request-form",
+    label: "Pay for Request Form",
+  },
+  {
+    href: "/create-eatups",
+    label: "Create EatUps",
+  },
+  {
+    href: "/offer-donation",
+    label: "Offer Donation",
+  },
+  {
+    href: "/Home/social",
+    label: "Donor Social",
+  },
+  ...commonRoutes,
+];
+
+// Organization-specific routes
+export const routeListOrganization: RouteProps[] = [
+  {
+    href: "/Home/social",
+    label: "Organization Social",
+  },
+  {
+    href: "/create-events",
+    label: "Create Events",
+  },
+  ...commonRoutes,
+];
+
+// Business-specific routes
+export const routeListBusiness: RouteProps[] = [
+  {
+    href: "/add-discount",
+    label: "Add Discount",
+  },
+  {
+    href: "/verify-soldier",
+    label: "Verify Lone Soldier by QR",
+  },
+  {
+    href: "/create-vouchers",
+    label: "Create Vouchers",
+  },
+  ...commonRoutes,
+];
+
+// Landing page routes (public)
 export const routeListLanding: RouteProps[] = [
   {
     href: "#about",
@@ -93,6 +125,7 @@ export const routeListLanding: RouteProps[] = [
   },
 ];
 
+// Admin routes with sections for each role
 export const routeListAdmin: AdminRouteSection[] = [
   {
     section: "Admin",
@@ -113,57 +146,23 @@ export const routeListAdmin: AdminRouteSection[] = [
   },
   {
     section: "Soldier",
-    routes: [
-      {
-        href: "/",
-        label: "Home",
-      },
-      {
-        href: "/requestForm",
-        label: "Request Form",
-      },
-      // {
-      //   href: "/Home/donations",
-      //   label: "Donations",
-      // },
-      // {
-      //   href: "/Home/residences",
-      //   label: "Residences",
-      // },
-      {
-        href: "/Home/eatup",
-        label: "EatUps",
-      },
-      {
-        href: "/Home/social",
-        label: "Social",
-      },
-      {
-        href: "/rights",
-        label: "Your Rights",
-      },
-      {
-        href: "/profile",
-        label: "Profile",
-      },
-    ],
+    routes: routeListSoldier,
   },
   {
-    section: "Contributor",
-    routes: [
-      {
-        href: "/contribute",
-        label: "contribute",
-      },
-      {
-        href: "/new-post",
-        label: "Donate",
-      },
-      {
-        href: "/my-eatups",
-        label: "My EatUps",
-      },
-    ],
+    section: "Municipality",
+    routes: routeListMunicipality,
+  },
+  {
+    section: "Donor",
+    routes: routeListDonor,
+  },
+  {
+    section: "Organization",
+    routes: routeListOrganization,
+  },
+  {
+    section: "Business",
+    routes: routeListBusiness,
   },
   {
     href: "/logout",

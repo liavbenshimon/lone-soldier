@@ -5,6 +5,7 @@ import {
 } from "@/components/ui/navigation-menu";
 import { buttonVariants } from "@/components/ui/button";
 import { ModeToggle } from "../../mode-toggle";
+import { LogoIcon } from "../../Icons";
 import {
   Sheet,
   SheetContent,
@@ -36,8 +37,7 @@ export const LandingNav = ({ routeList, user, navigate }: LandingNavProps) => {
               className="ml-2 font-bold text-xl flex"
               rel="noreferrer noopener"
             >
-              {/* <LogoIcon /> */}
-              <img src="./icon.svg" alt="Logo" class="w-[30px] h-[30px]" />
+              <LogoIcon />
               Not Alone
             </a>
           </NavigationMenuItem>

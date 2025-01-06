@@ -42,7 +42,7 @@ export const AdminNav = ({
                   <div className="flex flex-col gap-2 pl-4">
                     {item.routes.map((route) => (
                       <a
-                        key={route.label}
+                        key={`${item.section}-${route.href}-${route.label}`}
                         onClick={() => route.href && navigate(route.href)}
                         className="text-foreground/80 hover:text-foreground hover:bg-accent/50 rounded-md p-2 transition-colors cursor-pointer"
                       >
@@ -56,7 +56,7 @@ export const AdminNav = ({
           } else if (item.href && item.label) {
             return (
               <button
-                key={item.label}
+                key={`standalone-${item.href}-${item.label}`}
                 onClick={() => item.href && navigate(item.href)}
                 className="flex flex-1 items-center justify-between py-4 text-lg font-semibold transition-all hover:underline [&[data-state=open]>svg]:rotate-180"
               >
