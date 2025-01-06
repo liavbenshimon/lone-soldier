@@ -43,8 +43,15 @@ const userSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["Soldier", "Contributor", "Admin"],
-    default: "Soldier",
+    enum: [
+      "Soldier",
+      "Municipality",
+      "Donor",
+      "Organization",
+      "Business",
+      "Admin",
+    ],
+    required: true,
   },
   authorId: {
     type: mongoose.Schema.Types.ObjectId,

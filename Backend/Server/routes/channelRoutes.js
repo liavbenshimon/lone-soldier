@@ -7,22 +7,19 @@ import {
   getAllChannels,
   addMember,
 } from "../controllers/channelController.js";
-import { requireAuth } from "../middleware/requireAuth.js";
-import { requireAdmin } from "../middleware/requireAdmin.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Protected routes
-router.use(requireAuth);
+router.use(verifyToken);
 
-// Regular user routes
+// All routes are protected and accessible by admin
 router.get("/", getAllChannels);
-
-// Admin-only routes
-router.post("/", requireAdmin, createChannel);
-router.delete("/:id", requireAdmin, deleteChannel);
-router.put("/:id/close", requireAdmin, closeChannel);
-router.put("/:id/members", requireAdmin, addMembers);
-router.put("/:id/members/:userId", requireAdmin, addMember);
+router.post("/", createChannel);
+router.delete("/:id", deleteChannel);
+router.put("/:id/close", closeChannel);
+router.put("/:id/members", addMembers);
+router.put("/:id/members/:userId", addMember);
 
 export default router;
