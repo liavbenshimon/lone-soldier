@@ -104,7 +104,9 @@ export default function AdminQueue() {
   }, []);
 
   const queryClient = useQueryClient();
-  const [selectedRequest, setSelectedRequest] = useState<SignupRequest | null>(null);
+  const [selectedRequest, setSelectedRequest] = useState<SignupRequest | null>(
+    null
+  );
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState<"createdAt" | "updatedAt">("createdAt");
   const [statusFilter, setStatusFilter] = useState<string>("all");
@@ -224,7 +226,9 @@ export default function AdminQueue() {
           <div className="flex gap-4">
             <Select
               value={sortBy}
-              onValueChange={(value: "createdAt" | "updatedAt") => setSortBy(value)}
+              onValueChange={(value: "createdAt" | "updatedAt") =>
+                setSortBy(value)
+              }
             >
               <SelectTrigger>
                 <SelectValue placeholder="Sort by" />
@@ -252,19 +256,37 @@ export default function AdminQueue() {
         {isMobile ? (
           <Accordion type="single" collapsible>
             {filteredAndSortedRequests.map((request: SignupRequest) => (
-              <AccordionItem key={request._id} value={request._id} className="mb-4">
+              <AccordionItem
+                key={request._id}
+                value={request._id}
+                className="mb-4"
+              >
                 <AccordionTrigger className="flex justify-between px-4 py-2 text-left bg-gray-800 rounded-lg">
                   <span>
                     {request.firstName} {request.lastName}
                   </span>
-                  <Badge className={getProgressColor(request.progress)}>{request.progress}</Badge>
+                  <Badge className={getProgressColor(request.progress)}>
+                    {request.progress}
+                  </Badge>
                 </AccordionTrigger>
                 <AccordionContent>
                   <div className="p-4 bg-gray-900 rounded-lg space-y-2">
-                    <p><strong>Email:</strong> {request.email}</p>
-                    <p><strong>Type:</strong> {request.type}</p>
-                    <p><strong>Approval:</strong> <Badge className={getApprovalColor(request.approved)}>{request.approved}</Badge></p>
-                    <Button onClick={() => setSelectedRequest(request)} className="w-full">
+                    <p>
+                      <strong>Email:</strong> {request.email}
+                    </p>
+                    <p>
+                      <strong>Type:</strong> {request.type}
+                    </p>
+                    <p>
+                      <strong>Approval:</strong>{" "}
+                      <Badge className={getApprovalColor(request.approved)}>
+                        {request.approved}
+                      </Badge>
+                    </p>
+                    <Button
+                      onClick={() => setSelectedRequest(request)}
+                      className="w-full"
+                    >
                       View Details
                     </Button>
                   </div>
@@ -290,16 +312,39 @@ export default function AdminQueue() {
             <TableBody>
               {filteredAndSortedRequests.map((request: SignupRequest) => (
                 <TableRow key={request._id}>
-                  <TableCell>{request.firstName} {request.lastName}</TableCell>
+                  <TableCell>
+                    {request.firstName} {request.lastName}
+                  </TableCell>
                   <TableCell>{request.email}</TableCell>
                   <TableCell>{request.type}</TableCell>
-                  <TableCell><Badge className={getProgressColor(request.progress)}>{request.progress}</Badge></TableCell>
-                  <TableCell><Badge className={getApprovalColor(request.approved)}>{request.approved}</Badge></TableCell>
-                  <TableCell><Badge variant={request.isKYC ? "default" : "secondary"}>{request.isKYC ? "Verified" : "Pending"}</Badge></TableCell>
-                  <TableCell>{new Date(request.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(request.updatedAt).toLocaleDateString()}</TableCell>
                   <TableCell>
-                    <Button variant="outline" onClick={() => setSelectedRequest(request)}>View Details</Button>
+                    <Badge className={getProgressColor(request.progress)}>
+                      {request.progress}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge className={getApprovalColor(request.approved)}>
+                      {request.approved}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant={request.isKYC ? "default" : "secondary"}>
+                      {request.isKYC ? "Verified" : "Pending"}
+                    </Badge>
+                  </TableCell>
+                  <TableCell>
+                    {new Date(request.createdAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(request.updatedAt).toLocaleDateString()}
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      variant="outline"
+                      onClick={() => setSelectedRequest(request)}
+                    >
+                      View Details
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))}
@@ -308,64 +353,67 @@ export default function AdminQueue() {
         )}
       </div>
 
-      <Dialog open={!!selectedRequest} onOpenChange={() => setSelectedRequest(null)}>
-  <DialogContent className="sm:max-w-[425px]">
-    <DialogHeader>
-      <DialogTitle>Signup Request Details</DialogTitle>
-    </DialogHeader>
-    {selectedRequest && (
-      <div className="space-y-4">
-        <p>
-          <strong>Name:</strong> {selectedRequest.firstName} {selectedRequest.lastName}
-        </p>
-        <p>
-          <strong>Email:</strong> {selectedRequest.email}
-        </p>
-        <p>
-          <strong>Type:</strong> {selectedRequest.type}
-        </p>
-        <p>
-          <strong>Status:</strong>{" "}
-          <Badge className={getProgressColor(selectedRequest.progress)}>
-            {selectedRequest.progress}
-          </Badge>
-        </p>
-        <p>
-          <strong>Approval:</strong>{" "}
-          <Badge className={getApprovalColor(selectedRequest.approved)}>
-            {selectedRequest.approved}
-          </Badge>
-        </p>
-        <p>
-          <strong>KYC:</strong>{" "}
-          {selectedRequest.isKYC ? "Verified" : "Pending"}
-        </p>
-        <p>
-          <strong>Submitted On:</strong>{" "}
-          {new Date(selectedRequest.createdAt).toLocaleDateString()}
-        </p>
-        <p>
-          <strong>Last Updated:</strong>{" "}
-          {new Date(selectedRequest.updatedAt).toLocaleDateString()}
-        </p>
-        <Button
-          onClick={() => handleAccept(selectedRequest._id)}
-          className="w-full"
-        >
-          Approve
-        </Button>
-        <Button
-          onClick={() => handleDeny(selectedRequest._id)}
-          variant="destructive"
-          className="w-full"
-        >
-          Deny
-        </Button>
-      </div>
-    )}
-  </DialogContent>
-</Dialog>
-
+      <Dialog
+        open={!!selectedRequest}
+        onOpenChange={() => setSelectedRequest(null)}
+      >
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Signup Request Details</DialogTitle>
+          </DialogHeader>
+          {selectedRequest && (
+            <div className="space-y-4">
+              <p>
+                <strong>Name:</strong> {selectedRequest.firstName}{" "}
+                {selectedRequest.lastName}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedRequest.email}
+              </p>
+              <p>
+                <strong>Type:</strong> {selectedRequest.type}
+              </p>
+              <p>
+                <strong>Status:</strong>{" "}
+                <Badge className={getProgressColor(selectedRequest.progress)}>
+                  {selectedRequest.progress}
+                </Badge>
+              </p>
+              <p>
+                <strong>Approval:</strong>{" "}
+                <Badge className={getApprovalColor(selectedRequest.approved)}>
+                  {selectedRequest.approved}
+                </Badge>
+              </p>
+              <p>
+                <strong>KYC:</strong>{" "}
+                {selectedRequest.isKYC ? "Verified" : "Pending"}
+              </p>
+              <p>
+                <strong>Submitted On:</strong>{" "}
+                {new Date(selectedRequest.createdAt).toLocaleDateString()}
+              </p>
+              <p>
+                <strong>Last Updated:</strong>{" "}
+                {new Date(selectedRequest.updatedAt).toLocaleDateString()}
+              </p>
+              <Button
+                onClick={() => handleAccept(selectedRequest._id)}
+                className="w-full"
+              >
+                Approve
+              </Button>
+              <Button
+                onClick={() => handleDeny(selectedRequest._id)}
+                variant="destructive"
+                className="w-full"
+              >
+                Deny
+              </Button>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -8,8 +8,9 @@ export const createEatUp = async (req, res) => {
     const eatup = new EatUp(eatupData);
     await eatup.save();
 
-    // Create associated channel
+    // Create associated channel with name from EatUp title
     const channel = new Channel({
+      name: eatupData.title || `EatUp-${eatup._id}`,
       eatupId: eatup._id,
       type: "eatup",
       members: [req.user._id],

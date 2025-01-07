@@ -14,4 +14,5 @@ export interface EatUp {
   channel?: {
     _id: string;
   };
+  authorId?: string;
 }
