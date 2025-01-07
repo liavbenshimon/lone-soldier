@@ -18,6 +18,7 @@ import eatupRoutes from "./routes/eatupRoute.js";
 import profileRoutes from "./routes/profileRoutes.js"
 import residenceRoutes from "./routes/residenceRoutes.js";
 import requestRoutes from './routes/requestRoutes.js';
+import postRoutes from './routes/postRoutes.js'
 
 import signupRequestRoutes from "./routes/signupRequestRoute.js";
 import channelRoutes from "./routes/channelRoutes.js";
@@ -61,6 +62,7 @@ app.use("/api/eatups", eatupRoutes);
 app.use("/api/residences", residenceRoutes);
 
 app.use('/api/requests', requestRoutes);
+app.use('/api/posts', postRoutes);
 
 
 app.use("/api/profile", profileRoutes);
