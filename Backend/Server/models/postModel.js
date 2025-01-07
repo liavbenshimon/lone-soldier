@@ -2,6 +2,11 @@ import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema(
   {
+    visibility: {
+      type: String,
+      enum: ["Soldier", "Contributor", "Municipality", "Organization"],
+      default: "Soldier",
+    },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User", // Relaciona o post ao usuário
@@ -19,6 +24,7 @@ const postSchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User", // Usuários que curtiram o post
       },
+      
     ],
     comments: [
       {

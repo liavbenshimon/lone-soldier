@@ -65,7 +65,7 @@ function AppRoutes() {
       <Route path="/admin/queue" element={<AdminQueue />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/my-eatups" element={<MyEatUps />} />
-
+      <Route path="/social" element={<Social />} />
       <Route path="/home" element={<HomePage mode="Donations" />} />
       <Route path="/home/donations" element={<HomePage mode="Donations" />} />
       <Route path="/home/residences" element={<HomePage mode="Residences" />} />
@@ -82,7 +82,7 @@ function AppRoutes() {
     </Routes>
   );
 }
-
+//
 
 export default function App() {
   const queryClient = new QueryClient();
