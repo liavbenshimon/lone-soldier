@@ -1,262 +1,160 @@
 import EatUp from "../models/eatupModel.js";
 import Channel from "../models/channelModel.js";
-import Message from "../models/messageModel.js";
-//TODO: fix subsription
 
-// יצירת רשומת EatUp חדשה
+// Create a new EatUp
 export const createEatUp = async (req, res) => {
   try {
-    const {
-      zone,
-      title,
-      media,
-      owner,
-      date,
-      kosher,
-      description,
-      language,
-      hosting,
-      religios,
-      authorId,
-      limit,
-    } = req.body;
+    const eatupData = { ...req.body, owner: req.user._id };
+    const eatup = new EatUp(eatupData);
+    await eatup.save();
 
-    // יצירת אובייקט חדש של הסכמה
-    const newEatUp = new EatUp({
-      zone,
-      title,
-      media: media || [], // הגדרת ברירת מחדל במקרה שלא נשלחה מדיה
-      owner,
-      date,
-      kosher,
-      description,
-      language,
-      hosting,
-      religios,
-      authorId,
-      limit,
-      guests: [],
-    });
-
-    // שמירת הרשומה במסד הנתונים
-    const savedEatUp = await newEatUp.save();
-
-    // Create associated channel
+    // Create associated channel with name from EatUp title
     const channel = new Channel({
-      name: `EatUp: ${title}`,
+      name: eatupData.title || `EatUp-${eatup._id}`,
+      eatupId: eatup._id,
       type: "eatup",
-      members: [authorId],
-      eatupId: savedEatUp._id,
-      isPublic: false,
+      members: [req.user._id],
     });
+    await channel.save();
 
-    // Save the channel
-    const savedChannel = await channel.save();
+    // Add channel reference to eatup
+    eatup.channel = channel._id;
+    await eatup.save();
 
-    // Verify the channel was created correctly
-    const verifyChannel = await Channel.findOne({ eatupId: savedEatUp._id });
-    console.log("Verified channel in database:", verifyChannel);
-
-    if (!verifyChannel || !verifyChannel.eatupId) {
-      throw new Error("Channel creation failed - missing required fields");
-    }
-
-    res.status(201).json({
-      message: "EatUp and channel created successfully",
-      data: {
-        eatup: savedEatUp,
-        channel: savedChannel,
-      },
-    });
+    res.status(201).json({ data: { eatup, channel } });
   } catch (error) {
-    res.status(500).json({
-      message: "Error creating EatUp and channel",
-      error: error.message,
-    });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// קבלת כל רשומות ה-EatUp
+// Get all EatUps
 export const getAllEatUps = async (req, res) => {
   try {
-    const eatups = await EatUp.find().populate("authorId", "name email"); // תצוגת שדות נבחרים של authorId
-    res
-      .status(200)
-      .json({ message: "EatUp entries retrieved successfully", data: eatups });
+    const eatups = await EatUp.find().populate("owner", "firstName lastName");
+    res.status(200).json(eatups);
   } catch (error) {
-    res.status(500).json({
-      message: "Error retrieving EatUp entries",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// קבלת רשומת EatUp ספציפית לפי ID
+// Get a single EatUp
 export const getEatUpById = async (req, res) => {
-  const { id } = req.params;
   try {
-    const eatup = await EatUp.findById(id).populate("authorId", "name email");
-
+    const eatup = await EatUp.findById(req.params.id).populate(
+      "owner",
+      "firstName lastName"
+    );
     if (!eatup) {
-      return res.status(404).json({ message: "EatUp entry not found" });
+      return res.status(404).json({ error: "EatUp not found" });
     }
-
-    res.status(200).json({ message: "EatUp entry found", data: eatup });
+    res.status(200).json(eatup);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error retrieving EatUp entry", error: error.message });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// עדכון רשומת EatUp לפי ID
+// Update an EatUp
 export const updateEatUp = async (req, res) => {
-  const { id } = req.params;
-  const updatedData = req.body;
-
   try {
-    const updatedEatUp = await EatUp.findByIdAndUpdate(id, updatedData, {
-      new: true,
-    }).populate("authorId", "name email");
-
-    if (!updatedEatUp) {
-      return res.status(404).json({ message: "EatUp entry not found" });
+    const eatup = await EatUp.findById(req.params.id);
+    if (!eatup) {
+      return res.status(404).json({ error: "EatUp not found" });
     }
 
-    res.status(200).json({
-      message: "EatUp entry updated successfully",
-      data: updatedEatUp,
-    });
+    // Check ownership unless user is admin
+    if (
+      req.user.type !== "Admin" &&
+      eatup.owner.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to update this EatUp" });
+    }
+
+    const updatedEatUp = await EatUp.findByIdAndUpdate(
+      req.params.id,
+      { ...req.body },
+      { new: true }
+    );
+    res.status(200).json(updatedEatUp);
   } catch (error) {
-    res
-      .status(500)
-      .json({ message: "Error updating EatUp entry", error: error.message });
+    res.status(400).json({ error: error.message });
   }
 };
 
-// מחיקת רשומת EatUp לפי ID
+// Delete an EatUp
 export const deleteEatUp = async (req, res) => {
-  const { id } = req.params;
-
   try {
-    // Find the channel first to get its ID
-    const channel = await Channel.findOne({ eatupId: id });
-
-    if (channel) {
-      // Delete all messages associated with this channel
-      await Message.deleteMany({ channelId: channel._id });
-
-      // Delete the channel
-      await Channel.findByIdAndDelete(channel._id);
+    const eatup = await EatUp.findById(req.params.id);
+    if (!eatup) {
+      return res.status(404).json({ error: "EatUp not found" });
     }
 
-    // Delete the EatUp
-    await EatUp.findByIdAndDelete(id);
+    // Check ownership unless user is admin
+    if (
+      req.user.type !== "Admin" &&
+      eatup.owner.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ error: "Not authorized to delete this EatUp" });
+    }
 
-    res.status(200).json({
-      message: "EatUp, channel, and all messages deleted successfully",
-      channelId: channel?._id, // Return channelId so frontend knows which channel was deleted
-    });
+    // Delete associated channel
+    if (eatup.channel) {
+      await Channel.findByIdAndDelete(eatup.channel);
+    }
+
+    await eatup.deleteOne();
+    res.status(200).json({ message: "EatUp deleted successfully" });
   } catch (error) {
-    res.status(500).json({
-      message: "Error deleting EatUp and associated data",
-      error: error.message,
-    });
+    res.status(500).json({ error: error.message });
   }
 };
 
 // Toggle guest subscription
 export const toggleGuestSubscription = async (req, res) => {
-  const { id } = req.params;
-  const userId = req.user._id;
-
   try {
-    // First, get the current state of the EatUp
-    const eatup = await EatUp.findById(id);
+    const eatup = await EatUp.findById(req.params.id);
     if (!eatup) {
-      return res.status(404).json({ message: "EatUp not found" });
+      return res.status(404).json({ error: "EatUp not found" });
     }
 
-    // Initialize guests array if it doesn't exist
-    if (!eatup.guests) {
-      eatup.guests = [];
-    }
-
-    // Check if there's a guest limit and if it's reached
-    if (
-      eatup.limit &&
-      eatup.guests.length >= eatup.limit &&
-      !eatup.guests.includes(userId.toString())
-    ) {
-      return res.status(400).json({ message: "Guest limit reached" });
-    }
-
-    // Find the associated channel using eatupId
-    const channel = await Channel.findOne({ eatupId: id });
-
+    // Find associated channel
+    const channel = await Channel.findOne({ eatupId: eatup._id });
     if (!channel) {
-      return res.status(404).json({ message: "Associated channel not found" });
+      return res.status(404).json({ error: "Associated channel not found" });
     }
 
-    // Check current subscription status
-    const isSubscribed = eatup.guests.includes(userId.toString());
-    let updatedEatUp;
+    const userId = req.user._id;
+    const isSubscribed = eatup.guests?.includes(userId);
 
     if (isSubscribed) {
-      // Remove user from guests and channel
-      updatedEatUp = await EatUp.findByIdAndUpdate(
-        id,
-        { $pull: { guests: userId.toString() } },
-        { new: true }
+      // Remove from guests and channel members
+      eatup.guests = eatup.guests.filter(
+        (id) => id.toString() !== userId.toString()
       );
-      await Channel.findByIdAndUpdate(
-        channel._id,
-        { $pull: { members: userId } },
-        { new: true }
+      channel.members = channel.members.filter(
+        (id) => id.toString() !== userId.toString()
       );
     } else {
-      // Add user to guests and channel
-      updatedEatUp = await EatUp.findByIdAndUpdate(
-        id,
-        { $addToSet: { guests: userId.toString() } },
-        { new: true }
-      );
-      await Channel.findByIdAndUpdate(
-        channel._id,
-        { $addToSet: { members: userId } },
-        { new: true }
-      );
+      // Add to guests and channel members
+      if (!eatup.guests) eatup.guests = [];
+      if (!channel.members) channel.members = [];
+      eatup.guests.push(userId);
+      channel.members.push(userId);
     }
 
-    // Verify the update was successful
-    if (!updatedEatUp) {
-      throw new Error("Failed to update EatUp");
-    }
+    await Promise.all([eatup.save(), channel.save()]);
 
-    const finalIsSubscribed = updatedEatUp.guests.includes(userId.toString());
-
-    // Return more detailed response for debugging
     res.status(200).json({
-      message: finalIsSubscribed
-        ? "Subscribed successfully and joined channel"
-        : "Unsubscribed successfully and left channel",
-      data: updatedEatUp,
-      isSubscribed: finalIsSubscribed,
-      guestCount: updatedEatUp.guests.length,
-      channelId: channel._id,
-      channelName: channel.name,
-      eatupId: id,
-      userId: userId,
+      message: isSubscribed
+        ? "Unsubscribed successfully"
+        : "Subscribed successfully",
+      eatup,
+      channel,
     });
   } catch (error) {
-    console.error("Error in toggleGuestSubscription:", error);
-    res.status(500).json({
-      message: "Error toggling subscription",
-      error: error.message,
-      details: {
-        eatupId: id,
-        userId: userId,
-      },
-    });
+    res.status(400).json({ error: error.message });
   }
 };

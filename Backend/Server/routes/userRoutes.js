@@ -1,36 +1,33 @@
 import express from "express";
 import {
-  createUser,
   loginUser,
-  // getUserByFullName,
-  getAllUsers,
-  deleteUser,
-  editUser,
-
+  createUser,
   getUserById,
-  getUserByPIN,
+  editUser,
+  deleteUser,
+  getAllUsers,
   getCurrentUser,
 } from "../controllers/userController.js";
-import authenticateToken from "../middleware/authMiddleware.js";
+import { verifyToken, isAdmin } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // Public routes
 router.post("/login", loginUser);
-router.post("/", createUser);
+router.post("/register", createUser);
 
 // Protected routes
-// Note: Order matters! More specific routes should come before generic ones
-router.get("/me", authenticateToken, getCurrentUser);
-// router.get(
-//   "/pin/:personalIdentificationNumber",
-//   authenticateToken,
-//   getUserByPIN
-// );
-// router.get("/:firstName/:lastName", authenticateToken, getUserByFullName);
-router.get("/:id", authenticateToken, getUserById);
-router.get("/", authenticateToken, getAllUsers);
-router.delete("/:passport", authenticateToken, deleteUser);
-router.put("/:id", authenticateToken, editUser);
+router.use(verifyToken);
+
+// Current user route
+router.get("/me", getCurrentUser);
+
+// Admin only routes
+router.get("/", isAdmin, getAllUsers);
+
+// User specific routes - users can only access their own data
+router.get("/:id", getUserById);
+router.put("/:id", editUser);
+router.delete("/:id", deleteUser);
 
 export default router;

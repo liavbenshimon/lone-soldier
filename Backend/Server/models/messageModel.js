@@ -7,14 +7,20 @@ const messageSchema = new mongoose.Schema(
       ref: "Channel",
       required: true,
     },
-    content: {
-      type: String,
-      required: true,
-    },
     sender: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    content: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 2000, // Reasonable limit for message length
+    },
+    isEdited: {
+      type: Boolean,
+      default: false,
     },
     readBy: [
       {
@@ -22,27 +28,15 @@ const messageSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    status: {
-      type: String,
-      enum: ["sent", "delivered", "read"],
-      default: "sent",
-    },
   },
-  { timestamps: true }
+  {
+    timestamps: true, // Adds createdAt and updatedAt fields
+  }
 );
 
-messageSchema.pre("find", function () {
-  this.populate("sender", "firstName lastName email").populate(
-    "readBy",
-    "firstName lastName email"
-  );
-});
+// Index for efficient queries
+messageSchema.index({ channelId: 1, createdAt: 1 });
 
-messageSchema.pre("findOne", function () {
-  this.populate("sender", "firstName lastName email").populate(
-    "readBy",
-    "firstName lastName email"
-  );
-});
+const Message = mongoose.model("Message", messageSchema);
 
-export default mongoose.model("Message", messageSchema);
+export default Message;

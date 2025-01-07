@@ -41,20 +41,18 @@ export function DetailsDialog({
       // Log for debugging
       console.log("Attempting to subscribe to EatUp:", eatup._id);
 
-      const response = await api.post(
-        `/eatups/${eatup._id}/toggle-subscription`
-      );
+      const response = await api.post(`/eatups/${eatup._id}/subscribe`);
       console.log("Subscription response:", response.data);
 
       if (response.data) {
-        setIsSubscribed(response.data.isSubscribed);
-        setGuestCount(response.data.guestCount);
+        setIsSubscribed(!isSubscribed);
+        setGuestCount(response.data.eatup.guests?.length || 0);
 
         // Invalidate and refetch channels after subscription change
         queryClient.invalidateQueries({ queryKey: ["channels"] });
 
         // Check if limit is reached after update
-        if (eatup.limit && response.data.guestCount >= eatup.limit) {
+        if (eatup.limit && response.data.eatup.guests?.length >= eatup.limit) {
           setIsLimitReached(true);
         } else {
           setIsLimitReached(false);

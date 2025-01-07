@@ -1,15 +1,21 @@
 import express from "express";
 import {
-  getChannelMessages,
   createMessage,
+  getMessagesByChannel,
+  deleteMessage,
+  updateMessage,
 } from "../controllers/messageController.js";
+import { verifyToken } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// Get messages for a channel
-router.get("/:channelId", getChannelMessages);
+// All message routes require authentication
+router.use(verifyToken);
 
-// Send a new message
-router.post("/:channelId", createMessage);
+// Routes for messages
+router.post("/", createMessage);
+router.get("/channel/:channelId", getMessagesByChannel);
+router.put("/:id", updateMessage);
+router.delete("/:id", deleteMessage);
 
 export default router;

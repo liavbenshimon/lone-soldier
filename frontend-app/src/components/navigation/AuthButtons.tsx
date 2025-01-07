@@ -6,17 +6,30 @@ interface AuthButtonsProps {
 }
 
 export const AuthButtons = ({ user, navigate }: AuthButtonsProps) => {
-  if (user.type === "Soldier") {
+  const getUserHomeRoute = () => {
+    const userType = user.type?.toLowerCase();
+    switch (userType) {
+      case "admin":
+        return "/admin/queue";
+      case "soldier":
+        return "/home/eatup";
+      case "municipality":
+        return "/requests";
+      case "donor":
+        return "/requests/approved";
+      case "organization":
+        return "/events/create";
+      case "business":
+        return "/discounts";
+      default:
+        return "/login";
+    }
+  };
+
+  if (user.email) {
     return (
-      <Button className="w-full" onClick={() => navigate("/home/eatup")}>
-        {user.firstName}
-      </Button>
-    );
-  }
-  if (user.type === "Admin") {
-    return (
-      <Button className="w-full" onClick={() => navigate("/admin/queue")}>
-        {user.firstName}
+      <Button className="w-full" onClick={() => navigate(getUserHomeRoute())}>
+        {user.firstName || user.email}
       </Button>
     );
   }

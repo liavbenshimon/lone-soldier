@@ -1,35 +1,44 @@
 import Residence from "../models/residenceModel.js";
 
-// קבלת כל הדירות
+// Get all residences
 export const getAllResidences = async (req, res) => {
   try {
-    const residences = await Residence.find();
+    const residences = await Residence.find().populate(
+      "authorId",
+      "firstName lastName"
+    );
     res.status(200).json(residences);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching residences", error });
+    res
+      .status(500)
+      .json({ message: "Error fetching residences", error: error.message });
   }
 };
 
-// קבלת דירה לפי מזהה
+// Get residence by ID
 export const getResidenceById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const residence = await Residence.findById(id);
+    const residence = await Residence.findById(req.params.id).populate(
+      "authorId",
+      "firstName lastName"
+    );
     if (!residence) {
       return res.status(404).json({ message: "Residence not found" });
     }
     res.status(200).json(residence);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching residence", error });
+    res
+      .status(500)
+      .json({ message: "Error fetching residence", error: error.message });
   }
 };
 
-// יצירת דירה חדשה
+// Create new residence
 export const createResidence = async (req, res) => {
   try {
-    const residenceData = req.body;
+    const residenceData = { ...req.body, authorId: req.user._id };
 
-    // ווידוא שכל השדות הדרושים קיימים
+    // Validate required fields
     const requiredFields = [
       "enterDate",
       "location",
@@ -46,51 +55,82 @@ export const createResidence = async (req, res) => {
       "storage",
       "balcony",
       "contractDuration",
-      "authorId",
     ];
+
     for (const field of requiredFields) {
       if (residenceData[field] === undefined || residenceData[field] === null) {
-        return res.status(400).json({ message: `Missing required field: ${field}` });
+        return res
+          .status(400)
+          .json({ message: `Missing required field: ${field}` });
       }
     }
 
-    // יצירת דירה חדשה והכנסתה למסד הנתונים
     const newResidence = new Residence(residenceData);
     await newResidence.save();
 
     res.status(201).json(newResidence);
   } catch (error) {
-    res.status(400).json({ message: "Error creating residence", error });
+    res
+      .status(400)
+      .json({ message: "Error creating residence", error: error.message });
   }
 };
 
-// עדכון דירה לפי מזהה
+// Update residence
 export const updateResidence = async (req, res) => {
   try {
-    const { id } = req.params;
-    const updatedResidence = await Residence.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-    if (!updatedResidence) {
+    const residence = await Residence.findById(req.params.id);
+    if (!residence) {
       return res.status(404).json({ message: "Residence not found" });
     }
+
+    // Check ownership unless user is admin
+    if (
+      req.user.type !== "Admin" &&
+      residence.authorId.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to update this residence" });
+    }
+
+    const updatedResidence = await Residence.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      { new: true, runValidators: true }
+    );
+
     res.status(200).json(updatedResidence);
   } catch (error) {
-    res.status(400).json({ message: "Error updating residence", error });
+    res
+      .status(400)
+      .json({ message: "Error updating residence", error: error.message });
   }
 };
 
-// מחיקת דירה לפי מזהה
+// Delete residence
 export const deleteResidence = async (req, res) => {
   try {
-    const { id } = req.params;
-    const deletedResidence = await Residence.findByIdAndDelete(id);
-    if (!deletedResidence) {
+    const residence = await Residence.findById(req.params.id);
+    if (!residence) {
       return res.status(404).json({ message: "Residence not found" });
     }
+
+    // Check ownership unless user is admin
+    if (
+      req.user.type !== "Admin" &&
+      residence.authorId.toString() !== req.user._id.toString()
+    ) {
+      return res
+        .status(403)
+        .json({ message: "Not authorized to delete this residence" });
+    }
+
+    await residence.deleteOne();
     res.status(200).json({ message: "Residence deleted successfully" });
   } catch (error) {
-    res.status(500).json({ message: "Error deleting residence", error });
+    res
+      .status(500)
+      .json({ message: "Error deleting residence", error: error.message });
   }
 };

@@ -6,23 +6,20 @@ import {
   updateDonationById,
   deleteDonationById,
 } from "../controllers/donationController.js";
-import authenticateToken from "../middleware/authMiddleware.js"; // Import authentication middleware
+import { verifyToken, isDonor } from "../middleware/auth.js";
 
 const router = express.Router();
 
-// POST: Create a new donation
-router.post("/", authenticateToken, createDonation);
+// All routes require authentication
+router.use(verifyToken);
 
-// GET: Retrieve all donations
-router.get("/", authenticateToken, getAllDonations);
+// Create donation - only donors can create
+router.post("/", isDonor, createDonation);
 
-// GET: Retrieve a specific donation by ID
-router.get("/:id", authenticateToken, getDonationById);
-
-// PUT: Update a donation by ID
-router.put("/:id", authenticateToken, updateDonationById);
-
-// DELETE: Delete a donation by ID
-router.delete("/:id", authenticateToken, deleteDonationById);
+// Other routes are accessible to authenticated users
+router.get("/", getAllDonations);
+router.get("/:id", getDonationById);
+router.put("/:id", updateDonationById);
+router.delete("/:id", deleteDonationById);
 
 export default router;
