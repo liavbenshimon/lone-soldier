@@ -21,12 +21,14 @@ export const createPost = async (req, res) => {
   }
 };
 
-// Obter todos os posts
 export const getAllPosts = async (req, res) => {
   try {
-    const posts = await Post.find()
-      .populate("author", "firstName lastName profileImage nickname") // Popula as informações do autor
-      .sort({ createdAt: -1 }); // Ordena por data de criação
+    const { visibility } = req.query; 
+    const filter = visibility ? { visibility } : {};
+    
+    const posts = await Post.find(filter)
+      .populate("author", "firstName lastName profileImage nickname")
+      .sort({ createdAt: -1 });
 
     res.status(200).json(posts);
   } catch (error) {
@@ -34,6 +36,7 @@ export const getAllPosts = async (req, res) => {
     res.status(500).json({ message: "Error fetching posts", error });
   }
 };
+
 
 // Obter um post por ID
 export const getPostById = async (req, res) => {
