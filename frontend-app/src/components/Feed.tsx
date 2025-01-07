@@ -18,7 +18,7 @@ import { Donation } from "@/types/Donation";
 import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps.tsx";
 import { useQuery } from "@tanstack/react-query";
-import { fetchDonations, fetchResidences, fetchEatUps } from "@/query.ts";
+import { fetchDonations, fetchResidences, fetchEatUps, fetchPosts } from "@/query.ts"; // Adicionamos o fetchPosts
 
 const zones = ["North", "Center", "South", "all"];
 //donations
@@ -44,6 +44,20 @@ const DonationSkeleton = () => {
             <Skeleton className="h-8 w-20" />
             <Skeleton className="h-8 w-20" />
           </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const PostSkeleton = () => {
+  return (
+    <div className="space-y-4">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 bg-muted/50 rounded-lg space-y-3">
+          <Skeleton className="h-6 w-1/3" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-8 w-28" />
         </div>
       ))}
     </div>
@@ -104,6 +118,13 @@ export function Feed({ mode }: { mode: string }) {
     from: addDays(new Date(), -365),
     to: addDays(new Date(), 365),
   });
+  
+  const { data: postData, isLoading: isPostLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    staleTime: 1000 * 60 * 5,
+    enabled: mode === "Posts",
+  });
 
   const { data: donationsData, isLoading: isDonationsLoading } = useQuery({
     queryKey: ["donations"],
@@ -124,6 +145,13 @@ export function Feed({ mode }: { mode: string }) {
     queryFn: fetchEatUps,
     staleTime: 1000 * 60 * 5,
     enabled: mode === "EatUp",
+  });
+
+  const { data: postsData, isLoading: isPostsLoading } = useQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPosts,
+    staleTime: 1000 * 60 * 5,
+    enabled: mode === "Social",
   });
 
   const filterDonations = (donations: Donation[]) => {
@@ -160,6 +188,7 @@ export function Feed({ mode }: { mode: string }) {
       return matchesSearch && matchesZone && matchesType && matchesShelter;
     });
   };
+
 
   const filterEatUps = (eatupsData: EatUp[]) => {
     return eatupsData.filter((eatup) => {
@@ -202,7 +231,7 @@ export function Feed({ mode }: { mode: string }) {
           </span>
         </h2>
 
-        {/* Search and Filters Header */}
+      {mode === 'posts' ? ('') : (
         <div className="bg-muted/50 p-4 rounded-lg space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
@@ -299,6 +328,19 @@ export function Feed({ mode }: { mode: string }) {
             )}
           </div>
         </div>
+        )}
+
+        {/* Search and Filters Header */}
+        
+        {mode === "Posts" && isPostsLoading ? (
+          <DonationSkeleton />
+        ) : (
+          mode === "Posts" &&
+          postsData &&
+          filterDonations(postsData).map((post: Posts) => (
+            <DetailsDialog key={post._id} post={post} type={mode} />
+          ))
+        )}
 
         {mode === "Donations" && isDonationsLoading ? (
           <DonationSkeleton />
@@ -327,14 +369,25 @@ export function Feed({ mode }: { mode: string }) {
         ) : null}
 
         {mode === "EatUp" && isEatUpsLoading ? (
-          <EatUpSkeleton />
-        ) : (
-          mode === "EatUp" &&
-          eatupsData &&
-          filterEatUps(eatupsData).map((eatup: EatUp) => (
-            <DetailsDialog key={eatup._id} eatup={eatup} type={mode} />
-          ))
-        )}
+  <EatUpSkeleton />
+) : mode === "EatUp" && eatupsData && Array.isArray(eatupsData) ? ( // Verifica se é um array
+  filterEatUps(eatupsData).map((eatup: EatUp) => (
+    <DetailsDialog key={eatup._id} eatup={eatup} type={mode} />
+  ))
+) : (
+  <div className="text-center py-4">No eatups found</div> // Adiciona fallback em caso de dados inválidos
+)}
+
+{mode === "Social" && isPostsLoading ? (
+  <PostSkeleton />
+) : mode === "Social" && postsData && Array.isArray(postsData) ? ( // Verifica se é um array
+  filterPosts(postsData).map((post: Post) => (
+    <DetailsDialog key={post._id} post={post} type={mode} />
+  ))
+) : (
+  <div className="text-center py-4">No posts found</div> // Adiciona fallback em caso de dados inválidos
+)}
+
       </div>
     </div>
   );

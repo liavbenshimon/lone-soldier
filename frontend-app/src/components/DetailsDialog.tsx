@@ -13,16 +13,19 @@ import { EatUp } from "@/types/EatUps";
 import { useState, useEffect } from "react";
 import { api } from "@/api";
 import { useQueryClient } from "@tanstack/react-query";
+import { posts } from "@/query";
 
 interface DetailsDialogProps {
   donation?: Donation | null;
   residence?: Residence | null;
   eatup?: EatUp | null;
-  type: string;
+  type: string,
+  posts?: posts | null;
 }
 
 export function DetailsDialog({
   donation,
+  posts,
   residence,
   eatup,
   type,
@@ -135,6 +138,35 @@ export function DetailsDialog({
               </div>
             </div>
           )}
+          {type === "Posts" && (
+            <div className="p-4 flex gap-4">
+              <div className="w-[150px] h-[150px]">
+                {posts?.image? (
+                  <img
+                    src={posts.image}
+                    alt="Posts"
+                    className="w-full h-full object-cover rounded-md"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-muted rounded-md flex items-center justify-center">
+                    No Image
+                  </div>
+                )}
+              </div>
+              <div>
+                <h3 className="font-bold text-lg md:text-xl">
+                  {donation?.description}
+                </h3>
+                <p className="text-muted-foreground text-sm md:text-base">
+                  {donation?.createdAt &&
+                    new Date(donation.createdAt).toLocaleDateString()}
+                </p>
+                <p className="mb-4 text-muted-foreground leading-relaxed">
+                  {donation?.category}
+                </p>
+              </div>
+            </div>
+          )}
           {type === "Residences" && (
             <div className="p-4 flex gap-4">
               <div className="w-[150px] h-[150px]">
@@ -212,11 +244,13 @@ export function DetailsDialog({
       <DialogContent className="max-w-[800px]">
         <DialogHeader>
           <DialogTitle>
-            {type === "EatUp"
-              ? eatup?.title
-              : type === "Donations"
-              ? donation?.description
-              : residence?.description}
+          {type === "EatUp"
+  ? eatup?.title
+  : type === "Donations"
+  ? donation?.description
+  : type === "Posts"
+  ? posts?.content: ('')
+          }
           </DialogTitle>
         </DialogHeader>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

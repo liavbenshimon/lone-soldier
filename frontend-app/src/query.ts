@@ -6,6 +6,21 @@ import store from "./Redux/store";
 import { logout } from "./Redux/authSlice";
 import { AxiosError } from "axios";
 
+
+export interface posts {
+  author: string,
+  content: string,
+  image: string,
+  likes: string [],
+  comments: comments []
+}
+
+export interface comments {
+  user: string,
+  text: string,
+  createdAt: Date,
+}
+
 const handleUnauthorized = () => {
   sessionStorage.clear();
   store.dispatch(logout());
@@ -49,6 +64,31 @@ export const fetchResidences = async (): Promise<Residence[]> => {
     return [];
   } catch (error) {
     console.error("Error fetching residences:", error);
+    if (
+      (error as AxiosError)?.response?.status === 401 ||
+      (error as AxiosError)?.response?.status === 403
+    ) {
+      handleUnauthorized();
+    }
+    return [];
+  }
+};
+export const fetchPosts= async (): Promise<posts[]> => {
+  try {
+    const token = sessionStorage.getItem("token");
+    if (!token) {
+      handleUnauthorized();
+      return [];
+    }
+    const res = await api.get("/posts");
+    if (Array.isArray(res.data)) {
+      return res.data;
+    } else if (res.data && Array.isArray(res.data.data)) {
+      return res.data.data;
+    }
+    return [];
+  } catch (error) {
+    console.error("Error fetching posts:", error);
     if (
       (error as AxiosError)?.response?.status === 401 ||
       (error as AxiosError)?.response?.status === 403
