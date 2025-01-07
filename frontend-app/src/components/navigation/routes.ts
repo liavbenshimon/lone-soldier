@@ -29,7 +29,7 @@ export const routeListSoldier: RouteProps[] = [
     label: "Request Form",
   },
   {
-    href: "/home/social",
+    href: "/social",
     label: "Social",
   },
   {
@@ -60,7 +60,7 @@ export const routeListMunicipality: RouteProps[] = [
     label: "Answer Requests @",
   },
   {
-    href: "/home/social",
+    href: "/social",
     label: "Social",
   },
   {

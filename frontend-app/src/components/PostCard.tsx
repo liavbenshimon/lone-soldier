@@ -19,6 +19,7 @@ interface Post {
 }
 
 export function PostCard({ post }: { post: Post }) {
+  console.log(post);
   return (
     <Card className="p-4 md:p-6 mb-6 max-w-4xl mx-auto shadow-md">
       <div className="flex items-center mb-4">

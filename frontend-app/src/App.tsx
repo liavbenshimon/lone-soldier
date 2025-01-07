@@ -1,7 +1,6 @@
 import ContributePage from "./pages/Contribute";
-import HomePage from "./pages/HomePage"
+import HomePage from "./pages/HomePage";
 import Profile from "./pages/Profile";
-
 
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
@@ -61,11 +60,11 @@ function AppRoutes() {
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<ContactUs />} />
       <Route path="/pending" element={<PendingPage />} />
-      <Route path="/home/social" element={<Social />} />
+      <Route path="/social" element={<Social />} />
       <Route path="/admin/queue" element={<AdminQueue />} />
       <Route path="/profile" element={<Profile />} />
       <Route path="/my-eatups" element={<MyEatUps />} />
-      <Route path="/social" element={<Social />} />
+
       <Route path="/home" element={<HomePage mode="Donations" />} />
       <Route path="/home/donations" element={<HomePage mode="Donations" />} />
       <Route path="/home/residences" element={<HomePage mode="Residences" />} />

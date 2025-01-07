@@ -28,7 +28,12 @@ router.post("/", isSoldier, createRequest);
 router.get(
   "/",
   (req, res, next) => {
-    if (req.user.type === "Municipality" || req.user.type === "Donor") {
+    if (
+      req.user.type === "Municipality" ||
+      req.user.type === "Donor" ||
+      req.user.type === "Organization" ||
+      req.user.type === "Admin"
+    ) {
       next();
     } else {
       res.status(403).json({ error: "Access denied" });
