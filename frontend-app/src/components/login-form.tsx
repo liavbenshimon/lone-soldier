@@ -74,12 +74,28 @@ export function LoginForm({
         dispatch(setUser(res.data.user));
         dispatch(login(res.data.token));
 
-        if (res?.data?.user?.type === "Contributer") {
-          navigate("/contribute");
-        } else if (res?.data?.user?.type === "Soldier") {
-          navigate("/Home");
-        } else if (res?.data?.user?.type === "Admin") {
-          navigate("/Home");
+        // Navigate based on user type
+        switch (res.data.user.type.toLowerCase()) {
+          case "admin":
+            navigate("/admin/queue");
+            break;
+          case "soldier":
+            navigate("/home/eatup");
+            break;
+          case "municipality":
+            navigate("/requests");
+            break;
+          case "donor":
+            navigate("/requests/approved");
+            break;
+          case "organization":
+            navigate("/events/create");
+            break;
+          case "business":
+            navigate("/discounts");
+            break;
+          default:
+            navigate("/home");
         }
       } else if (res?.data?.type === "pending") {
         navigate("/pending", {

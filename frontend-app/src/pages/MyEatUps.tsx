@@ -16,12 +16,10 @@ export default function MyEatUps() {
   const fetchEatUps = async () => {
     try {
       const response = await api.get("/eatups");
-      const eatupsData = Array.isArray(response.data)
-        ? response.data
-        : response.data?.data || [];
+      const eatupsData = response.data;
 
       const userEatups = eatupsData.filter(
-        (item: EatUp) => item.owner === userId
+        (item: EatUp) => item.owner === userId || item.authorId === userId
       );
       setEatUps(userEatups);
     } catch (error) {

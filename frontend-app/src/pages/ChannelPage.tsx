@@ -43,11 +43,14 @@ export default function ChannelPage() {
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", channelId],
     queryFn: async () => {
-      const response = await api.get(`/messages/${channelId}`);
-      return response.data;
+      if (!channelId) return [];
+      const response = await api.get(`/messages/channel/${channelId}`);
+      return Array.isArray(response.data) ? response.data : [];
     },
-    staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
-    gcTime: 30 * 60 * 1000, // Keep data in cache for 30 minutes
+    enabled: !!channelId,
+    refetchOnWindowFocus: false,
+    refetchOnMount: true,
+    staleTime: Infinity,
   });
 
   // Add a debug logger function
@@ -65,62 +68,49 @@ export default function ChannelPage() {
   useEffect(() => {
     if (!channelId || !user._id) return;
 
+    // Connect to socket
     const socket = socketService.connect(channelId);
+    setIsConnected(true);
 
+    // Join channel after connection
     socket.on("connect", () => {
       debugLog(`🟢 Socket Connected to channel: ${channelId}`);
-      setIsConnected(true);
       socket.emit("join channel", channelId);
       debugLog(`📡 Emitted: join channel ${channelId}`);
     });
 
+    socket.on("message received", (newMessage: Message) => {
+      debugLog(`📩 Received message:`, newMessage);
+      // Update messages in cache
+      queryClient.setQueryData(
+        ["messages", channelId],
+        (oldMessages: any[] = []) => {
+          // Avoid duplicate messages
+          if (oldMessages.some((msg) => msg._id === newMessage._id)) {
+            return oldMessages;
+          }
+          return [...oldMessages, newMessage];
+        }
+      );
+      // Scroll to bottom on new message
+      scrollToBottom();
+    });
+
+    // Error handling
     socket.on("connect_error", (error) => {
       debugLog(`🔴 Socket Connection Error:`, error);
-    });
-
-    socket.on("disconnect", (reason) => {
-      debugLog(`🔴 Socket Disconnected. Reason:`, reason);
-      setIsConnected(false);
-    });
-
-    // Message events
-    socket.on("message received", (newMessage: Message) => {
-      debugLog(`📨 Received message in channel ${channelId}:`, newMessage);
-      if (newMessage.channelId === channelId) {
-        // Update the query cache with the new message
-        queryClient.setQueryData(
-          ["messages", channelId],
-          (oldData: Message[] = []) => {
-            const newData = [...oldData, newMessage];
-            return newData;
-          }
-        );
-        scrollToBottom();
-        debugLog(`✅ Message added to chat`);
-      }
-    });
-
-    // Channel events
-    socket.on("channel users", (users) => {
-      debugLog(`👥 Channel users updated:`, users);
-    });
-
-    socket.on("typing users", (users) => {
-      debugLog(`✍️ Users typing:`, users);
     });
 
     socket.on("error", (error) => {
       debugLog(`❌ Socket Error:`, error);
     });
 
-    // Cleanup
+    // Cleanup function
     return () => {
-      if (socket) {
-        debugLog(`👋 Leaving channel: ${channelId}`);
-        socket.emit("leave channel", channelId);
-        socketService.disconnect();
-        debugLog(`🔌 Socket disconnected`);
-      }
+      debugLog(`👋 Leaving channel ${channelId}`);
+      socket.emit("leave channel", channelId);
+      socketService.disconnect();
+      setIsConnected(false);
     };
   }, [channelId, user._id, queryClient]);
 
@@ -183,66 +173,73 @@ export default function ChannelPage() {
               {/* Messages Area */}
               <ScrollArea ref={scrollAreaRef} className="flex-1" type="always">
                 <div className="flex flex-col gap-4 p-4">
-                  {messages.map((message: Message) => {
-                    const isCurrentUser = message.sender._id === user._id;
-                    return (
-                      <div
-                        key={message._id}
-                        className={`flex items-start gap-2 w-full ${
-                          isCurrentUser ? "flex-row-reverse" : "flex-row"
-                        }`}
-                      >
-                        {/* Avatar */}
-                        <Avatar className="w-8 h-8 shrink-0 mt-1">
-                          {message.sender.media?.[0] ? (
-                            <AvatarImage src={message.sender.media[0]} />
-                          ) : (
-                            <AvatarFallback className="bg-primary/10 text-xs">
-                              {message.sender.firstName?.[0]}
-                              {message.sender.lastName?.[0]}
-                            </AvatarFallback>
-                          )}
-                        </Avatar>
-
-                        {/* Message Content Container */}
+                  {Array.isArray(messages) && messages.length > 0 ? (
+                    messages.map((message: Message) => {
+                      const isCurrentUser = message.sender._id === user._id;
+                      return (
                         <div
-                          className={`flex flex-col ${
-                            isCurrentUser ? "items-end" : "items-start"
-                          } max-w-[calc(100%-4rem)] space-y-1`}
+                          key={message._id}
+                          className={`flex items-start gap-2 w-full ${
+                            isCurrentUser ? "flex-row-reverse" : "flex-row"
+                          }`}
                         >
-                          {/* Name */}
-                          <span className="text-xs font-medium text-muted-foreground px-1">
-                            {message.sender.firstName} {message.sender.lastName}
-                          </span>
+                          {/* Avatar */}
+                          <Avatar className="w-8 h-8 shrink-0 mt-1">
+                            {message.sender.media?.[0] ? (
+                              <AvatarImage src={message.sender.media[0]} />
+                            ) : (
+                              <AvatarFallback className="bg-primary/10 text-xs">
+                                {message.sender.firstName?.[0]}
+                                {message.sender.lastName?.[0]}
+                              </AvatarFallback>
+                            )}
+                          </Avatar>
 
-                          {/* Message Bubble */}
+                          {/* Message Content Container */}
                           <div
-                            className={`w-fit max-w-full ${
-                              isCurrentUser
-                                ? "bg-[#F596D3]/20 border border-[#F596D3]/30 rounded-l-lg rounded-br-lg"
-                                : "bg-gray-100 dark:bg-gray-800/50 rounded-r-lg rounded-bl-lg"
-                            } px-3 py-2`}
+                            className={`flex flex-col ${
+                              isCurrentUser ? "items-end" : "items-start"
+                            } max-w-[calc(100%-4rem)] space-y-1`}
                           >
-                            {/* Message Text - Added break-all for long words */}
-                            <div className="break-all whitespace-pre-wrap text-sm inline-block">
-                              {message.content}
-                            </div>
+                            {/* Name */}
+                            <span className="text-xs font-medium text-muted-foreground px-1">
+                              {message.sender.firstName}{" "}
+                              {message.sender.lastName}
+                            </span>
 
-                            {/* Timestamp */}
-                            <div className="text-[10px] mt-1 text-muted-foreground/70 text-right">
-                              {new Date(message.createdAt).toLocaleTimeString(
-                                [],
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                }
-                              )}
+                            {/* Message Bubble */}
+                            <div
+                              className={`w-fit max-w-full ${
+                                isCurrentUser
+                                  ? "bg-[#F596D3]/20 border border-[#F596D3]/30 rounded-l-lg rounded-br-lg"
+                                  : "bg-gray-100 dark:bg-gray-800/50 rounded-r-lg rounded-bl-lg"
+                              } px-3 py-2`}
+                            >
+                              {/* Message Text - Added break-all for long words */}
+                              <div className="break-all whitespace-pre-wrap text-sm inline-block">
+                                {message.content}
+                              </div>
+
+                              {/* Timestamp */}
+                              <div className="text-[10px] mt-1 text-muted-foreground/70 text-right">
+                                {new Date(message.createdAt).toLocaleTimeString(
+                                  [],
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  }
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    );
-                  })}
+                      );
+                    })
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-muted-foreground">
+                      No messages yet. Start the conversation!
+                    </div>
+                  )}
                 </div>
               </ScrollArea>
 

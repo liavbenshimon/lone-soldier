@@ -1,75 +1,5 @@
 import { RouteProps, AdminRouteSection } from "./types";
 
-export const routeListHome: RouteProps[] = [
-  {
-    href: "/",
-    label: "Home",
-  },
-  {
-    href: "/Home/eatup",
-    label: "EatUps",
-  },
-  {
-    href: "/Home/social",
-    label: "Social",
-  },
-  {
-    href: "/rights",
-    label: "Your Rights",
-  },
-  {
-    href: "/requestForm",
-    label: "Request Form",
-  },
-  {
-    href: "/profile",
-    label: "Profile",
-  },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
-];
-// {
-//   href: "/Home/donations",
-//   label: "Donations",
-// },
-// {
-//   href: "/Home/residences",
-//   label: "Residences",
-// },
-
-export const routeListContribute: RouteProps[] = [
-  {
-    href: "/",
-    label: "Home",
-  },
-  {
-    href: "/contribute",
-    label: "contribute",
-  },
-  {
-    href: "/new-post",
-    label: "Donate",
-  },
-  {
-    href: "/social",
-    label: "Social",
-  },
-  {
-    href: "/my-eatups",
-    label: "My EatUps",
-  },
-  {
-    href: "/profile",
-    label: "Profile",
-  },
-  {
-    href: "/logout",
-    label: "Logout",
-  },
-];
-
 export const routeListLanding: RouteProps[] = [
   {
     href: "#about",
@@ -89,9 +19,156 @@ export const routeListLanding: RouteProps[] = [
   },
 ];
 
+export const routeListSoldier: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
+  {
+    href: "/requestForm",
+    label: "Request Form",
+  },
+  {
+    href: "/home/social",
+    label: "Social",
+  },
+  {
+    href: "/home/eatup",
+    label: "EatUps",
+  },
+  {
+    href: "/vouchers",
+    label: "Vouchers @",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
+export const routeListMunicipality: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
+  {
+    href: "/requests",
+    label: "Answer Requests @",
+  },
+  {
+    href: "/home/social",
+    label: "Social",
+  },
+  {
+    href: "/new-post",
+    label: "Create Event",
+  },
+  {
+    href: "/my-eatups",
+    label: "My EatUps",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
+export const routeListDonor: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
+  {
+    href: "/contribute",
+    label: "Pay Requests",
+  },
+  {
+    href: "/new-post",
+    label: "Create EatUp",
+  },
+  {
+    href: "/donate",
+    label: "Offer Donation @",
+  },
+  {
+    href: "/my-eatups",
+    label: "My EatUps",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
+export const routeListOrganization: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
+  {
+    href: "/home/social",
+    label: "Social",
+  },
+  {
+    href: "/new-post",
+    label: "Create Event",
+  },
+  {
+    href: "/my-eatups",
+    label: "My EatUps",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
+export const routeListBusiness: RouteProps[] = [
+  {
+    href: "/",
+    label: "Home",
+  },
+  {
+    href: "/discounts",
+    label: "Add Discount @",
+  },
+  {
+    href: "/verify-soldier",
+    label: "Verify Soldier @",
+  },
+  {
+    href: "/vouchers/create",
+    label: "Create Vouchers @",
+  },
+  {
+    href: "/profile",
+    label: "Profile",
+  },
+  {
+    href: "/logout",
+    label: "Logout",
+  },
+];
+
 export const routeListAdmin: AdminRouteSection[] = [
   {
-    section: "Admin",
+    section: "Admin Panel",
     routes: [
       {
         href: "/admin/queue",
@@ -99,70 +176,57 @@ export const routeListAdmin: AdminRouteSection[] = [
       },
       {
         href: "/admin/users",
-        label: "Manage Users",
+        label: "Manage Users @",
       },
       {
         href: "/admin/posts",
-        label: "Manage Posts",
+        label: "Manage Posts @",
+      },
+      {
+        href: "/admin/events",
+        label: "Manage Events @",
+      },
+      {
+        href: "/admin/vouchers",
+        label: "Manage Vouchers @",
       },
     ],
   },
   {
-    section: "Soldier",
+    section: "Soldier Features",
+    routes: routeListSoldier,
+  },
+  {
+    section: "Municipality Features",
+    routes: routeListMunicipality,
+  },
+  {
+    section: "Donor Features",
+    routes: routeListDonor,
+  },
+  {
+    section: "Organization Features",
+    routes: routeListOrganization,
+  },
+  {
+    section: "Business Features",
+    routes: routeListBusiness,
+  },
+  {
+    section: "Common",
     routes: [
       {
         href: "/",
         label: "Home",
       },
       {
-        href: "/requestForm",
-        label: "Request Form",
-      },
-      // {
-      //   href: "/Home/donations",
-      //   label: "Donations",
-      // },
-      // {
-      //   href: "/Home/residences",
-      //   label: "Residences",
-      // },
-      {
-        href: "/Home/eatup",
-        label: "EatUps",
-      },
-      {
-        href: "/Home/social",
-        label: "Social",
-      },
-      {
-        href: "/rights",
-        label: "Your Rights",
-      },
-      {
         href: "/profile",
         label: "Profile",
       },
-    ],
-  },
-  {
-    section: "Contributor",
-    routes: [
       {
-        href: "/contribute",
-        label: "contribute",
-      },
-      {
-        href: "/new-post",
-        label: "Donate",
-      },
-      {
-        href: "/my-eatups",
-        label: "My EatUps",
+        href: "/logout",
+        label: "Logout",
       },
     ],
-  },
-  {
-    href: "/logout",
-    label: "Logout",
   },
 ];

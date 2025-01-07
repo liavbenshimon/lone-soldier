@@ -40,7 +40,7 @@ const signupRequestSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ["Soldier", "Contributor"],
+    enum: ["Soldier", "Municipality", "Donor", "Organization", "Business"],
     required: true,
   },
   // Request status
