@@ -14,6 +14,8 @@ import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps.tsx";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { fetchDonations, fetchResidences, fetchEatUps, fetchPosts, posts } from "@/query.ts";
+import { PostCard } from "./PostCard";
+import { Post } from "../components/PostCard";
 
 const zones = ["North", "Center", "South", "all"];
 const DonationsCategories = ["Furniture", "Electronics", "Clothes", "all"];
@@ -116,10 +118,9 @@ export function Feed({ mode }: { mode: string }) {
     queryKey: ["posts"], 
     queryFn: fetchPosts, 
     staleTime: 1000 * 60 * 5, 
-    refetchOnWindowFocus: true, 
+    enabled: mode === "post",
   });
-console.log(postsData, isPostsLoading);
-
+  
   // const createPostMutation = useMutation({
   //   mutationFn: (postData) => api.post("/posts", postData), 
   //   onSuccess: () => {
@@ -327,14 +328,14 @@ console.log(postsData, isPostsLoading);
         {/* Search and Filters Header */}
         
         {mode === "post" && isPostsLoading ? (
-          <DonationSkeleton />
-        ) : (
-          mode === "post" &&
-          postsData &&
-          postsData.map((post: posts) => (
-            <DetailsDialog key={post._id} post={post} type={mode} />
-          ))
-        )}
+  <PostSkeleton />
+) : mode === "post" && postsData && Array.isArray(postsData)? (
+  // TODO: FIX SINTAX
+  postsData.map((post: Post) => (<PostCard key={post._id} post={post} />))
+) : (
+  <div className="text-center py-4">No posts found</div>
+)}
+
 
         {mode === "Donations" && isDonationsLoading ? (
           <DonationSkeleton />
@@ -372,7 +373,7 @@ console.log(postsData, isPostsLoading);
   <div className="text-center py-4">No eatups found</div> 
 ): null}
 
-{mode === "post" && isPostsLoading ? (
+{/* {mode === "post" && isPostsLoading ? (
   <PostSkeleton />
 ) : mode === "post" && postsData && Array.isArray(postsData) ? ( 
   postsData.map((post: posts) => (
@@ -380,7 +381,7 @@ console.log(postsData, isPostsLoading);
   ))
 ) : mode === "post" ? (
   <div className="text-center py-4">No posts found</div> 
-) : null}
+) : null} */}
 
       </div>  
     </div>

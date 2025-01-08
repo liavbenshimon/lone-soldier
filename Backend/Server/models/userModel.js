@@ -69,7 +69,7 @@ const userSchema = new mongoose.Schema({
   },
   profileImage: {
     type: String,
-    default: "",
+    default: "/src/assets/profilePictures/boy_2.svg",
   },
   receiveNotifications: {
     type: Boolean,

@@ -18,7 +18,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import RequestForm from "./components/RequestForm";
-
+import CreatePost from "./components/CreatePost";
 import PendingPage from "./pages/PendingPage";
 import AdminQueue from "./pages/AdminQueue";
 import { useEffect } from "react";
@@ -76,6 +76,7 @@ function AppRoutes() {
 
       <Route path="/channel/:channelId" element={<ChannelPage />} />
       <Route path="/RequestForm" element={<RequestForm />} />
+      <Route path="/create-post" element={<CreatePost onPostCreated={() => window.location.href = "/social"} />} />
 
       <Route path="*" element={<h1>404</h1>} />
     </Routes>
