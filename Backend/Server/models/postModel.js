@@ -19,6 +19,11 @@ const postSchema = new mongoose.Schema(
     image: {
       type: String, // URL para uma imagem opcional
     },
+    createdAt: {
+      type: Date,
+      required: true,
+      default: Date.now()
+    },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,

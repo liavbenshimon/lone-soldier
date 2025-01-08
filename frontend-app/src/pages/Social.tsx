@@ -6,7 +6,7 @@ export default function Social() {
     <div className="flex bg-background text-foreground min-h-screen">
       <Navbar modes="home" isVertical={true} isAccordion={true} />
       <div className="flex-1 mx-10">
-        <Feed />
+        < Feed mode = {'post'} />
       </div>
     </div>
   );

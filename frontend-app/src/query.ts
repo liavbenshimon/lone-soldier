@@ -12,6 +12,8 @@ export interface posts {
   content: string,
   image: string,
   likes: string [],
+  _id: string,
+  createdAt: Date,
   comments: comments []
 }
 
@@ -78,9 +80,11 @@ export const fetchPosts= async (): Promise<posts[]> => {
     const token = sessionStorage.getItem("token");
     if (!token) {
       handleUnauthorized();
-      return [];
+      return [];  
     }
     const res = await api.get("/posts");
+    console.log(res.data);
+    
     if (Array.isArray(res.data)) {
       return res.data;
     } else if (res.data && Array.isArray(res.data.data)) {

@@ -1,32 +1,24 @@
+"use strict"
 import * as React from "react";
 import { addDays } from "date-fns";
 import { useState } from "react";
 import { DetailsDialog } from "./DetailsDialog";
 import { Input } from "./ui/input";
 import { Skeleton } from "./ui/skeleton";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
 import { Search } from "lucide-react";
 import { DateRange } from "react-day-picker";
 import { DatePickerWithRange } from "./DatePickerWithRange";
 import { Donation } from "@/types/Donation";
 import { Residence } from "@/types/Residence";
 import { EatUp } from "@/types/EatUps.tsx";
-import { useQuery } from "@tanstack/react-query";
-import { fetchDonations, fetchResidences, fetchEatUps, fetchPosts } from "@/query.ts"; // Adicionamos o fetchPosts
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { fetchDonations, fetchResidences, fetchEatUps, fetchPosts, posts } from "@/query.ts";
 
 const zones = ["North", "Center", "South", "all"];
-//donations
 const DonationsCategories = ["Furniture", "Electronics", "Clothes", "all"];
-//residences
 const residencesType = ["Rent", "Roommates", "all"];
 const residencesShelter = ["Sheltered", "Unsheltered", "all"];
-//eatup
 const EatUpsKosher = ["Kosher", "Not Kosher", "all"];
 const EatUpsHosting = ["Family", "Organization", "all"];
 
@@ -107,6 +99,7 @@ const EatUpSkeleton = () => {
 };
 
 export function Feed({ mode }: { mode: string }) {
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
   const [zone, setZone] = useState("all");
   const [category, setCategory] = useState("all");
@@ -119,12 +112,20 @@ export function Feed({ mode }: { mode: string }) {
     to: addDays(new Date(), 365),
   });
   
-  const { data: postData, isLoading: isPostLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-    staleTime: 1000 * 60 * 5,
-    enabled: mode === "Posts",
+  const { data: postsData, isLoading: isPostsLoading } = useQuery({
+    queryKey: ["posts"], 
+    queryFn: fetchPosts, 
+    staleTime: 1000 * 60 * 5, 
+    refetchOnWindowFocus: true, 
   });
+console.log(postsData, isPostsLoading);
+
+  // const createPostMutation = useMutation({
+  //   mutationFn: (postData) => api.post("/posts", postData), 
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries(["posts"]);
+  //   },
+  // });
 
   const { data: donationsData, isLoading: isDonationsLoading } = useQuery({
     queryKey: ["donations"],
@@ -145,13 +146,6 @@ export function Feed({ mode }: { mode: string }) {
     queryFn: fetchEatUps,
     staleTime: 1000 * 60 * 5,
     enabled: mode === "EatUp",
-  });
-
-  const { data: postsData, isLoading: isPostsLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: fetchPosts,
-    staleTime: 1000 * 60 * 5,
-    enabled: mode === "Social",
   });
 
   const filterDonations = (donations: Donation[]) => {
@@ -231,7 +225,7 @@ export function Feed({ mode }: { mode: string }) {
           </span>
         </h2>
 
-      {mode === 'posts' ? ('') : (
+      {mode === 'post' ? ('') : (
         <div className="bg-muted/50 p-4 rounded-lg space-y-4">
           <div className="relative">
             <Search className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
@@ -332,12 +326,12 @@ export function Feed({ mode }: { mode: string }) {
 
         {/* Search and Filters Header */}
         
-        {mode === "Posts" && isPostsLoading ? (
+        {mode === "post" && isPostsLoading ? (
           <DonationSkeleton />
         ) : (
-          mode === "Posts" &&
+          mode === "post" &&
           postsData &&
-          filterDonations(postsData).map((post: Posts) => (
+          postsData.map((post: posts) => (
             <DetailsDialog key={post._id} post={post} type={mode} />
           ))
         )}
@@ -370,25 +364,25 @@ export function Feed({ mode }: { mode: string }) {
 
         {mode === "EatUp" && isEatUpsLoading ? (
   <EatUpSkeleton />
-) : mode === "EatUp" && eatupsData && Array.isArray(eatupsData) ? ( // Verifica se é um array
+) : mode === "EatUp" && eatupsData && Array.isArray(eatupsData) ? ( 
   filterEatUps(eatupsData).map((eatup: EatUp) => (
     <DetailsDialog key={eatup._id} eatup={eatup} type={mode} />
   ))
-) : (
-  <div className="text-center py-4">No eatups found</div> // Adiciona fallback em caso de dados inválidos
-)}
+) : mode === "EatUp"?(
+  <div className="text-center py-4">No eatups found</div> 
+): null}
 
-{mode === "Social" && isPostsLoading ? (
+{mode === "post" && isPostsLoading ? (
   <PostSkeleton />
-) : mode === "Social" && postsData && Array.isArray(postsData) ? ( // Verifica se é um array
-  filterPosts(postsData).map((post: Post) => (
+) : mode === "post" && postsData && Array.isArray(postsData) ? ( 
+  postsData.map((post: posts) => (
     <DetailsDialog key={post._id} post={post} type={mode} />
   ))
-) : (
-  <div className="text-center py-4">No posts found</div> // Adiciona fallback em caso de dados inválidos
-)}
+) : mode === "post" ? (
+  <div className="text-center py-4">No posts found</div> 
+) : null}
 
-      </div>
+      </div>  
     </div>
   );
 }

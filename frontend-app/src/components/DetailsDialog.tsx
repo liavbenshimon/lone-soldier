@@ -20,12 +20,12 @@ interface DetailsDialogProps {
   residence?: Residence | null;
   eatup?: EatUp | null;
   type: string,
-  posts?: posts | null;
+  post?: posts | null;
 }
 
 export function DetailsDialog({
   donation,
-  posts,
+  post,
   residence,
   eatup,
   type,
@@ -104,6 +104,8 @@ export function DetailsDialog({
       }
     }
   }, [eatup]);
+  console.log(post);
+  
 
   return (
     <Dialog>
@@ -138,13 +140,13 @@ export function DetailsDialog({
               </div>
             </div>
           )}
-          {type === "Posts" && (
+          {type === "post" && (
             <div className="p-4 flex gap-4">
               <div className="w-[150px] h-[150px]">
-                {posts?.image? (
+                {post?.image? (
                   <img
-                    src={posts.image}
-                    alt="Posts"
+                    src={post.image}
+                    alt="post"
                     className="w-full h-full object-cover rounded-md"
                   />
                 ) : (
@@ -155,14 +157,14 @@ export function DetailsDialog({
               </div>
               <div>
                 <h3 className="font-bold text-lg md:text-xl">
-                  {donation?.description}
+                  {post?.content}
                 </h3>
                 <p className="text-muted-foreground text-sm md:text-base">
-                  {donation?.createdAt &&
-                    new Date(donation.createdAt).toLocaleDateString()}
+                  {post?.createdAt &&
+                    new Date(post.createdAt).toLocaleDateString()}
                 </p>
                 <p className="mb-4 text-muted-foreground leading-relaxed">
-                  {donation?.category}
+                  {post?.likes.length}
                 </p>
               </div>
             </div>
@@ -240,155 +242,13 @@ export function DetailsDialog({
             </div>
           )}
         </Card>
-      </DialogTrigger>
-      <DialogContent className="max-w-[800px]">
-        <DialogHeader>
-          <DialogTitle>
-          {type === "EatUp"
-  ? eatup?.title
-  : type === "Donations"
-  ? donation?.description
-  : type === "Posts"
-  ? posts?.content: ('')
-          }
-          </DialogTitle>
-        </DialogHeader>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="w-full h-[300px]">
-            {(type === "Donations" && donation?.media?.length) ||
-            (type === "Residences" && residence?.media?.length) ||
-            (type === "EatUp" && eatup?.media?.length) ? (
-              <img
-                src={
-                  type === "Donations"
-                    ? donation?.media?.[0] || ""
-                    : type === "Residences"
-                    ? residence?.media?.[0] || ""
-                    : eatup?.media?.[0] || ""
-                }
-                alt="Item"
-                className="w-full h-full rounded-lg object-cover"
-              />
-            ) : (
-              <div className="w-full h-full bg-muted rounded-lg flex items-center justify-center">
-                No Image Available
-              </div>
-            )}
-          </div>
-          <div className="space-y-4">
-            {type === "Donations" && donation && (
-              <>
-                <DetailItem label="Category" value={donation.category} />
-                <DetailItem label="Zone" value={donation.zone} />
-                <DetailItem label="Description" value={donation.description} />
-                <DetailItem
-                  label="Created At"
-                  value={
-                    donation.createdAt
-                      ? new Date(donation.createdAt).toLocaleDateString()
-                      : ""
-                  }
-                />
-                {donation.ownerPhone && (
-                  <div className="mt-6 pt-6 border-t">
-                    <DetailItem
-                      label="Contact Phone"
-                      value={donation.ownerPhone}
-                    />
-                  </div>
-                )}
-              </>
-            )}
-            {type === "Residences" && residence && (
-              <>
-                <DetailItem label="Type" value={residence.type} />
-                <DetailItem label="Zone" value={residence.zone} />
-                <DetailItem
-                  label="Shelter"
-                  value={residence.shalter ? "Yes" : "No"}
-                />
-                <DetailItem
-                  label="Enter Date"
-                  value={new Date(residence.enterDate).toLocaleDateString()}
-                />
-                <DetailItem label="Description" value={residence.description} />
-                {residence.phone && (
-                  <div className="mt-6 pt-6 border-t">
-                    <DetailItem label="Contact Phone" value={residence.phone} />
-                  </div>
-                )}
-              </>
-            )}
-            {type === "EatUp" && eatup && (
-              <>
-                <DetailItem label="Zone" value={eatup.zone} />
-                <DetailItem
-                  label="Date"
-                  value={new Date(eatup.date).toLocaleDateString()}
-                />
-                <DetailItem
-                  label="Kosher"
-                  value={eatup.kosher ? "Yes" : "No"}
-                />
-                <DetailItem
-                  label="Hosting"
-                  value={eatup.hosting || "Not specified"}
-                />
-                <DetailItem label="Description" value={eatup.title} />
-                {eatup.limit && (
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-muted-foreground">
-                      Guest Limit:{" "}
-                    </span>
-                    <span
-                      className={`font-medium ${
-                        guestCount >= eatup.limit
-                          ? "text-destructive"
-                          : "text-primary"
-                      }`}
-                    >
-                      {guestCount}/{eatup.limit}
-                    </span>
-                    {guestCount >= eatup.limit && !isSubscribed && (
-                      <span className="text-sm text-destructive">
-                        (Fully Booked)
-                      </span>
-                    )}
-                  </div>
-                )}
-                <div className="mt-6 pt-6 border-t space-y-4">
-                  {eatup.phone && (
-                    <DetailItem label="Contact Phone" value={eatup.phone} />
-                  )}
-                  <Button
-                    onClick={handleSubscribe}
-                    variant={isSubscribed ? "destructive" : "default"}
-                    className="w-full"
-                    disabled={isLoading || (!isSubscribed && isLimitReached)}
-                  >
-                    {isLoading
-                      ? "Processing..."
-                      : isSubscribed
-                      ? "Unsubscribe"
-                      : isLimitReached
-                      ? "Fully Booked"
-                      : "Subscribe"}
-                  </Button>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </DialogContent>
+        </DialogTrigger>
+      {/* DialogContent para post removido */}
+      {(type === "Donations" || type === "Residences" || type === "EatUp") && (
+        <DialogContent className="max-w-[800px]">
+          {/* Conteúdo detalhado apenas para os tipos especificados */}
+        </DialogContent>
+      )}
     </Dialog>
-  );
-}
-
-function DetailItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <span className="font-semibold text-muted-foreground">{label}: </span>
-      <span>{value}</span>
-    </div>
   );
 }
