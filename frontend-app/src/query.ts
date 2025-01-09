@@ -90,6 +90,18 @@ export const fetchPosts= async (): Promise<posts[]> => {
   }
 };
 
+//Likes
+export const toggleLike = async (postId: string, userId: string) => {
+  try {
+    const response = await api.post(`/posts/${postId}/like`, { userId });
+    return response.data;
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    throw error;
+  }
+};
+
+
 export const fetchEatUps = async (): Promise<EatUp[]> => {
   try {
     const token = sessionStorage.getItem("token");

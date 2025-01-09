@@ -215,10 +215,10 @@ export function Feed({ mode }: { mode: string }) {
   };
 
   return (
-    <div className="flex-1 p-6 bg-background">
+    <div className="flex-1 p-6 bg-background text-foreground">
       <div className="max-w-4xl mx-auto space-y-6">
-        <h2 className="text-3xl font-bold mb-8 text-center">
-          <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
+      <h2 className="text-3xl font-bold mb-8 text-center text-primary">
+      <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
             Active
           </span>{" "}
           <span className="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">

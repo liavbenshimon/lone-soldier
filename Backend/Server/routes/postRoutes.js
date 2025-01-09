@@ -5,6 +5,7 @@ import {
   getPostById,
   likePost,
   addComment,
+  toggleLikePost,
 } from "../controllers/postController.js";
 import { verifyToken, canAccessSocial } from "../middleware/auth.js";
 
@@ -17,7 +18,8 @@ router.use(verifyToken, canAccessSocial);
 router.post("/", createPost);
 router.get("/", getAllPosts);
 router.get("/:id", getPostById);
-router.put("/:id/like", likePost);
+// router.put("/:id/like", likePost);
+router.put("/:id/like", toggleLikePost);
 router.post("/:id/comment", addComment);
 
 export default router;

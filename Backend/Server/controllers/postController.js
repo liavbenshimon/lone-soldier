@@ -1,5 +1,4 @@
 import Post from "../models/postModel.js";
-import User from "../models/userModel.js";
 
 // Criar um novo post
 export const createPost = async (req, res) => {
@@ -25,6 +24,38 @@ export const createPost = async (req, res) => {
     res.status(500).json({ message: "Error creating post", error: error.message });
   }
 };
+
+//Like
+export const toggleLikePost = async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const { userId } = req.body; 
+
+    const post = await Post.findById(id);
+
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+
+    const hasLiked = post.likes.some((like) => String(like) === String(userId));
+
+    if (hasLiked) {
+      // deslike
+      post.likes = post.likes.filter((like) => String(like) !== String(userId));
+    } else {
+      // add like
+      post.likes.push(userId);
+    }
+
+    await post.save();
+
+    return res.status(200).json({ likes: post.likes.length, updatedLikes: post.likes });
+  } catch (error) {
+    console.error("Error toggling like:", error);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
 
 // Obter todos os posts
 export const getAllPosts = async (req, res) => {
