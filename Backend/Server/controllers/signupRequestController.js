@@ -25,6 +25,53 @@ export const createSignupRequest = async (req, res) => {
       type,
     } = req.body;
 
+    // Check for existing user or signup request with the same unique fields
+    const existingUser = await User.findOne({
+      $or: [
+        { email },
+        { passport },
+        { personalIdentificationNumber: personalIdentificationNumber || "" },
+      ],
+    });
+
+    if (existingUser) {
+      let field = "";
+      if (existingUser.email === email) field = "email";
+      if (existingUser.passport === passport) field = "passport";
+      if (
+        existingUser.personalIdentificationNumber ===
+        personalIdentificationNumber
+      )
+        field = "personal identification number";
+
+      return res.status(400).json({
+        error: `A user with this ${field} already exists in the system`,
+      });
+    }
+
+    const existingRequest = await SignupRequest.findOne({
+      $or: [
+        { email },
+        { passport },
+        { personalIdentificationNumber: personalIdentificationNumber || "" },
+      ],
+    });
+
+    if (existingRequest) {
+      let field = "";
+      if (existingRequest.email === email) field = "email";
+      if (existingRequest.passport === passport) field = "passport";
+      if (
+        existingRequest.personalIdentificationNumber ===
+        personalIdentificationNumber
+      )
+        field = "personal identification number";
+
+      return res.status(400).json({
+        error: `A pending signup request with this ${field} already exists`,
+      });
+    }
+
     // Hash password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -95,6 +142,33 @@ export const updateSignupRequestStatus = async (req, res) => {
     if (approved) {
       request.approved = approved;
       if (approved === "approved") {
+        // Check if a user with the same unique fields was created while request was pending
+        const existingUser = await User.findOne({
+          $or: [
+            { email: request.email },
+            { passport: request.passport },
+            {
+              personalIdentificationNumber:
+                request.personalIdentificationNumber || "",
+            },
+          ],
+        });
+
+        if (existingUser) {
+          let field = "";
+          if (existingUser.email === request.email) field = "email";
+          if (existingUser.passport === request.passport) field = "passport";
+          if (
+            existingUser.personalIdentificationNumber ===
+            request.personalIdentificationNumber
+          )
+            field = "personal identification number";
+
+          return res.status(400).json({
+            error: `Cannot approve request: A user with this ${field} already exists in the system`,
+          });
+        }
+
         request.approvedBy = req.user._id;
         request.progress = "completed";
 

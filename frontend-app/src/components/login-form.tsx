@@ -83,16 +83,16 @@ export function LoginForm({
             navigate("/home/eatup");
             break;
           case "municipality":
-            navigate("/requests");
+            navigate("/my-eatups");
             break;
           case "donor":
-            navigate("/requests/approved");
+            navigate("/contribute");
             break;
           case "organization":
-            navigate("/events/create");
+            navigate("/social");
             break;
           case "business":
-            navigate("/discounts");
+            navigate("/profile");
             break;
           default:
             navigate("/home");
