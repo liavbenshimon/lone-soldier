@@ -1,7 +1,6 @@
 import ContributePage from "./pages/Contribute";
 import HomePage from "./pages/HomePage";
 import Profile from "./pages/Profile";
-
 import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Logout from "./pages/Logout";
@@ -18,7 +17,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import RequestForm from "./components/RequestForm";
-
 import PendingPage from "./pages/PendingPage";
 import AdminQueue from "./pages/AdminQueue";
 import { useEffect } from "react";
@@ -26,6 +24,18 @@ import { useDispatch } from "react-redux";
 import { api } from "./api";
 import ChannelPage from "./pages/ChannelPage";
 import MyEatUps from "./pages/MyEatUps";
+import ProtectedRoute from "./components/ProtectedRoute";
+
+// Public routes that don't need protection
+const publicRoutes = [
+  "/",
+  "/login",
+  "/signup",
+  "/pending",
+  "/termofservice",
+  "/terms",
+  "/contact",
+];
 
 function AppRoutes() {
   const dispatch = useDispatch();
@@ -33,9 +43,7 @@ function AppRoutes() {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
-      // Set token in API headers
       api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-      // Fetch user data
       const fetchUser = async () => {
         try {
           const response = await api.get("/users/me");
@@ -50,38 +58,140 @@ function AppRoutes() {
     }
   }, [dispatch]);
 
+  const isPublicRoute = (path: string) => {
+    return publicRoutes.includes(path) || path.startsWith("/termofservice");
+  };
+
   return (
     <Routes>
+      {/* Public Routes */}
       <Route path="/" element={<Landing />} />
-      <Route path="/contribute" element={<ContributePage />} />
-      <Route path="/logout" element={<Logout />} />
-      <Route path="/new-post" element={<NewPost />} />
-      <Route path="/rights" element={<YourRights />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<SignUp />} />
+      <Route path="/pending" element={<PendingPage />} />
+      <Route path="/termofservice" element={<Tos />} />
       <Route path="/terms" element={<Terms />} />
       <Route path="/contact" element={<ContactUs />} />
-      <Route path="/pending" element={<PendingPage />} />
-      <Route path="/social" element={<Social />} />
-      <Route path="/admin/queue" element={<AdminQueue />} />
-      <Route path="/profile" element={<Profile />} />
-      <Route path="/my-eatups" element={<MyEatUps />} />
 
-      <Route path="/home" element={<HomePage mode="Donations" />} />
-      <Route path="/home/donations" element={<HomePage mode="Donations" />} />
-      <Route path="/home/residences" element={<HomePage mode="Residences" />} />
-      <Route path="/home/eatup" element={<HomePage mode="EatUp" />} />
+      {/* Protected Routes */}
+      <Route
+        path="/contribute"
+        element={
+          <ProtectedRoute>
+            <ContributePage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/logout"
+        element={
+          <ProtectedRoute>
+            <Logout />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/new-post"
+        element={
+          <ProtectedRoute>
+            <NewPost />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/rights"
+        element={
+          <ProtectedRoute>
+            <YourRights />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/social"
+        element={
+          <ProtectedRoute>
+            <Social />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/queue"
+        element={
+          <ProtectedRoute>
+            <AdminQueue />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/my-eatups"
+        element={
+          <ProtectedRoute>
+            <MyEatUps />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/home"
+        element={
+          <ProtectedRoute>
+            <HomePage mode="Donations" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/home/donations"
+        element={
+          <ProtectedRoute>
+            <HomePage mode="Donations" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/home/residences"
+        element={
+          <ProtectedRoute>
+            <HomePage mode="Residences" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/home/eatup"
+        element={
+          <ProtectedRoute>
+            <HomePage mode="EatUp" />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/channel/:channelId"
+        element={
+          <ProtectedRoute>
+            <ChannelPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/RequestForm"
+        element={
+          <ProtectedRoute>
+            <RequestForm />
+          </ProtectedRoute>
+        }
+      />
 
-      <Route path="/Login" element={<Login />} />
-      <Route path="/signUp" element={<SignUp />} />
-      <Route path="/termofservice" element={<Tos />} />
-
-      <Route path="/channel/:channelId" element={<ChannelPage />} />
-      <Route path="/RequestForm" element={<RequestForm />} />
-
+      {/* 404 Route */}
       <Route path="*" element={<h1>404</h1>} />
     </Routes>
   );
 }
-//
 
 export default function App() {
   const queryClient = new QueryClient();
