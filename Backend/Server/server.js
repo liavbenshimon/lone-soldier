@@ -19,10 +19,12 @@ import profileRoutes from "./routes/profileRoutes.js"
 import residenceRoutes from "./routes/residenceRoutes.js";
 import requestRoutes from './routes/requestRoutes.js';
 import postRoutes from './routes/postRoutes.js'
+import voucherRoutes from "./routes/voucherRoutes.js";
 
 import signupRequestRoutes from "./routes/signupRequestRoute.js";
 import channelRoutes from "./routes/channelRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
+
 const PORT = process.env.PORT || 5000;
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -67,6 +69,8 @@ app.use("/api/eatups", eatupRoutes);
 app.use("/api/residences", residenceRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/posts', postRoutes);
+app.use("/api/vouchers", voucherRoutes);
+
 
 
 app.use("/api/profile", profileRoutes);
