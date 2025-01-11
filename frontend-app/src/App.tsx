@@ -25,6 +25,7 @@ import { api } from "./api";
 import ChannelPage from "./pages/ChannelPage";
 import MyEatUps from "./pages/MyEatUps";
 import ProtectedRoute from "./components/ProtectedRoute";
+import VouchersGrid from "./components/VouchersGrid";
 
 // Public routes that don't need protection
 const publicRoutes = [
@@ -183,6 +184,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <RequestForm />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/Vouchers"
+        element={
+          <ProtectedRoute>
+            <VouchersGrid />
           </ProtectedRoute>
         }
       />
