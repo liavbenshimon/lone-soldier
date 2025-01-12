@@ -221,7 +221,7 @@ export function Feed({ mode }: { mode: string }) {
       <span className="bg-gradient-to-r from-[#F596D3] to-[#D247BF] text-transparent bg-clip-text">
             Active
           </span>{" "}
-          <span className="bg-gradient-to-r from-[#61DAFB] via-[#1fc0f1] to-[#03a3d7] text-transparent bg-clip-text">
+          <span className="bg-green-500 text-transparent bg-clip-text">
             {mode}
           </span>
         </h2>

@@ -61,8 +61,8 @@ export function PostCard({ post }: { post: Post }) {
 
   return (
     <>
-      <Card className="p-6 mb-6 max-w-4xl mx-auto shadow-lg bg-card text-card-foreground rounded-lg">
-        <div className="flex items-center mb-4">
+      <Card className="p-6 mb-6 max-w-2xl mx-auto shadow-lg bg-card text-card-foreground rounded-lg">
+        <div className="flex items-center mb-14">
           <img
             src={post.author.profileImage || "/default-avatar.png"}
             alt={post.author.firstName}

@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { Dialog, DialogPortal, DialogOverlay, DialogContent } from "./ui/dialog";
+import {
+  Dialog,
+  DialogPortal,
+  DialogOverlay,
+  DialogContent,
+  DialogTitle,
+} from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
-import { uploadImage } from "./UploadPhoto";
+import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
+import { uploadImage } from "@/components/UploadPhoto";
 import { api } from "@/api";
+import { useSelector } from "react-redux";
 
 interface Comment {
   user: {
@@ -25,14 +32,15 @@ export function CommentDialog({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [newComment, setNewComment] = useState("");
-  const [newCommentImage, setNewCommentImage] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [comments, setComments] = useState<Comment[]>([]); // Lista de comentários
+  const [newComment, setNewComment] = useState(""); // Novo texto do comentário
+  const [newCommentImage, setNewCommentImage] = useState<File | null>(null); // Arquivo de imagem do comentário
+  const [loading, setLoading] = useState(false); // Status de envio
+  const [uploading, setUploading] = useState(false); // Status de upload de imagem
+  const [error, setError] = useState<string | null>(null); // Mensagem de erro
 
   const { nickname, profileImage } = useSelector((state: any) => state.user);
 
-  // Carrega os comentários com detalhes completos do usuário
   useEffect(() => {
     const fetchCommentsWithDetails = async () => {
       try {
@@ -58,85 +66,84 @@ export function CommentDialog({
   }, [post.comments]);
 
   const handleAddComment = async () => {
-    if (!newComment && !newCommentImage) return;
+    setError(null);
+
+    if (!newComment && !newCommentImage) {
+      setError("You must provide text or an image.");
+      return;
+    }
+
+    setLoading(true);
 
     try {
-      setLoading(true);
+      let imageUrl = "";
 
+      // Faz upload da imagem se houver
+      if (newCommentImage) {
+        setUploading(true);
+        imageUrl = await uploadImage(newCommentImage);
+        setUploading(false);
+      }
+
+      // Envia o comentário para o backend
       const response = await api.post(`/posts/${post._id}/comment`, {
         text: newComment,
-        image: newCommentImage,
+        image: imageUrl,
         userId: sessionStorage.getItem("id"),
       });
 
-      // Atualiza os comentários com o novo
+      // Adiciona o novo comentário localmente
       const newCommentWithDetails = {
-        ...response.data.comment,
+        text: newComment,
+        image: imageUrl,
+        createdAt: new Date().toISOString(), // Atualiza data local
         user: {
           nickname,
           profileImage,
         },
       };
-      setComments([...comments, newCommentWithDetails]);
-      setNewComment("");
-      setNewCommentImage(null);
+
+      setComments((prevComments) => [...prevComments, newCommentWithDetails]); // Atualiza a lista local
+      setNewComment(""); // Limpa o campo de texto
+      setNewCommentImage(null); // Limpa o arquivo
     } catch (error) {
       console.error("Error adding comment:", error);
+      setError("Failed to add comment. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const handleImageUpload = async (file: File) => {
-    try {
-      const imageUrl = await uploadImage(file);
-      setNewCommentImage(imageUrl);
-    } catch (error) {
-      console.error("Error uploading image:", error);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setNewCommentImage(e.target.files[0]);
     }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogPortal>
-        <DialogOverlay
-          className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50"
-          onClick={onClose}
-        />
-        <DialogContent
-          className="fixed left-1/2 top-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-h-screen max-w-full overflow-hidden md:max-w-4xl md:h-[85vh]"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <DialogOverlay className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50" />
+        <DialogContent className="fixed left-1/2 top-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-h-screen max-w-full overflow-hidden md:max-w-4xl md:h-[85vh]">
+          <DialogTitle className="sr-only">Comment on Post</DialogTitle>
           <div className="bg-gray-900 rounded-lg shadow-lg w-full h-full flex flex-col md:h-[85vh]">
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
-              
-              
-            {post.image && (
-  <div className="hidden md:block w-full md:w-1/2 bg-black flex flex-col items-center justify-center overflow-hidden">
-    <div className="bg-black w-full" style={{ height: "10%" }}></div>
-    <div className="flex-grow flex items-center justify-center">
-      <img
-        src={post.image}
-        alt="Post"
-        className="max-h-full max-w-full object-contain"
-      />
-    </div>
-    <div className="bg-black w-full" style={{ height: "10%" }}></div>
-  </div>
-)}
-
+              {post.image && (
+                <div className="hidden md:block w-full md:w-1/2 bg-black flex flex-col items-center justify-center overflow-hidden">
+                  <img
+                    src={post.image}
+                    alt="Post"
+                    className="max-h-full max-w-full object-contain"
+                  />
+                </div>
+              )}
 
               <div
                 className={`flex-1 flex flex-col overflow-hidden ${
                   post.image ? "md:w-1/2" : "w-full"
                 }`}
               >
-                <div
-                  className="flex-1 overflow-y-auto p-4 space-y-4"
-                  style={{
-                    maxHeight: "calc(100vh - 130px)",
-                  }}
-                >
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {comments.map((comment, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="flex-shrink-0">
@@ -174,35 +181,38 @@ export function CommentDialog({
                     </div>
                   ))}
                 </div>
-                {/* Adicionar Novo Comentário */}
-                <div
-                  className="bg-gray-800 p-4 border-t"
-                  style={{
-                    position: "sticky",
-                    bottom: "0",
-                    zIndex: 10,
-                  }}
-                >
+                <div className="bg-gray-800 p-4 border-t">
+                  {error && (
+                    <Alert variant="destructive" className="mb-4">
+                      <AlertTitle>Error</AlertTitle>
+                      <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                  )}
                   <div className="flex items-center space-x-2">
                     <Textarea
-                      placeholder="Add a comment..." 
+                      placeholder="Add a comment..."
                       value={newComment}
                       onChange={(e) => setNewComment(e.target.value)}
-                      className="flex-1 resize-none"
+                      className="flex-1 resize-none bg-gray-700 text-gray-200 border border-gray-600 focus:ring-primary focus:border-primary rounded-lg"
                     />
                     <input
                       type="file"
-                      onChange={(e) =>
-                        e.target.files && e.target.files[0] && handleImageUpload(e.target.files[0])
-                      }
+                      accept="image/*"
+                      onChange={handleFileChange}
                       className="hidden"
                       id="comment-image-upload"
                     />
-                    <label htmlFor="comment-image-upload" className="cursor-pointer">
-                      <Button variant="ghost">📷</Button>
+                    <label htmlFor="comment-image-upload">
+                      <Button variant="ghost" className="flex items-center">
+                        📷
+                      </Button>
                     </label>
-                    <Button onClick={handleAddComment} disabled={loading}>
-                      Post
+                    <Button
+                      onClick={handleAddComment}
+                      disabled={loading || uploading}
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
+                    >
+                      {loading ? "Posting..." : "Post"}
                     </Button>
                   </div>
                 </div>

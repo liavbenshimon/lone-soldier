@@ -14,7 +14,7 @@ export const uploadImage = async (imageFile: File) => {
       "https://api.cloudinary.com/v1_1/dnnifnoyf/image/upload",
       formData
     );
-    return response.data.secure_url; // Retorna a URL da imagem
+    return response.data.secure_url; 
   } catch (error) {
     console.error("Error uploading image:", error);
     throw error;
