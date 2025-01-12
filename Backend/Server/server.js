@@ -20,6 +20,7 @@ import residenceRoutes from "./routes/residenceRoutes.js";
 import requestRoutes from './routes/requestRoutes.js';
 import postRoutes from './routes/postRoutes.js'
 import voucherRoutes from "./routes/voucherRoutes.js";
+import businessRoutes from "./routes/businessRoutes.js";
 
 import signupRequestRoutes from "./routes/signupRequestRoute.js";
 import channelRoutes from "./routes/channelRoutes.js";
@@ -70,6 +71,7 @@ app.use("/api/residences", residenceRoutes);
 app.use('/api/requests', requestRoutes);
 app.use('/api/posts', postRoutes);
 app.use("/api/vouchers", voucherRoutes);
+app.use("/api/business", businessRoutes);
 
 
 
