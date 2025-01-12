@@ -3,6 +3,7 @@ import { Feed } from "@/components/Feed";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import createIcon from "@/assets/createIcon.png"
 
 export default function Social() {
   const navigate = useNavigate();
@@ -21,14 +22,19 @@ export default function Social() {
         <Feed mode="post" />
       </div>
 
-      {/* Botão para criar post */}
       <Button
         onClick={handleCreatePost}
-        className="fixed bottom-6 right-6 bg-blue-500 text-white p-4 rounded-full shadow-lg hover:bg-blue-600 flex items-center justify-center"
+        className="fixed bottom-6 left-6 bg-green-500 text-white p-6 rounded-lg shadow-lg hover:bg-green-400 flex items-center justify-center transition-colors duration-200"
         aria-label="Create Post"
       >
-        <Plus className="w-5 h-5" />
-      </Button>
+        <img
+          src={createIcon}
+          alt="Create Post"
+          className="w-6 h-6"
+        />
+      </Button> 
+
+
     </div>
   );
 }

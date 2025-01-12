@@ -93,7 +93,7 @@
   } 
 
   .dark {
-    --background: 220 20% 15%; /* Cor de fundo padrão */
+    --background: 220 20% 15%; 
     --foreground: 0 0% 95%;
     --card: 4 9.8% 10%;
     --card-foreground: 0 0% 95%;

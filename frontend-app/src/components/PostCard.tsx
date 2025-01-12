@@ -116,7 +116,7 @@ export function PostCard({ post }: { post: Post }) {
           </Button>
           <Button
             variant="ghost"
-            className="flex items-center space-x-2 hover:text-primary"
+            className="flex items-center space-x-2 hover:cursor-not-allowed"
           >
             <Share className="w-4 h-4" />
             <span>Share</span>
