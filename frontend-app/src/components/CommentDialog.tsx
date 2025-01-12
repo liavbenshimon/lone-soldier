@@ -12,6 +12,7 @@ import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
 import { uploadImage } from "@/components/UploadPhoto";
 import { api } from "@/api";
 import { useSelector } from "react-redux";
+import upload from "@/assets/upload.png";
 
 interface Comment {
   user: {
@@ -32,12 +33,12 @@ export function CommentDialog({
   isOpen: boolean;
   onClose: () => void;
 }) {
-  const [comments, setComments] = useState<Comment[]>([]); // Lista de comentários
-  const [newComment, setNewComment] = useState(""); // Novo texto do comentário
-  const [newCommentImage, setNewCommentImage] = useState<File | null>(null); // Arquivo de imagem do comentário
-  const [loading, setLoading] = useState(false); // Status de envio
-  const [uploading, setUploading] = useState(false); // Status de upload de imagem
-  const [error, setError] = useState<string | null>(null); // Mensagem de erro
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [newComment, setNewComment] = useState("");
+  const [newCommentImage, setNewCommentImage] = useState<File | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const { nickname, profileImage } = useSelector((state: any) => state.user);
 
@@ -78,34 +79,31 @@ export function CommentDialog({
     try {
       let imageUrl = "";
 
-      // Faz upload da imagem se houver
       if (newCommentImage) {
         setUploading(true);
         imageUrl = await uploadImage(newCommentImage);
         setUploading(false);
       }
 
-      // Envia o comentário para o backend
       const response = await api.post(`/posts/${post._id}/comment`, {
         text: newComment,
         image: imageUrl,
         userId: sessionStorage.getItem("id"),
       });
 
-      // Adiciona o novo comentário localmente
       const newCommentWithDetails = {
         text: newComment,
         image: imageUrl,
-        createdAt: new Date().toISOString(), // Atualiza data local
+        createdAt: new Date().toISOString(),
         user: {
           nickname,
           profileImage,
         },
       };
 
-      setComments((prevComments) => [...prevComments, newCommentWithDetails]); // Atualiza a lista local
-      setNewComment(""); // Limpa o campo de texto
-      setNewCommentImage(null); // Limpa o arquivo
+      setComments((prevComments) => [...prevComments, newCommentWithDetails]);
+      setNewComment("");
+      setNewCommentImage(null);
     } catch (error) {
       console.error("Error adding comment:", error);
       setError("Failed to add comment. Please try again.");
@@ -126,15 +124,27 @@ export function CommentDialog({
         <DialogOverlay className="fixed inset-0 z-50 backdrop-blur-sm bg-black/50" />
         <DialogContent className="fixed left-1/2 top-1/2 z-50 transform -translate-x-1/2 -translate-y-1/2 w-full h-full max-h-screen max-w-full overflow-hidden md:max-w-4xl md:h-[85vh]">
           <DialogTitle className="sr-only">Comment on Post</DialogTitle>
-          <div className="bg-gray-900 rounded-lg shadow-lg w-full h-full flex flex-col md:h-[85vh]">
+          <div className="bg-gray-900 rounded-lg shadow-lg w-full h-full flex flex-col">
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               {post.image && (
                 <div className="hidden md:block w-full md:w-1/2 bg-black flex flex-col items-center justify-center overflow-hidden">
-                  <img
-                    src={post.image}
-                    alt="Post"
-                    className="max-h-full max-w-full object-contain"
-                  />
+                  <div
+                    className="flex items-center justify-center h-full w-full bg-black"
+                    style={{
+                      position: "relative",
+                      display: "flex",
+                      flexDirection: "column",
+                    }}
+                  >
+                    {/* Barras pretas acima e abaixo da imagem */}
+                    <div className="flex-1 w-full bg-black"></div>
+                    <img
+                      src={post.image}
+                      alt="Post"
+                      className="max-w-full max-h-full object-contain"
+                    />
+                    <div className="flex-1 w-full bg-black"></div>
+                  </div>
                 </div>
               )}
 
@@ -143,14 +153,18 @@ export function CommentDialog({
                   post.image ? "md:w-1/2" : "w-full"
                 }`}
               >
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                <div
+                  className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin max-h-[calc(100vh-150px)] sm:max-h-[calc(85vh-150px)]"
+                  style={{
+                    scrollbarWidth: "thin",
+                    scrollbarColor: "#4B5563 #1F2937",
+                  }}
+                >
                   {comments.map((comment, index) => (
                     <div key={index} className="flex items-start space-x-3">
                       <div className="flex-shrink-0">
                         <img
-                          src={
-                            comment.user.profileImage || "/default-avatar.png"
-                          }
+                          src={comment.user.profileImage || "/default-avatar.png"}
                           alt={comment.user.nickname}
                           className="w-10 h-10 rounded-full bg-gray-800"
                         />
@@ -181,7 +195,11 @@ export function CommentDialog({
                     </div>
                   ))}
                 </div>
-                <div className="bg-gray-800 p-4 border-t">
+
+                <div
+                  className="bg-gray-800 p-4 border-t sticky bottom-0 z-10"
+                  style={{ zIndex: 10 }}
+                >
                   {error && (
                     <Alert variant="destructive" className="mb-4">
                       <AlertTitle>Error</AlertTitle>
@@ -197,22 +215,22 @@ export function CommentDialog({
                     />
                     <input
                       type="file"
-                      accept="image/*"
+                      id="file-upload"
                       onChange={handleFileChange}
                       className="hidden"
-                      id="comment-image-upload"
                     />
-                    <label htmlFor="comment-image-upload">
-                      <Button variant="ghost" className="flex items-center">
-                        📷
-                      </Button>
+                    <label
+                      htmlFor="file-upload"
+                      className="cursor-pointer bg-pink-500 hover:bg-pink-400 text-white py-5 px-6 rounded-lg shadow-md inline-block"
+                    >
+                      <img src={upload} alt="upload" className="w-6 h-6" />
                     </label>
                     <Button
                       onClick={handleAddComment}
                       disabled={loading || uploading}
-                      className="bg-primary text-primary-foreground hover:bg-primary/90 transition-colors duration-200"
+                      className="bg-primary text-primary-foreground hover:bg-primary/90 py-8 px-6 rounded-lg transition-colors duration-200"
                     >
-                      {loading ? "Posting..." : "Post"}
+                      {loading ? "Posting..." : "Add"}
                     </Button>
                   </div>
                 </div>
