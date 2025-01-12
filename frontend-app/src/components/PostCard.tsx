@@ -87,11 +87,16 @@ export function PostCard({ post }: { post: Post }) {
             className="rounded-md mb-4 w-full max-h-[400px] object-cover border border-muted"
           />
         )}
-
-
-
-        <p className="text-foreground mb-4">{post.content}</p>
-
+        <p
+          className="text-foreground mb-4"
+          style={{
+            wordBreak: "break-word", 
+            overflowWrap: "break-word", 
+            whiteSpace: "pre-wrap", 
+            }}
+        >
+          {post.content}
+        </p>
         <div className="flex justify-between items-center text-muted-foreground">
           <Button
             variant="ghost"
